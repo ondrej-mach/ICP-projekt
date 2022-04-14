@@ -1,22 +1,25 @@
-QT += gui
-QT += widgets
+QT += core gui widgets
 
-HEADERS      += diagramwindow.h \
-                link.h \
-                node.h \
-                propertiesdialog.h
+HEADERS += \
+    src/classdiagramscene.h \
+    src/model.h \
+    src/diagrams.h \
+    src/mainwindow.h \
 
-SOURCES      += diagramwindow.cpp \
-                link.cpp \
-                main.cpp \
-                node.cpp \
-                propertiesdialog.cpp
+SOURCES += \
+    src/classdiagramscene.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/model.cpp \
 
-FORMS         = src/gui/propertiesdialog.ui
+FORMS += \
+    src/mainwindow.ui
 
 RESOURCES     = res/resources.qrc
 
 # install
 target.path = ./install
 INSTALLS += target
+
+
 
