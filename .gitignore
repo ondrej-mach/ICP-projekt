@@ -1,2 +1,3 @@
-.gmake.stash
+.qmake.stash
 ICP-projekt.pro.user
+*.o
