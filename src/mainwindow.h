@@ -19,10 +19,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void tabChanged(int index);
+
 private:
     Ui::MainWindow *ui;
     QGraphicsView *view;
     ClassDiagramScene *classDiagramScene;
+
+    void addSequence();
 };
 
 #endif

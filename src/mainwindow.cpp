@@ -7,10 +7,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
     view = new QGraphicsView;
-    setCentralWidget(view);
-
     classDiagramScene = new ClassDiagramScene;
     view->setScene(classDiagramScene);
+
+    ui->tabWidget->removeTab(0);
+    ui->tabWidget->removeTab(0);
+    ui->tabWidget->addTab(view, tr("Class Diagram"));
+    ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
+}
+
+void MainWindow::tabChanged(int index) {
+    // if the last tab was clicked
+    if (index == ui->tabWidget->count()-1) {
+         addSequence();
+    }
+}
+
+void MainWindow::addSequence() {
+    ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
 }
 
 MainWindow::~MainWindow()
