@@ -4,21 +4,28 @@
 #include <string>
 #include <vector>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-
 namespace pt = boost::property_tree;
+
+Model::Model()
+{
+
+}
 
 void Model::loadXML(const std::string &filename) {
     // empty xml tree object
-    pt::ptree tree;
-
     pt::read_xml(filename, tree);
-};
+}
 
 void Model::storeXML(const std::string &filename) {
-    // empty xml tree object
-    pt::ptree tree;
-
     pt::write_xml(filename, tree);
-};
+}
+
+void Model::undo()
+{
+
+}
+
+void Model::redo()
+{
+
+}
