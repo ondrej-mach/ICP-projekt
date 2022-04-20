@@ -10,6 +10,7 @@ SOURCES += \
     src/classdiagramscene.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/mainwindow_tools.cpp \
     src/model.cpp \
 
 FORMS += \

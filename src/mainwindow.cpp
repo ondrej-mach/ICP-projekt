@@ -15,6 +15,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->tabWidget->addTab(view, tr("Class Diagram"));
     ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
+
+    connectTools();
+    tool = TOOL_MOUSE;
 }
 
 void MainWindow::tabChanged(int index) {
@@ -32,9 +35,13 @@ void MainWindow::saveFile(QString &filename) {
 
 }
 
+
+
 void MainWindow::addSequence() {
     ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
 }
+
+
 
 MainWindow::~MainWindow()
 {

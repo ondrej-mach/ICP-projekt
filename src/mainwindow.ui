@@ -40,6 +40,15 @@
            <iconset resource="../res/resources.qrc">
             <normaloff>:/icons/mouse.png</normaloff>:/icons/mouse.png</iconset>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item row="2" column="2">
@@ -50,6 +59,12 @@
           <property name="icon">
            <iconset resource="../res/resources.qrc">
             <normaloff>:/icons/generalization.png</normaloff>:/icons/generalization.png</iconset>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -62,6 +77,12 @@
            <iconset resource="../res/resources.qrc">
             <normaloff>:/icons/association.png</normaloff>:/icons/association.png</iconset>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item row="1" column="2">
@@ -72,6 +93,12 @@
           <property name="icon">
            <iconset resource="../res/resources.qrc">
             <normaloff>:/icons/composition.png</normaloff>:/icons/composition.png</iconset>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -97,6 +124,12 @@
            <iconset resource="../res/resources.qrc">
             <normaloff>:/icons/aggregation.png</normaloff>:/icons/aggregation.png</iconset>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item row="0" column="2">
@@ -107,6 +140,12 @@
           <property name="icon">
            <iconset resource="../res/resources.qrc">
             <normaloff>:/icons/class.png</normaloff>:/icons/class.png</iconset>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
