@@ -21,6 +21,8 @@ public:
 
 private slots:
     void tabChanged(int index);
+    void loadFile(QString &filename);
+    void saveFile(QString &filename);
 
 private:
     Ui::MainWindow *ui;
@@ -28,6 +30,7 @@ private:
     ClassDiagramScene *classDiagramScene;
 
     void addSequence();
+
 };
 
 #endif

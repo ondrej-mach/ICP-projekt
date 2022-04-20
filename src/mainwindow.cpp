@@ -24,6 +24,14 @@ void MainWindow::tabChanged(int index) {
     }
 }
 
+void MainWindow::loadFile(QString &filename) {
+
+}
+
+void MainWindow::saveFile(QString &filename) {
+
+}
+
 void MainWindow::addSequence() {
     ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
 }

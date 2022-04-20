@@ -1,7 +1,11 @@
 <RCC>
-<qresource>
-
-    <file>icons/delete.png</file>
-
-</qresource>
+    <qresource prefix="/">
+        <file>icons/delete.png</file>
+        <file>icons/aggregation.png</file>
+        <file>icons/association.png</file>
+        <file>icons/composition.png</file>
+        <file>icons/generalization.png</file>
+        <file>icons/class.png</file>
+        <file>icons/mouse.png</file>
+    </qresource>
 </RCC>
