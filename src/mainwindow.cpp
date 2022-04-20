@@ -3,6 +3,12 @@
 
 #include "classdiagramscene.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include <string>
+
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -18,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     connectTools();
     tool = TOOL_MOUSE;
+
+    Model model;
 }
 
 void MainWindow::tabChanged(int index) {
@@ -26,15 +34,6 @@ void MainWindow::tabChanged(int index) {
          addSequence();
     }
 }
-
-void MainWindow::loadFile(QString &filename) {
-
-}
-
-void MainWindow::saveFile(QString &filename) {
-
-}
-
 
 
 void MainWindow::addSequence() {
@@ -46,4 +45,33 @@ void MainWindow::addSequence() {
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionOpen_triggered() {
+    QString path = QFileDialog::getOpenFileName(this, "Open file");
+    std::string std_path = path.toUtf8().constData();
+
+    try {
+        model.loadXML(std_path);
+        filename = path;
+
+    } catch (...) {
+        QMessageBox msgBox;
+        msgBox.setText("Invalid file format");
+        msgBox.exec();
+    }
+}
+
+void MainWindow::on_actionSave_triggered() {
+    QString path = filename;
+    std::string std_path = path.toUtf8().constData();
+
+    model.storeXML(std_path);
+}
+
+void MainWindow::on_actionSaveAs_triggered() {
+    QString path = QFileDialog::getSaveFileName(this, "Save as");
+    std::string std_path = path.toUtf8().constData();
+
+    model.storeXML(std_path);
 }

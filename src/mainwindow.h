@@ -5,7 +5,9 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
+#include "model.h"
 #include "classdiagramscene.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,8 +32,6 @@ public:
 
 private slots:
     void tabChanged(int index);
-    void loadFile(QString &filename);
-    void saveFile(QString &filename);
 
     void selectToolMouse();
     void selectToolAssociate();
@@ -40,13 +40,18 @@ private slots:
     void selectToolGeneralize();
     void selectToolClass();
 
+    void on_actionOpen_triggered();
+    void on_actionSave_triggered();
+    void on_actionSaveAs_triggered();
 
 private:
     Ui::MainWindow *ui;
     QGraphicsView *view;
     ClassDiagramScene *classDiagramScene;
 
+    Model model;
     Tool tool;
+    QString filename;
 
     // initialization
     void connectTools();

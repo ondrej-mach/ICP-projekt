@@ -4,7 +4,11 @@
 #include <string>
 #include <vector>
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
 #include "diagrams.h"
+
 
 
 class Model {
@@ -16,8 +20,7 @@ public:
     void redo();
 
 private:
-    ClassDiagram classDiagram;
-    std::vector<SequenceDiagram> seqDiagrams;
+    boost::property_tree::ptree tree;
 
 };
 
