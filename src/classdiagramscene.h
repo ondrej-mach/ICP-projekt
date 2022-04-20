@@ -3,6 +3,9 @@
 
 #include <QGraphicsScene>
 #include <QSet>
+#include <QtCore>
+#include <QtGui>
+#include "classgraphicsitem.h"
 
 class ClassDiagramScene : public QGraphicsScene
 {
@@ -14,7 +17,6 @@ public:
 
 private:
     QSet<QGraphicsItem *> nodes;
-    QGraphicsItem *item;
 };
 
 #endif // CLASSDIAGRAMSCENE_H

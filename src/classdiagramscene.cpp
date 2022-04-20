@@ -5,10 +5,6 @@
 
 ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent)
 {
-    //nodes.insert(new ClassNode());
-    //nodes.insert(new QGraphicsRectItem);
-    //item = new QGraphicsRectItem(10, 10, 90, 90);
-
     //setBackgroundBrush(QColor("#FFFFFF"));
 
     QBrush greenBrush(Qt::green);
@@ -16,9 +12,11 @@ ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent)
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(2);
 
-    QGraphicsItem *rect = addRect(100, 0, 80, 100, outlinePen, blueBrush);
-    rect->setFlag(QGraphicsItem::ItemIsMovable);
-    nodes.insert(rect);
+    ClassGraphicsItem *item = new ClassGraphicsItem();
+    nodes.insert(item);
+    this->addItem(item);
+    item->setFlag(QGraphicsItem::ItemIsMovable);
+
 }
 
 ClassDiagramScene::~ClassDiagramScene()
