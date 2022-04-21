@@ -5,8 +5,8 @@ HEADERS += \
     src/classgraphicsitem.h \
     src/linkgraphicsitem.h \
     src/model.h \
-    src/diagrams.h \
     src/mainwindow.h \
+    src/viewdata.h
 
 SOURCES += \
     src/classdiagramscene.cpp \
