@@ -44,6 +44,10 @@ private slots:
     void on_actionSave_triggered();
     void on_actionSaveAs_triggered();
 
+    void on_actionUndo_triggered();
+
+    void on_actionRedo_triggered();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsView *view;
@@ -55,6 +59,7 @@ private:
 
     // initialization
     void connectTools();
+    void reloadData();
 
     void addSequence();
     void changeTool(Tool tool);

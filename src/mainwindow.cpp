@@ -34,10 +34,17 @@ void MainWindow::tabChanged(int index) {
          addSequence();
     }
 
-    Command cmd{Command::SWITCH_TAB, {index}};
-    model.applyCommand(cmd);
+    model.changeTab(index);
 }
 
+void MainWindow::reloadData()
+{
+    // load everything
+
+    ui->tabWidget->blockSignals(true);
+    ui->tabWidget->setCurrentIndex(model.getTabIndex());
+    ui->tabWidget->blockSignals(false);
+}
 
 void MainWindow::addSequence() {
     ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
@@ -78,3 +85,16 @@ void MainWindow::on_actionSaveAs_triggered() {
 
     model.storeXML(std_path);
 }
+
+void MainWindow::on_actionUndo_triggered()
+{
+    model.undo();
+    reloadData();
+}
+
+void MainWindow::on_actionRedo_triggered()
+{
+    model.redo();
+    reloadData();
+}
+
