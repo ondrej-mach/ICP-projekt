@@ -33,6 +33,9 @@ void MainWindow::tabChanged(int index) {
     if (index == ui->tabWidget->count()-1) {
          addSequence();
     }
+
+    Command cmd{Command::SWITCH_TAB, {index}};
+    model.applyCommand(cmd);
 }
 
 
