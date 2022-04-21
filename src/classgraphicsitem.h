@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QString>
+#include <QPair>
 
 class ClassGraphicsItem : public QGraphicsItem
 {
@@ -11,6 +12,7 @@ public:
     ClassGraphicsItem();
 
     QRectF boundingRect() const;
+    QPair<int, int> computeDimensions() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     bool Pressed;
 

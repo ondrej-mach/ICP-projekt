@@ -9,7 +9,7 @@ ClassGraphicsItem::ClassGraphicsItem()
     methods = {"New method 1","New method 1","New method 1","New method 1","New method 1","New method 1"};
 }
 
-QRectF ClassGraphicsItem::boundingRect() const
+QPair<int, int> ClassGraphicsItem::computeDimensions() const
 {
     int charLen = className.length();
     for (auto attr : attributes) {
@@ -23,42 +23,49 @@ QRectF ClassGraphicsItem::boundingRect() const
 
     int len = charLen * charWidth;
     int height = (lineHeight + margin) * (numAttr + numMeth + 1) + margin;
-    return QRectF(0, 0, len, height);
+
+    return {len, height};
+}
+
+
+QRectF ClassGraphicsItem::boundingRect() const
+{
+    QPair pair = computeDimensions();
+    int a = pair.first;
+    int b = pair.second;
+    return QRectF(0, 0, a, b);
 }
 
 void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
-    QBrush brush(Qt::blue);
+    QBrush brushWhite(Qt::white);
+    QBrush brushGray(Qt::lightGray);
     QRectF rec = boundingRect();
 
-    //painter->fillRect(rec, brush);
 
-    int charLen = className.length();
-    for (auto attr : attributes) {
-        charLen = std::max(attr.length(), charLen);
-    }
-    for (auto meth : methods) {
-        charLen = std::max(meth.length(), charLen);
-    }
+    painter->fillRect(rec, brushWhite);
+
+    QPair pair = computeDimensions();
+
+    int len = pair.first;
     int numAttr = attributes.size();
     int numMeth = methods.size();
 
-    int len = charLen * charWidth;
-
+    QRectF recClassName = QRectF(0, 0, len, lineHeight + margin * 3/2);
+    painter->fillRect(recClassName, brushGray);
+    painter->setPen(Qt::black);
     painter->drawText(margin, lineHeight + margin / 2, className);
     painter->drawLine(0, lineHeight + margin * 3/2, len, lineHeight + margin * 3/2);
+    painter->drawLine(0, (lineHeight + margin) * (numAttr + 1) + margin, len, (lineHeight + margin) * (numAttr + 1) + margin);
+    painter->drawRect(rec);
 
     for (int i = 0; i < numAttr; i++) {
         painter->drawText(margin, (lineHeight + margin) * (i + 2), attributes[i]);
     }
-
-    painter->drawLine(0, (lineHeight + margin) * (numAttr + 1) + margin, len, (lineHeight + margin) * (numAttr + 1) + margin);
-
     for (int i = 0; i < numMeth; i++) {
         painter->drawText(margin, (lineHeight + margin) * (numAttr + i + 2) + margin/2 , methods[i]);
     }
-    painter->drawRect(rec);
 }
 
 void ClassGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)

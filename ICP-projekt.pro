@@ -3,6 +3,7 @@ QT += core gui widgets
 HEADERS += \
     src/classdiagramscene.h \
     src/classgraphicsitem.h \
+    src/linkgraphicsitem.h \
     src/model.h \
     src/diagrams.h \
     src/mainwindow.h \
@@ -10,6 +11,7 @@ HEADERS += \
 SOURCES += \
     src/classdiagramscene.cpp \
     src/classgraphicsitem.cpp \
+    src/linkgraphicsitem.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/mainwindow_tools.cpp \
