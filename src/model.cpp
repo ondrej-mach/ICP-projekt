@@ -153,12 +153,20 @@ std::vector<std::string> Model::getClasses() {
     return classNames;
 }
 
+bool Model::canUndo()
+{
+    return csHead >= 0;
+}
+
+bool Model::canRedo()
+{
+    return csHead < csTop;
+}
+
 void Model::changeTab(int index) {
     Command cmd = {Command::SWITCH_TAB, {index}};
     applyCommand(cmd);
 };
-
-
 
 // High-level, applies command to the current state and commandStack
 void Model::applyCommand(Command cmd) {

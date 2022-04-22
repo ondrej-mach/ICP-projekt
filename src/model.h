@@ -47,6 +47,8 @@ public:
     std::vector<std::string> getClasses();
     std::vector<std::string> getClass(std::string name);
     std::vector<LinkRepr> getLinks();
+    bool canUndo();
+    bool canRedo();
 
     // model manipulations
     void addClass(std::string name);
@@ -55,6 +57,7 @@ public:
     void changeTab(int index);
     void undo();
     void redo();
+
 
 
 

@@ -34,13 +34,15 @@ void MainWindow::tabChanged(int index) {
     if (index == ui->tabWidget->count()-1) {
          addSequence();
     }
-
     model.changeTab(index);
+    reloadData();
 }
 
 void MainWindow::reloadData()
 {
     // load everything
+    ui->actionUndo->setEnabled(model.canUndo());
+    ui->actionRedo->setEnabled(model.canRedo());
 
     ui->tabWidget->blockSignals(true);
     ui->tabWidget->setCurrentIndex(model.getTabIndex());
@@ -50,8 +52,6 @@ void MainWindow::reloadData()
 void MainWindow::addSequence() {
     ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
 }
-
-
 
 MainWindow::~MainWindow()
 {
