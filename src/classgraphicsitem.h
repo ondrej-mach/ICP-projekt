@@ -18,8 +18,7 @@ public:
     QPair<int, int> computeDimensions() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     bool Pressed;
-
-
+    void convertToClassRepr(Model &m);
 
 private:
 

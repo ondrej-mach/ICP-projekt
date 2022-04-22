@@ -13,7 +13,7 @@ Model::Model() {
 
     // everything is empty by default
     currentState.classDiagram = ClassDiagram{};
-    currentState.classDiagram.classes = std::map<std::string, ClassRepr>{{"abcd", ClassRepr{}}};
+    currentState.classDiagram.classes = std::map<std::string, ClassRepr>{};
     currentState.sequenceDiagrams = std::map<std::string, SequenceDiagram>{};
 
     currentState.tabIndex = 0;
@@ -179,10 +179,21 @@ bool Model::canRedo()
     return csHead < csTop;
 }
 
-void Model::changeTab(int index) {
-    Command cmd = {Command::SWITCH_TAB, {index}};
+void Model::changeClassProperties(std::string name, Model::ClassRepr &cls)
+{
+    Command cmd;
+    cmd.type = Command::CHANGE_PROPS;
+    cmd.newProps.cls = cls;
+    cmd.newProps.name = name;
     applyCommand(cmd);
-};
+}
+
+void Model::changeTab(int index) {
+    Command cmd;
+    cmd.type = Command::SWITCH_TAB;
+    cmd.newTab = index;
+    applyCommand(cmd);
+}
 
 // High-level, applies command to the current state and commandStack
 void Model::applyCommand(Command cmd) {

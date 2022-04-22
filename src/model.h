@@ -53,7 +53,7 @@ public:
     // model manipulations
     void addClass(std::string name);
     void renameClass(std::string name, std::string newName);
-    void changeClassAttributes(std::string name, ClassRepr &cls);
+    void changeClassProperties(std::string name, ClassRepr &cls);
     void changeTab(int index);
     void undo();
     void redo();
@@ -72,9 +72,12 @@ private:
             ADD_CLASS,
         };
         Type type;
-        union {
-            int newTab;
-        };
+
+        int newTab; // SWITCH_TAB
+        struct {
+            std::string name;
+            ClassRepr cls;
+        } newProps; // CHANGE_PROPS
     };
 
     struct ClassDiagram {

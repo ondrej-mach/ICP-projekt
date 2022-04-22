@@ -75,7 +75,6 @@ void MainWindow::openFile() {
     try {
         model.loadXML(std_path);
         filename = path;
-
     } catch (...) {
         QMessageBox msgBox;
         msgBox.setText("Invalid file format");

@@ -33,14 +33,33 @@ ClassDiagramScene::~ClassDiagramScene() {
 }
 
 void ClassDiagramScene::reloadData(Model &m) {
-    for (auto &name: m.getClasses()){
+
+    for (auto &item: nodes) {
+        removeItem(item);
+    }
+    //nodes.clear();
+
+    for (auto &item: links) {
+        removeItem(item);
+    }
+    //links.clear();
+
+    for (auto &name: m.getClasses()) {
         Model::ClassRepr &data = m.getClass(name);
 
         QString qname = QString::fromStdString(name);
         ClassGraphicsItem *cgi = new ClassGraphicsItem{data, qname};
         nodes.insert(qname, cgi);
         addItem(cgi);
+
         cgi->setFlag(QGraphicsItem::ItemIsMovable);
+        cgi->setX(data.x);
+        cgi->setY(data.y);
     }
-    m.getLinks();
+
+    for (auto &link: m.getLinks()) {
+        LinkGraphicsItem *lgi = new LinkGraphicsItem{link};
+        links.insert(lgi);
+        addItem(lgi);
+    }
 }

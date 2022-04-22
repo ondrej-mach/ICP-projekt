@@ -17,7 +17,9 @@ class LinkGraphicsItem : public QGraphicsItem
 public:
 
     LinkGraphicsItem(QGraphicsItem *src, QGraphicsItem *dst);
+    LinkGraphicsItem(Model::LinkRepr data);
     QRectF boundingRect() const override;
+    void convertToLinkRepr(Model &m);
 
 private:
 

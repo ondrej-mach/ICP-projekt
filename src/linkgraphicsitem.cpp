@@ -5,7 +5,11 @@ LinkGraphicsItem::LinkGraphicsItem(QGraphicsItem *src, QGraphicsItem *dst)
 {
     from = src;
     to = dst;
-    //connect(src, &QGraphicsItem::dragMoveEvent, this, &LinkGraphicsItem::refresh);
+}
+
+LinkGraphicsItem::LinkGraphicsItem(Model::LinkRepr data)
+{
+
 }
 
 QRectF LinkGraphicsItem::boundingRect() const
@@ -42,5 +46,14 @@ void LinkGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void LinkGraphicsItem::refresh()
 {
     update();
+}
+
+void LinkGraphicsItem::convertToLinkRepr(Model &m)
+{
+    Model::LinkRepr linkRepr;
+    linkRepr.from = from;
+    linkRepr.to = to;
+
+    //m.changeClassProperties(, linkRepr);
 }
 

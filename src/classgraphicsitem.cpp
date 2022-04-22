@@ -91,3 +91,19 @@ void ClassGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     update();
     QGraphicsItem::mouseReleaseEvent(event);
 }
+
+void ClassGraphicsItem::convertToClassRepr(Model &m)
+{
+    Model::ClassRepr classRepr;
+    classRepr.name = className.toUtf8().constData();
+    classRepr.x = this->x();
+    classRepr.y = this->y();
+    for (auto &attr: attributes) {
+        classRepr.attributes.push_back(attr.toUtf8().constData());
+    }
+    for (auto &meth: methods) {
+        classRepr.methods.push_back(meth.toUtf8().constData());
+    }
+    m.changeClassProperties(className.toUtf8().constData(), classRepr);
+}
+
