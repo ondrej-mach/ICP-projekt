@@ -9,6 +9,17 @@ ClassGraphicsItem::ClassGraphicsItem()
     methods = {"New method 1","New method 1","New method 1","New method 1","New method 1","New method 1"};
 }
 
+ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name)
+{
+    className = name;
+    for (auto attr: data.attributes) {
+        attributes.push_back(QString::fromStdString(attr));
+    }
+    for (auto meth: data.methods) {
+        methods.push_back(QString::fromStdString(meth));
+    }
+}
+
 QPair<int, int> ClassGraphicsItem::computeDimensions() const
 {
     int charLen = className.length();

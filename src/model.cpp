@@ -13,6 +13,7 @@ Model::Model() {
 
     // everything is empty by default
     currentState.classDiagram = ClassDiagram{};
+    currentState.classDiagram.classes = std::map<std::string, ClassRepr>{{"abcd", ClassRepr {}}};
     currentState.sequenceDiagrams = std::map<std::string, SequenceDiagram>{};
 
     // If this is not set, we cannot save
@@ -145,12 +146,22 @@ int Model::getTabIndex() {
 }
 
 std::vector<std::string> Model::getClasses() {
-    std::vector<std::string>classNames{};
+    std::vector<std::string> classNames;
 
-    for(auto const& tuple: currentState.classDiagram.classes) {
-        classNames.push_back(tuple.first);
+    for (auto const& [key, value]: currentState.classDiagram.classes) {
+        classNames.push_back(key);
     }
     return classNames;
+}
+
+Model::ClassRepr &Model::getClass(std::string name)
+{
+    return currentState.classDiagram.classes[name];
+}
+
+std::vector<Model::LinkRepr> Model::getLinks()
+{
+    return currentState.classDiagram.links;
 }
 
 bool Model::canUndo()

@@ -6,17 +6,21 @@
 #include <QtCore>
 #include <QtGui>
 #include "classgraphicsitem.h"
+#include "model.h"
 
 class ClassDiagramScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    ClassDiagramScene(QObject *parent = nullptr);
+    ClassDiagramScene(QObject *parent = nullptr, Model *model = nullptr);
     ~ClassDiagramScene();
 
 private:
-    QSet<QGraphicsItem *> nodes;
+    QMap<QString, QGraphicsItem *> nodes;
+    QSet<QGraphicsItem *> links;
+    void reloadData(Model *m);
+    Model *model;
 };
 
 #endif // CLASSDIAGRAMSCENE_H

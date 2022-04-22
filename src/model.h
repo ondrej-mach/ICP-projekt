@@ -45,7 +45,7 @@ public:
     // functions to read the model
     int getTabIndex();
     std::vector<std::string> getClasses();
-    std::vector<std::string> getClass(std::string name);
+    ClassRepr &getClass(std::string name);
     std::vector<LinkRepr> getLinks();
     bool canUndo();
     bool canRedo();

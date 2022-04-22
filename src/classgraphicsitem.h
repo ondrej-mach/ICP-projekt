@@ -5,17 +5,21 @@
 #include <QPainter>
 #include <QString>
 #include <QPair>
+#include "model.h"
 
 class ClassGraphicsItem : public QGraphicsItem
 {
 public:
 
     ClassGraphicsItem();
+    ClassGraphicsItem(Model::ClassRepr data, QString name);
 
     QRectF boundingRect() const override;
     QPair<int, int> computeDimensions() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     bool Pressed;
+
+
 
 private:
 
