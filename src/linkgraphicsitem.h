@@ -15,9 +15,10 @@ class LinkGraphicsItem : public QGraphicsItem
 {
 
 public:
+    //LinkGraphicsItem(Model::LinkRepr data);
+    LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *to);
+    ~LinkGraphicsItem();
 
-    LinkGraphicsItem(QGraphicsItem *src, QGraphicsItem *dst);
-    LinkGraphicsItem(Model::LinkRepr data);
     QRectF boundingRect() const override;
     void convertToLinkRepr(Model &m);
 
@@ -26,14 +27,9 @@ private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-
-    QGraphicsItem *from;
-    QGraphicsItem *to;
-
-private slots:
-    void refresh();
+    ClassGraphicsItem *from;
+    ClassGraphicsItem *to;
 };
 
 #endif // LINKGRAPHICSITEM_H

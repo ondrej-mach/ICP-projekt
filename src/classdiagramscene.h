@@ -6,6 +6,7 @@
 #include <QtCore>
 #include <QtGui>
 #include "classgraphicsitem.h"
+#include "linkgraphicsitem.h"
 #include "model.h"
 
 class ClassDiagramScene : public QGraphicsScene
@@ -18,8 +19,8 @@ public:
     void reloadData(Model &m);
 
 private:
-    QMap<QString, QGraphicsItem *> nodes;
-    QSet<QGraphicsItem *> links;
+    QMap<QString, ClassGraphicsItem *> nodes;
+    QSet<LinkGraphicsItem *> links;
 
 };
 

@@ -1,5 +1,4 @@
 #include "classdiagramscene.h"
-#include "linkgraphicsitem.h"
 #include "model.h"
 
 #include <QString>
@@ -10,21 +9,20 @@
 
 ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
 
+    ClassGraphicsItem *classSrc = new ClassGraphicsItem();
+    nodes.insert("bruh", classSrc);
+    this->addItem(classSrc);
+    classSrc->setFlag(QGraphicsItem::ItemIsMovable);
 
-//    ClassGraphicsItem *classSrc = new ClassGraphicsItem();
-//    nodes.insert("bruh", classSrc);
-//    this->addItem(classSrc);
-//    classSrc->setFlag(QGraphicsItem::ItemIsMovable);
-//
-//    ClassGraphicsItem *classDst = new ClassGraphicsItem();
-//    nodes.insert(classDst);
-//    this->addItem(classDst);
-//    classDst->setFlag(QGraphicsItem::ItemIsMovable);
-//
-//    LinkGraphicsItem *testLink = new LinkGraphicsItem(classSrc, classDst);
-//    nodes.insert(testLink);
-//    this->addItem(testLink);
-//    testLink->setFlag(QGraphicsItem::ItemIsMovable);
+    ClassGraphicsItem *classDst = new ClassGraphicsItem();
+    nodes.insert("bruh", classDst);
+    this->addItem(classDst);
+    classDst->setFlag(QGraphicsItem::ItemIsMovable);
+
+    LinkGraphicsItem *testLink = new LinkGraphicsItem(classSrc, classDst);
+    links.insert(testLink);
+    this->addItem(testLink);
+    testLink->setFlag(QGraphicsItem::ItemIsMovable);
 
 }
 
@@ -58,8 +56,9 @@ void ClassDiagramScene::reloadData(Model &m) {
     }
 
     for (auto &link: m.getLinks()) {
-        LinkGraphicsItem *lgi = new LinkGraphicsItem{link};
-        links.insert(lgi);
-        addItem(lgi);
+        //TODO pouzit spravny konstruktor
+        //LinkGraphicsItem *lgi = new LinkGraphicsItem{link};
+        //links.insert(lgi);
+        //addItem(lgi);
     }
 }
