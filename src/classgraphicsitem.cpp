@@ -41,10 +41,9 @@ void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
     QBrush brushWhite(Qt::white);
     QBrush brushGray(Qt::lightGray);
-    QRectF rec = boundingRect();
+    QRectF rect = boundingRect();
 
-
-    painter->fillRect(rec, brushWhite);
+    painter->fillRect(rect, brushWhite);
 
     QPair pair = computeDimensions();
 
@@ -58,7 +57,7 @@ void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->drawText(margin, lineHeight + margin / 2, className);
     painter->drawLine(0, lineHeight + margin * 3/2, len, lineHeight + margin * 3/2);
     painter->drawLine(0, (lineHeight + margin) * (numAttr + 1) + margin, len, (lineHeight + margin) * (numAttr + 1) + margin);
-    painter->drawRect(rec);
+    painter->drawRect(rect);
 
     for (int i = 0; i < numAttr; i++) {
         painter->drawText(margin, (lineHeight + margin) * (i + 2), attributes[i]);

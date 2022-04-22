@@ -22,6 +22,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
 
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openFile);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
+    connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::saveFileAs);
+    connect(ui->actionUndo, &QAction::triggered, this, &MainWindow::undoChange);
+    connect(ui->actionRedo, &QAction::triggered, this, &MainWindow::redoChange);
+
     connectTools();
     tool = TOOL_MOUSE;
 
@@ -58,7 +64,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_actionOpen_triggered() {
+void MainWindow::openFile() {
     QString path = QFileDialog::getOpenFileName(this, "Open file");
     std::string std_path = path.toUtf8().constData();
 
@@ -73,31 +79,32 @@ void MainWindow::on_actionOpen_triggered() {
     }
 }
 
-void MainWindow::on_actionSave_triggered() {
+void MainWindow::saveFile() {
     if (filename == "") {
-        on_actionSaveAs_triggered();
+        saveFileAs();
         return;
     }
+
     QString path = filename;
     std::string std_path = path.toUtf8().constData();
-
     model.storeXML(std_path);
 }
 
-void MainWindow::on_actionSaveAs_triggered() {
+void MainWindow::saveFileAs() {
     QString path = QFileDialog::getSaveFileName(this, "Save as");
-    std::string std_path = path.toUtf8().constData();
-
-    model.storeXML(std_path);
+    if (path != "") {
+        std::string std_path = path.toUtf8().constData();
+        model.storeXML(std_path);
+    }
 }
 
-void MainWindow::on_actionUndo_triggered()
+void MainWindow::undoChange()
 {
     model.undo();
     reloadData();
 }
 
-void MainWindow::on_actionRedo_triggered()
+void MainWindow::redoChange()
 {
     model.redo();
     reloadData();

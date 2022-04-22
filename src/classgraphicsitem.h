@@ -9,17 +9,18 @@
 class ClassGraphicsItem : public QGraphicsItem
 {
 public:
+
     ClassGraphicsItem();
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     QPair<int, int> computeDimensions() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     bool Pressed;
 
 private:
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     int posX;
     int posY;

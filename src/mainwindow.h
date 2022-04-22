@@ -40,13 +40,13 @@ private slots:
     void selectToolGeneralize();
     void selectToolClass();
 
-    void on_actionOpen_triggered();
-    void on_actionSave_triggered();
-    void on_actionSaveAs_triggered();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
 
-    void on_actionUndo_triggered();
+    void undoChange();
 
-    void on_actionRedo_triggered();
+    void redoChange();
 
 private:
     Ui::MainWindow *ui;
