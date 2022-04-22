@@ -13,14 +13,14 @@ class ClassDiagramScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    ClassDiagramScene(QObject *parent = nullptr, Model *model = nullptr);
+    ClassDiagramScene(QObject *parent = nullptr);
     ~ClassDiagramScene();
+    void reloadData(Model &m);
 
 private:
     QMap<QString, QGraphicsItem *> nodes;
     QSet<QGraphicsItem *> links;
-    void reloadData(Model *m);
-    Model *model;
+
 };
 
 #endif // CLASSDIAGRAMSCENE_H

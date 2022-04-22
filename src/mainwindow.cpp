@@ -11,9 +11,11 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    Model model;
+
     ui->setupUi(this);
-    view = new QGraphicsView;
-    classDiagramScene = new ClassDiagramScene;
+    view = new QGraphicsView(this);
+    classDiagramScene = new ClassDiagramScene(view);
     view->setScene(classDiagramScene);
 
     ui->tabWidget->removeTab(0);
@@ -31,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connectTools();
     tool = TOOL_MOUSE;
 
-    Model model;
+    // load data into all elements from model
     reloadData();
 }
 
@@ -53,6 +55,8 @@ void MainWindow::reloadData()
     ui->tabWidget->blockSignals(true);
     ui->tabWidget->setCurrentIndex(model.getTabIndex());
     ui->tabWidget->blockSignals(false);
+
+    classDiagramScene->reloadData(model);
 }
 
 void MainWindow::addSequence() {
@@ -77,6 +81,7 @@ void MainWindow::openFile() {
         msgBox.setText("Invalid file format");
         msgBox.exec();
     }
+    reloadData();
 }
 
 void MainWindow::saveFile() {

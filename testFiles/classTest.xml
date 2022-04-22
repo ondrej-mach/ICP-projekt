@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diagram type="class">
+	<class name="Customer" x="100" y="150">
+		<attribute>name</attribute>
+		<method>pay</method>
+	</class>
+</diagram>

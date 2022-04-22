@@ -108,8 +108,6 @@ private:
     void applyCommand(Command cmd);
     void executeCommand(Snapshot &state, Command cmd);
 
-    std::string editedFile;
-
 };
 
 #endif

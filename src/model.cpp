@@ -13,19 +13,21 @@ Model::Model() {
 
     // everything is empty by default
     currentState.classDiagram = ClassDiagram{};
-    currentState.classDiagram.classes = std::map<std::string, ClassRepr>{{"abcd", ClassRepr {}}};
+    currentState.classDiagram.classes = std::map<std::string, ClassRepr>{{"abcd", ClassRepr{}}};
     currentState.sequenceDiagrams = std::map<std::string, SequenceDiagram>{};
 
-    // If this is not set, we cannot save
-    editedFile = "";
+    currentState.tabIndex = 0;
 
+    currentState = baseState;
 }
 
 Model::ClassDiagram::ClassDiagram() {}
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
     for (auto &element: tree) {
-        if (element.first == "class") {
+        if (element.first == "<xmlattr>") {
+            // do nothing
+        } else if (element.first == "class") {
             ClassRepr cr{};
             std::string name = element.second.get<std::string>("<xmlattr>.name");
 
@@ -33,7 +35,9 @@ Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
             cr.y = element.second.get<double>("<xmlattr>.y");
 
             for (auto &child: element.second) {
-                if (child.first == "attribute") {
+                if (child.first == "<xmlattr>") {
+                    // do nothing
+                } else if (child.first == "attribute") {
                     cr.attributes.push_back(child.second.data());
                 } else if (child.first == "method") {
                     cr.methods.push_back(child.second.data());
@@ -80,10 +84,11 @@ void Model::loadXML(const std::string &filename) {
             if (classDiagramFound) {
                 throw 1;
             }
+            classDiagramFound = true;
+
             // Diagram name for tab
             // = diagram.second.get<std::string>("<xmlattr>.name");
-            currentState.classDiagram = ClassDiagram{diagram.second};
-            classDiagramFound = true;
+            currentState.classDiagram = ClassDiagram(diagram.second);
 
         } else if (diagramType == "sequence") {
             continue;
@@ -116,7 +121,7 @@ void Model::storeXML(const std::string &filename) {
         for (auto const &attr: cls.second.attributes) {
             clsTree.add("attribute", attr);
         }
-        for (auto const &method: cls.second.attributes) {
+        for (auto const &method: cls.second.methods) {
             clsTree.add("method", method);
         }
         cdTree.push_back({"class", clsTree});
@@ -148,7 +153,7 @@ int Model::getTabIndex() {
 std::vector<std::string> Model::getClasses() {
     std::vector<std::string> classNames;
 
-    for (auto const& [key, value]: currentState.classDiagram.classes) {
+    for (auto [key, value]: currentState.classDiagram.classes) {
         classNames.push_back(key);
     }
     return classNames;
