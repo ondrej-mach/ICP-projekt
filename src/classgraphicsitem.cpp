@@ -1,9 +1,9 @@
 #include "classgraphicsitem.h"
+#include "linkgraphicsitem.h"
+
 #include <iostream>
 
-ClassGraphicsItem::ClassGraphicsItem()
-{
-    Pressed = false;
+ClassGraphicsItem::ClassGraphicsItem() {
     className = "New class";
     attributes = {"New attribute 1","New attribute 1","New attribute 1","New attribute 1","New attribute 1","New attribute 1","New attribute 1"};
     methods = {"New method 1","New method 1","New method 1","New method 1","New method 1","New method 1"};
@@ -12,21 +12,27 @@ ClassGraphicsItem::ClassGraphicsItem()
 ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name)
 {
     className = name;
-    for (auto attr: data.attributes) {
+    for (auto &attr: data.attributes) {
         attributes.push_back(QString::fromStdString(attr));
     }
-    for (auto meth: data.methods) {
+    for (auto &meth: data.methods) {
         methods.push_back(QString::fromStdString(meth));
+    }
+}
+
+ClassGraphicsItem::~ClassGraphicsItem() {
+    for (auto link: connectedLinks) {
+        //delete link; // THIS MIGHT BE SHOOT IN THE FOOT
     }
 }
 
 QPair<int, int> ClassGraphicsItem::computeDimensions() const
 {
     int charLen = className.length();
-    for (auto attr : attributes) {
+    for (auto &attr : attributes) {
         charLen = std::max(attr.length(), charLen);
     }
-    for (auto meth : methods) {
+    for (auto &meth : methods) {
         charLen = std::max(meth.length(), charLen);
     }
     int numAttr = attributes.size();
@@ -78,16 +84,19 @@ void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     }
 }
 
-void ClassGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    Pressed = true;
-    update();
-    QGraphicsItem::mousePressEvent(event);
+void ClassGraphicsItem::addLink(LinkGraphicsItem *link) {
+    connectedLinks.insert(link);
 }
 
-void ClassGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    Pressed = false;
-    update();
-    QGraphicsItem::mouseReleaseEvent(event);
+void ClassGraphicsItem::removeLink(LinkGraphicsItem *link) {
+    connectedLinks.remove(link);
 }
+
+void ClassGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    this->QGraphicsItem::mouseMoveEvent(event);
+
+    for (auto link: connectedLinks) {
+        link->update();
+    }
+}
+
