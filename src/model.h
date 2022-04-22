@@ -75,6 +75,9 @@ private:
     };
 
     struct ClassDiagram {
+        // constructor from ptree
+        ClassDiagram();
+        ClassDiagram(pt::ptree &tree);
         std::map<std::string, ClassRepr> classes;
         std::vector<LinkRepr> links;
     };
@@ -101,6 +104,8 @@ private:
 
     void applyCommand(Command cmd);
     void executeCommand(Snapshot &state, Command cmd);
+
+    std::string editedFile;
 
 };
 

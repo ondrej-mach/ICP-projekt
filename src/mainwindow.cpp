@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     tool = TOOL_MOUSE;
 
     Model model;
+    reloadData();
 }
 
 void MainWindow::tabChanged(int index) {
@@ -73,6 +74,10 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionSave_triggered() {
+    if (filename == "") {
+        on_actionSaveAs_triggered();
+        return;
+    }
     QString path = filename;
     std::string std_path = path.toUtf8().constData();
 
