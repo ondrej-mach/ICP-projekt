@@ -7,6 +7,7 @@
 
 #include "model.h"
 #include "classdiagramscene.h"
+#include "tool.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -18,17 +19,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    enum Tool{
-        TOOL_MOUSE,
-        TOOL_ASSOCIATE,
-        TOOL_AGGREGATE,
-        TOOL_COMPOSE,
-        TOOL_GENERALIZE,
-        TOOL_CLASS,
-    };
-
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    Tool getTool() const;
 
 private slots:
     void tabChanged(int index);

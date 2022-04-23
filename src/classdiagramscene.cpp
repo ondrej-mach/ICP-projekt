@@ -10,19 +10,18 @@
 ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
 
     ClassGraphicsItem *classSrc = new ClassGraphicsItem();
-    nodes.insert("bruh", classSrc);
+    nodes.insert("c1", classSrc);
     this->addItem(classSrc);
     classSrc->setFlag(QGraphicsItem::ItemIsMovable);
 
     ClassGraphicsItem *classDst = new ClassGraphicsItem();
-    nodes.insert("bruh", classDst);
+    nodes.insert("c2", classDst);
     this->addItem(classDst);
     classDst->setFlag(QGraphicsItem::ItemIsMovable);
 
     LinkGraphicsItem *testLink = new LinkGraphicsItem(classSrc, classDst);
     links.insert(testLink);
     this->addItem(testLink);
-    testLink->setFlag(QGraphicsItem::ItemIsMovable);
 
 }
 
@@ -31,16 +30,15 @@ ClassDiagramScene::~ClassDiagramScene() {
 }
 
 void ClassDiagramScene::reloadData(Model &m) {
-    return;
-    for (auto &item: nodes) {
+    for (auto item: qAsConst(nodes)) {
         removeItem(item);
     }
-    //nodes.clear();
+    nodes.clear();
 
-    for (auto &item: links) {
+    for (auto item: qAsConst(links)) {
         removeItem(item);
     }
-    //links.clear();
+    links.clear();
 
     for (auto &name: m.getClasses()) {
         Model::ClassRepr &data = m.getClass(name);
@@ -56,9 +54,15 @@ void ClassDiagramScene::reloadData(Model &m) {
     }
 
     for (auto &link: m.getLinks()) {
-        //TODO pouzit spravny konstruktor
-        //LinkGraphicsItem *lgi = new LinkGraphicsItem{link};
-        //links.insert(lgi);
-        //addItem(lgi);
+        ClassGraphicsItem *from = nodes[QString::fromStdString(link.from)];
+        ClassGraphicsItem *to = nodes[QString::fromStdString(link.to)];
+        LinkGraphicsItem *lgi = new LinkGraphicsItem{from, to, link.type};
+        links.insert(lgi);
+        addItem(lgi);
     }
+}
+
+void ClassDiagramScene::setTool(Tool tool) {
+    this->tool = tool;
+
 }

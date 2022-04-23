@@ -10,7 +10,8 @@ ClassGraphicsItem::ClassGraphicsItem() {
     methods = {"New method 1","New method 1","New method 1","New method 1","New method 1","New method 1"};
 }
 
-ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name)
+ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent)
+    : QGraphicsItem(parent)
 {
     className = name;
     for (auto &attr: data.attributes) {

@@ -12,4 +12,7 @@
 		<attribute>height</attribute>
 		<method>width</method>
 	</class>
+	<link type="association" from="Customer" to="Another one"/>
+	<link type="association" from="General Kenobi" to="Another one"/>
+
 </diagram>

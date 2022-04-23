@@ -51,7 +51,9 @@ Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
         } else if (element.first == "link") {
             LinkRepr lr;
 
-            std::string type_str = element.second.get<std::string>("<xmlattr>.name");
+            std::string type_str = element.second.get<std::string>("<xmlattr>.type");
+            lr.from = element.second.get<std::string>("<xmlattr>.from");
+            lr.to = element.second.get<std::string>("<xmlattr>.to");
 
             static std::map<std::string, LinkRepr::Type> typeTable{
                 {"aggregation", LinkRepr::AGGREGATION},

@@ -8,6 +8,7 @@
 #include "classgraphicsitem.h"
 #include "linkgraphicsitem.h"
 #include "model.h"
+#include "tool.h"
 
 class ClassDiagramScene : public QGraphicsScene
 {
@@ -17,10 +18,12 @@ public:
     ClassDiagramScene(QObject *parent = nullptr);
     ~ClassDiagramScene();
     void reloadData(Model &m);
+    void setTool(Tool tool);
 
 private:
     QMap<QString, ClassGraphicsItem *> nodes;
     QSet<LinkGraphicsItem *> links;
+    Tool tool;
 
 };
 

@@ -15,7 +15,7 @@ class ClassGraphicsItem : public QGraphicsItem
 public:
 
     ClassGraphicsItem();
-    ClassGraphicsItem(Model::ClassRepr data, QString name);
+    ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent=nullptr);
     ~ClassGraphicsItem();
 
     QRectF boundingRect() const override;

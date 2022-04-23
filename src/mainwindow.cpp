@@ -68,6 +68,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+Tool MainWindow::getTool() const {
+    return tool;
+}
+
 void MainWindow::openFile() {
     QString path = QFileDialog::getOpenFileName(this, "Open file");
     std::string std_path = path.toUtf8().constData();

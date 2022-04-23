@@ -5,10 +5,14 @@
 #include <QPen>
 #include <QtMath>
 
-LinkGraphicsItem::LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *to, QGraphicsItem *parent)
+LinkGraphicsItem::LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *to,
+                                   Model::LinkRepr::Type linkType,QGraphicsItem *parent)
     : QGraphicsLineItem(parent), from(from), to(to) {
 
     setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    this->linkType = linkType;
+    // TODO set polygon according to linktype
+
     to->addLink(this);
     from->addLink(this);
 }
