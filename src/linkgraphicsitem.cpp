@@ -15,6 +15,7 @@ LinkGraphicsItem::LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *t
 
     to->addLink(this);
     from->addLink(this);
+    setZValue(-1000.0);
 }
 
 LinkGraphicsItem::~LinkGraphicsItem() {

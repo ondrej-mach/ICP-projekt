@@ -5,9 +5,10 @@
 #include <iostream>
 
 ClassGraphicsItem::ClassGraphicsItem() {
-    className = "New class";
-    attributes = {"New attribute 1","New attribute 1","New attribute 1","New attribute 1","New attribute 1","New attribute 1","New attribute 1"};
-    methods = {"New method 1","New method 1","New method 1","New method 1","New method 1","New method 1"};
+    className = "NewClass";
+    attributes = {"attribute"};
+    methods = {"+method()"};
+    setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent)
@@ -20,6 +21,7 @@ ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name, QGraph
     for (auto &meth: data.methods) {
         methods.push_back(QString::fromStdString(meth));
     }
+    setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 ClassGraphicsItem::~ClassGraphicsItem() {

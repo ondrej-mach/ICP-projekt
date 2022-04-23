@@ -13,6 +13,9 @@ class LinkGraphicsItem;
 class ClassGraphicsItem : public QGraphicsItem
 {
 public:
+    // Qt black magic for recognizing types. do NOT touch
+    enum { Type = UserType + 15 };
+    int type() const override { return Type; }
 
     ClassGraphicsItem();
     ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent=nullptr);
