@@ -28,8 +28,7 @@ public:
     void removeLink(LinkGraphicsItem *);
 
 private:
-
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     int posX;
     int posY;

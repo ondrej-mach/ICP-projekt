@@ -31,7 +31,7 @@ ClassDiagramScene::~ClassDiagramScene() {
 }
 
 void ClassDiagramScene::reloadData(Model &m) {
-
+    return;
     for (auto &item: nodes) {
         removeItem(item);
     }

@@ -11,25 +11,29 @@
 
 #include "classgraphicsitem.h"
 
-class LinkGraphicsItem : public QGraphicsItem
+class LinkGraphicsItem : public QGraphicsLineItem
 {
 
 public:
     //LinkGraphicsItem(Model::LinkRepr data);
-    LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *to);
+    LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *to, QGraphicsItem *parent=nullptr);
     ~LinkGraphicsItem();
 
-    QRectF boundingRect() const override;
+
+
     void convertToLinkRepr(Model &m);
 
+    QRectF boundingRect() const;
+    QPainterPath shape() const;
+    void updatePosition();
 private:
+    ClassGraphicsItem *from;
+    ClassGraphicsItem *to;
+    QColor myColor = Qt::black;
+    QPolygonF linkHead;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-
-    ClassGraphicsItem *from;
-    ClassGraphicsItem *to;
 };
 
 #endif // LINKGRAPHICSITEM_H

@@ -1,5 +1,6 @@
 #include "classgraphicsitem.h"
 #include "linkgraphicsitem.h"
+#include <QGraphicsView>
 
 #include <iostream>
 
@@ -92,12 +93,14 @@ void ClassGraphicsItem::removeLink(LinkGraphicsItem *link) {
     connectedLinks.remove(link);
 }
 
-void ClassGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-    this->QGraphicsItem::mouseMoveEvent(event);
-
-    for (auto link: connectedLinks) {
-        link->update();
+QVariant ClassGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value) {
+    if (change == QGraphicsItem::ItemPositionChange) {
+        for (auto link: qAsConst(connectedLinks)) {
+            link->updatePosition();
+        }
     }
+
+    return value;
 }
 
 void ClassGraphicsItem::convertToClassRepr(Model &m)
