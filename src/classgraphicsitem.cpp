@@ -51,7 +51,7 @@ QRectF ClassGraphicsItem::boundingRect() const
     QPair pair = computeDimensions();
     int a = pair.first;
     int b = pair.second;
-    return QRectF(0, 0, a, b);
+    return QRectF(-a/2, -b/2, a, b);
 }
 
 void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -60,10 +60,12 @@ void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     QBrush brushWhite(Qt::white);
     QBrush brushGray(Qt::lightGray);
     QRectF rect = boundingRect();
-
     painter->fillRect(rect, brushWhite);
+    painter->setPen(Qt::black);
+    painter->drawRect(rect);
 
     QPair pair = computeDimensions();
+    painter->translate(-pair.first/2, -pair.second/2);
 
     int len = pair.first;
     int numAttr = attributes.size();
@@ -71,11 +73,9 @@ void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
     QRectF recClassName = QRectF(0, 0, len, lineHeight + margin * 3/2);
     painter->fillRect(recClassName, brushGray);
-    painter->setPen(Qt::black);
     painter->drawText(margin, lineHeight + margin / 2, className);
     painter->drawLine(0, lineHeight + margin * 3/2, len, lineHeight + margin * 3/2);
     painter->drawLine(0, (lineHeight + margin) * (numAttr + 1) + margin, len, (lineHeight + margin) * (numAttr + 1) + margin);
-    painter->drawRect(rect);
 
     for (int i = 0; i < numAttr; i++) {
         painter->drawText(margin, (lineHeight + margin) * (i + 2), attributes[i]);
