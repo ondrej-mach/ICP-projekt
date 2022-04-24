@@ -106,6 +106,8 @@ void Model::loadXML(const std::string &filename) {
         throw 1;
     }
     baseState = currentState;
+    csHead = -1;
+    csTop = -1;
 }
 
 void Model::storeXML(const std::string &filename) {
