@@ -13,15 +13,13 @@ namespace pt = boost::property_tree;
 #include <string>
 #include <map>
 
-
-
 class Model {
 public:
     struct ClassRepr {
-        std::string name;
-        std::vector<std::string> attributes;
-        std::vector<std::string> methods;
-        double x, y;
+        std::string name="";
+        std::vector<std::string> attributes{};
+        std::vector<std::string> methods{};
+        double x=0, y=0;
     };
 
     struct LinkRepr {
@@ -51,9 +49,9 @@ public:
     bool canRedo();
 
     // model manipulations
-    void addClass(std::string name);
-    void renameClass(std::string name, std::string newName);
-    void changeClassProperties(std::string name, ClassRepr &cls);
+    void addClass(double x=0, double y=0);
+    void addLink(LinkRepr link);
+    void changeClassProperties(std::string name, ClassRepr cls);
     void changeTab(int index);
     void undo();
     void redo();
@@ -66,18 +64,17 @@ private:
     struct Command {
         enum Type {
             SWITCH_TAB,
-            RENAME,
-            CHANGE_PROPS,
+            CHANGE_CLASS_PROPS, // changing class methods, attributes, renaming
             ADD_LINK,
             ADD_CLASS,
         };
         Type type;
 
-        int newTab; // SWITCH_TAB
-        struct {
-            std::string name;
-            ClassRepr cls;
-        } newProps; // CHANGE_PROPS
+        int newTab; // SWITCH_TAB    
+        ClassRepr cls; // CHANGE_CLASS_PROPS
+        LinkRepr link; // ADD_LINK
+        std::string currentName; // CHANGE_CLASS_PROPS
+        int x, y; // ADD_CLASS
     };
 
     struct ClassDiagram {
@@ -111,6 +108,11 @@ private:
     void applyCommand(Command cmd);
     void executeCommand(Snapshot &state, Command cmd);
 
+    void addLinkExecute(Snapshot &state, LinkRepr newLink);
+    void addClassExecute(Snapshot &state, double x=0, double y=0);
+    void changeClassPropertiesExecute(Snapshot &state, Command cmd);
 };
+
+extern Model model;
 
 #endif

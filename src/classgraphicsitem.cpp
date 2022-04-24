@@ -1,15 +1,9 @@
 #include "classgraphicsitem.h"
 #include "linkgraphicsitem.h"
+#include "classdiagramscene.h"
+
 #include <QGraphicsView>
 
-#include <iostream>
-
-ClassGraphicsItem::ClassGraphicsItem() {
-    className = "NewClass";
-    attributes = {"attribute"};
-    methods = {"+method()"};
-    setFlag(QGraphicsItem::ItemIsMovable);
-}
 
 ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent)
     : QGraphicsItem(parent)
@@ -21,13 +15,12 @@ ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name, QGraph
     for (auto &meth: data.methods) {
         methods.push_back(QString::fromStdString(meth));
     }
-    setFlag(QGraphicsItem::ItemIsMovable);
+    setPos(data.x, data.y);
+    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges);
 }
 
 ClassGraphicsItem::~ClassGraphicsItem() {
-    for (auto link: connectedLinks) {
-        //delete link; // THIS MIGHT BE SHOOT IN THE FOOT
-    }
+
 }
 
 QPair<int, int> ClassGraphicsItem::computeDimensions() const
@@ -96,27 +89,42 @@ void ClassGraphicsItem::removeLink(LinkGraphicsItem *link) {
     connectedLinks.remove(link);
 }
 
-QVariant ClassGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value) {
-    if (change == QGraphicsItem::ItemPositionChange) {
-        for (auto link: qAsConst(connectedLinks)) {
-            link->updatePosition();
-        }
+QVariant ClassGraphicsItem::itemChange(QGraphicsItem::GraphicsItemChange change,
+                                     const QVariant &value) {
+    if (change == ItemPositionChange) {
+        //         update links?
+        moved = true;
     }
-
-    return value;
+    return QGraphicsItem::itemChange(change, value);
 }
 
-void ClassGraphicsItem::convertToClassRepr(Model &m)
+void ClassGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+    QGraphicsItem::mouseReleaseEvent(mouseEvent);
+    // CURSED stuff, make sure to NEVER swap these commands
+    if (moved) {
+        qobject_cast<ClassDiagramScene *>(scene())->itemMoved(this);
+    }
+}
+
+Model::ClassRepr ClassGraphicsItem::convertToClassRepr()
 {
-    Model::ClassRepr classRepr;
-    classRepr.name = className.toUtf8().constData();
-    classRepr.x = this->x();
-    classRepr.y = this->y();
+    Model::ClassRepr classRepr{};
+    classRepr.name = className.toStdString();
+
+    classRepr.x = this->scenePos().x();
+    classRepr.y = this->scenePos().y();
+
     for (auto &attr: attributes) {
-        classRepr.attributes.push_back(attr.toUtf8().constData());
+        classRepr.attributes.push_back(attr.toStdString());
     }
     for (auto &meth: methods) {
-        classRepr.methods.push_back(meth.toUtf8().constData());
+        classRepr.methods.push_back(meth.toStdString());
     }
-    m.changeClassProperties(className.toUtf8().constData(), classRepr);
+
+    return classRepr;
+}
+
+QString ClassGraphicsItem::getName() const
+{
+    return className;
 }

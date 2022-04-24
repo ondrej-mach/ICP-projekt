@@ -11,11 +11,10 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    Model model;
-
     ui->setupUi(this);
     view = new QGraphicsView(this);
     classDiagramScene = new ClassDiagramScene(view);
+    connect(classDiagramScene, &ClassDiagramScene::modelChanged, this, &MainWindow::reloadData);
     view->setScene(classDiagramScene);
 
     ui->tabWidget->removeTab(0);
@@ -55,8 +54,7 @@ void MainWindow::reloadData()
     ui->tabWidget->blockSignals(true);
     ui->tabWidget->setCurrentIndex(model.getTabIndex());
     ui->tabWidget->blockSignals(false);
-
-    classDiagramScene->reloadData(model);
+    classDiagramScene->reloadData();
 }
 
 void MainWindow::addSequence() {

@@ -12,6 +12,7 @@ class LinkGraphicsItem;
 
 class ClassGraphicsItem : public QGraphicsItem
 {
+
 public:
     // Qt black magic for recognizing types. do NOT touch
     enum { Type = UserType + 15 };
@@ -25,16 +26,17 @@ public:
     QPair<int, int> computeDimensions() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-    void convertToClassRepr(Model &m);
+    Model::ClassRepr convertToClassRepr();
+    QString getName() const;
 
     void addLink(LinkGraphicsItem *);
     void removeLink(LinkGraphicsItem *);
 
 private:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value) override;
+    bool moved;
 
-    int posX;
-    int posY;
     QString className;
     QVector<QString> attributes;
     QVector<QString> methods;
@@ -43,6 +45,7 @@ private:
     static const int lineHeight = 13;
     static const int charWidth = 9;
     static const int margin = 10;
+
 
 };
 

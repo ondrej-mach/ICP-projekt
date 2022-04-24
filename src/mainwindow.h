@@ -24,6 +24,9 @@ public:
 
     Tool getTool() const;
 
+public slots:
+    void reloadData();
+
 private slots:
     void tabChanged(int index);
 
@@ -39,7 +42,6 @@ private slots:
     void saveFileAs();
 
     void undoChange();
-
     void redoChange();
 
 private:
@@ -47,13 +49,11 @@ private:
     QGraphicsView *view;
     ClassDiagramScene *classDiagramScene;
 
-    Model model;
     Tool tool;
     QString filename;
 
     // initialization
     void connectTools();
-    void reloadData();
 
     void addSequence();
     void changeTool(Tool tool);

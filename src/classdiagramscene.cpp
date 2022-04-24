@@ -1,5 +1,6 @@
 #include "classdiagramscene.h"
 #include "model.h"
+#include "mainwindow.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QString>
@@ -10,27 +11,13 @@
 
 ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
 
-    ClassGraphicsItem *classSrc = new ClassGraphicsItem();
-    nodes.insert("c1", classSrc);
-    this->addItem(classSrc);
-    classSrc->setFlag(QGraphicsItem::ItemIsMovable);
-
-    ClassGraphicsItem *classDst = new ClassGraphicsItem();
-    nodes.insert("c2", classDst);
-    this->addItem(classDst);
-    classDst->setFlag(QGraphicsItem::ItemIsMovable);
-
-    LinkGraphicsItem *testLink = new LinkGraphicsItem(classSrc, classDst);
-    links.insert(testLink);
-    this->addItem(testLink);
-
 }
 
 ClassDiagramScene::~ClassDiagramScene() {
 
 }
 
-void ClassDiagramScene::reloadData(Model &m) {
+void ClassDiagramScene::reloadData() {
     for (auto item: qAsConst(nodes)) {
         removeItem(item);
     }
@@ -41,19 +28,16 @@ void ClassDiagramScene::reloadData(Model &m) {
     }
     links.clear();
 
-    for (auto &name: m.getClasses()) {
-        Model::ClassRepr &data = m.getClass(name);
+    for (auto &name: model.getClasses()) {
+        Model::ClassRepr &data = model.getClass(name);
 
         QString qname = QString::fromStdString(name);
         ClassGraphicsItem *cgi = new ClassGraphicsItem{data, qname};
         nodes.insert(qname, cgi);
         addItem(cgi);
-
-        cgi->setX(data.x);
-        cgi->setY(data.y);
     }
 
-    for (auto &link: m.getLinks()) {
+    for (auto &link: model.getLinks()) {
         ClassGraphicsItem *from = nodes[QString::fromStdString(link.from)];
         ClassGraphicsItem *to = nodes[QString::fromStdString(link.to)];
         LinkGraphicsItem *lgi = new LinkGraphicsItem{from, to, link.type};
@@ -67,26 +51,30 @@ void ClassDiagramScene::setTool(Tool tool) {
 
 }
 
+void ClassDiagramScene::itemMoved(ClassGraphicsItem *cgi) {
+    Model::ClassRepr classRepr = cgi->convertToClassRepr();
+    QString currentName = nodes.key(cgi);
+    model.changeClassProperties(currentName.toStdString(), classRepr);
+    emit modelChanged();
+}
+
 void ClassDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-    ClassGraphicsItem *item;
     switch (tool) {
         case TOOL_CLASS:
-            item = new ClassGraphicsItem();
-            addItem(item);
-            item->setPos(mouseEvent->scenePos());
-            //emit itemInserted(item);
-            break;
+            model.addClass(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
+            emit modelChanged();
+            return; // do not pass mouse events
 
         case TOOL_AGGREGATE:
         case TOOL_ASSOCIATE:
         case TOOL_COMPOSE:
         case TOOL_GENERALIZE:
             line = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(),
-                                        mouseEvent->scenePos()));
+                mouseEvent->scenePos()));
             line->setPen(QPen(Qt::black, 2));
             addItem(line);
             break;
@@ -140,18 +128,19 @@ void ClassDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             startItems.first() != endItems.first()) {
             ClassGraphicsItem *startItem = qgraphicsitem_cast<ClassGraphicsItem *>(startItems.first());
             ClassGraphicsItem *endItem = qgraphicsitem_cast<ClassGraphicsItem *>(endItems.first());
-            Model::LinkRepr::Type lineType;
+            Model::LinkRepr link;
+            link.from = startItem->getName().toStdString();
+            link.to = endItem->getName().toStdString();
+
             switch (tool) {
                 default:
-                case TOOL_ASSOCIATE: lineType = Model::LinkRepr::ASSOCIATION; break;
-                case TOOL_AGGREGATE: lineType = Model::LinkRepr::AGGREGATION; break;
-                case TOOL_COMPOSE: lineType = Model::LinkRepr::COMPOSITION; break;
-                case TOOL_GENERALIZE: lineType = Model::LinkRepr::GENERALIZATION; break;
+                case TOOL_ASSOCIATE: link.type = Model::LinkRepr::ASSOCIATION; break;
+                case TOOL_AGGREGATE: link.type = Model::LinkRepr::AGGREGATION; break;
+                case TOOL_COMPOSE: link.type = Model::LinkRepr::COMPOSITION; break;
+                case TOOL_GENERALIZE: link.type = Model::LinkRepr::GENERALIZATION; break;
             }
-            LinkGraphicsItem *link = new LinkGraphicsItem(startItem, endItem, lineType);
-
-            addItem(link);
-            link->updatePosition();
+            model.addLink(link);
+            emit modelChanged();
         }
     }
 

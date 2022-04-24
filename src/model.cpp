@@ -6,6 +6,7 @@
 #include <map>
 
 
+Model model;
 
 Model::Model() {
     csHead = -1;
@@ -155,8 +156,8 @@ int Model::getTabIndex() {
 std::vector<std::string> Model::getClasses() {
     std::vector<std::string> classNames;
 
-    for (auto [key, value]: currentState.classDiagram.classes) {
-        classNames.push_back(key);
+    for (auto classPair: currentState.classDiagram.classes) {
+        classNames.push_back(classPair.first);
     }
     return classNames;
 }
@@ -181,12 +182,20 @@ bool Model::canRedo()
     return csHead < csTop;
 }
 
-void Model::changeClassProperties(std::string name, Model::ClassRepr &cls)
+void Model::addClass(double x, double y) {
+    Command cmd;
+    cmd.type = Command::ADD_CLASS;
+    cmd.x = x;
+    cmd.y = y;
+    applyCommand(cmd);
+}
+
+void Model::changeClassProperties(std::string name, Model::ClassRepr cls)
 {
     Command cmd;
-    cmd.type = Command::CHANGE_PROPS;
-    cmd.newProps.cls = cls;
-    cmd.newProps.name = name;
+    cmd.type = Command::CHANGE_CLASS_PROPS;
+    cmd.cls = cls;
+    cmd.currentName = name;
     applyCommand(cmd);
 }
 
@@ -194,6 +203,13 @@ void Model::changeTab(int index) {
     Command cmd;
     cmd.type = Command::SWITCH_TAB;
     cmd.newTab = index;
+    applyCommand(cmd);
+}
+
+void Model::addLink(LinkRepr link) {
+    Command cmd;
+    cmd.type = Command::ADD_LINK;
+    cmd.link = link;
     applyCommand(cmd);
 }
 
@@ -216,10 +232,78 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             state.tabIndex = cmd.newTab;
             break;
 
+        case Command::ADD_LINK:
+            addLinkExecute(state, cmd.link);
+            break;
+
+        case Command::ADD_CLASS:
+            addClassExecute(state, cmd.x, cmd.y);
+            break;
+
+        case Command::CHANGE_CLASS_PROPS:
+            changeClassPropertiesExecute(state, cmd);
+            break;
+
         default:
+            throw 1;
             break;
     }
 }
+
+void Model::addLinkExecute(Snapshot &state, LinkRepr newLink) {
+    for (auto &existingLink: state.classDiagram.links) {
+        if ((existingLink.from == newLink.from) && (existingLink.to == newLink.to)) {
+            // rewrite the existing link
+            existingLink.type = newLink.type;
+            return;
+        }
+    }
+    // link between those two does not exist, so we have to add it
+    // check if referenced classes exist
+    auto &existingClasses = state.classDiagram.classes;
+    if ((existingClasses.find(newLink.to) != existingClasses.end())
+            && (existingClasses.find(newLink.from) != existingClasses.end())) {
+        // add the link
+        state.classDiagram.links.push_back(newLink);
+    } else {
+        throw 1;
+    }
+}
+
+void Model::addClassExecute(Snapshot &state, double x, double y) {
+    auto &existingClasses = state.classDiagram.classes;
+
+    std::string newName = "NewClass";
+    int n = 1;
+
+    while (existingClasses.find(newName) != existingClasses.end()) {
+        newName = "NewClass" + std::to_string(n);
+        n++;
+    }
+
+    ClassRepr cls = {newName, {"+attribute"}, {"+method"}, x, y};
+    existingClasses[newName] = cls;
+}
+
+void Model::changeClassPropertiesExecute(Snapshot &state, Command cmd) {
+    auto &existingClasses = state.classDiagram.classes;
+
+    if (existingClasses.find(cmd.currentName) != existingClasses.end()) {
+        if (cmd.currentName == cmd.cls.name) {
+            // name is the same
+            existingClasses[cmd.cls.name] = cmd.cls;
+        } else {
+            // name was changed
+            existingClasses[cmd.cls.name] = cmd.cls;
+            existingClasses.erase(cmd.currentName);
+        }
+
+    } else {
+        // this class does not exist
+        throw 1;
+    }
+}
+
 
 void Model::undo() {
     if (csHead >= 0) {

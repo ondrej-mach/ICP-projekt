@@ -17,8 +17,12 @@ class ClassDiagramScene : public QGraphicsScene
 public:
     ClassDiagramScene(QObject *parent = nullptr);
     ~ClassDiagramScene();
-    void reloadData(Model &m);
+    void reloadData();
     void setTool(Tool tool);
+    void itemMoved(ClassGraphicsItem *cgi);
+
+signals:
+    void modelChanged();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
