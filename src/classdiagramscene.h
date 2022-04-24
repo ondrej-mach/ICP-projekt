@@ -19,7 +19,13 @@ public:
     ~ClassDiagramScene();
     void reloadData();
     void setTool(Tool tool);
+
+    // callbacks from items
     void itemMoved(ClassGraphicsItem *cgi);
+    void markItem(ClassGraphicsItem *cgi);
+
+public slots:
+    void itemRemoved();
 
 signals:
     void modelChanged();
@@ -36,6 +42,10 @@ private:
 
     // temporary line when connecting classes
     QGraphicsLineItem *line;
+
+    QMenu *editMenu; // edit menu for classes
+    QDialog *editDialog;
+    ClassGraphicsItem *markedItem;
 
 };
 

@@ -1,12 +1,16 @@
 #ifndef CLASSGRAPHICSITEM_H
 #define CLASSGRAPHICSITEM_H
 
+#include "model.h"
+
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QString>
 #include <QPair>
 #include <QSet>
-#include "model.h"
+
+#include <QDialog>
+
 
 class LinkGraphicsItem;
 
@@ -19,7 +23,7 @@ public:
     int type() const override { return Type; }
 
     ClassGraphicsItem();
-    ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent=nullptr);
+    ClassGraphicsItem(Model::ClassRepr data, QMenu *contextMenu=nullptr, QGraphicsItem *parent=nullptr);
     ~ClassGraphicsItem();
 
     QRectF boundingRect() const override;
@@ -36,6 +40,9 @@ private:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value) override;
     bool moved;
+
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+    QMenu *myContextMenu;
 
     QString className;
     QVector<QString> attributes;

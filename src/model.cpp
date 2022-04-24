@@ -192,6 +192,13 @@ void Model::addClass(double x, double y) {
     applyCommand(cmd);
 }
 
+void Model::removeClass(std::string name) {
+    Command cmd;
+    cmd.type = Command::REMOVE_CLASS;
+    cmd.currentName = name;
+    applyCommand(cmd);
+}
+
 void Model::changeClassProperties(std::string name, Model::ClassRepr cls)
 {
     Command cmd;
@@ -246,6 +253,10 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             changeClassPropertiesExecute(state, cmd);
             break;
 
+        case Command::REMOVE_CLASS:
+            removeClassExecute(state, cmd.currentName);
+            break;
+
         default:
             throw 1;
             break;
@@ -285,6 +296,21 @@ void Model::addClassExecute(Snapshot &state, double x, double y) {
 
     ClassRepr cls = {newName, {"+attribute"}, {"+method"}, x, y};
     existingClasses[newName] = cls;
+}
+
+void Model::removeClassExecute(Snapshot &state, std::string name) {
+    // remove all the links associated with this class to prevent inconsistencies
+    auto &links = state.classDiagram.links;
+    for (auto it=links.begin(); it!=links.end(); ) {
+        auto &link = *it;
+        if ((link.from == name) || (link.to == name)) {
+           state.classDiagram.links.erase(it);
+        } else {
+            it++;
+        }
+    }
+    // finaly remove the class itself
+    state.classDiagram.classes.erase(name);
 }
 
 void Model::changeClassPropertiesExecute(Snapshot &state, Command cmd) {

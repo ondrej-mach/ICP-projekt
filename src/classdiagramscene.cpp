@@ -9,12 +9,22 @@
 #include <QMap>
 #include <string>
 
+#include <QMenu>
+#include <QAction>
+
 ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
+    editMenu = new QMenu();
+    editDialog = new QDialog();
+    QAction *editAction = editMenu->addAction("Edit");
+    connect(editAction, &QAction::triggered, editDialog, &QDialog::exec);
+    QAction *removeAction = editMenu->addAction("Remove");
+    connect(removeAction, &QAction::triggered, this, &ClassDiagramScene::itemRemoved);
 
 }
 
 ClassDiagramScene::~ClassDiagramScene() {
-
+    delete editMenu;
+    delete editDialog;
 }
 
 void ClassDiagramScene::reloadData() {
@@ -32,7 +42,7 @@ void ClassDiagramScene::reloadData() {
         Model::ClassRepr &data = model.getClass(name);
 
         QString qname = QString::fromStdString(name);
-        ClassGraphicsItem *cgi = new ClassGraphicsItem{data, qname};
+        ClassGraphicsItem *cgi = new ClassGraphicsItem{data, editMenu};
         nodes.insert(qname, cgi);
         addItem(cgi);
     }
@@ -55,6 +65,16 @@ void ClassDiagramScene::itemMoved(ClassGraphicsItem *cgi) {
     Model::ClassRepr classRepr = cgi->convertToClassRepr();
     QString currentName = nodes.key(cgi);
     model.changeClassProperties(currentName.toStdString(), classRepr);
+    emit modelChanged();
+}
+
+void ClassDiagramScene::markItem(ClassGraphicsItem *cgi) {
+    markedItem = cgi;
+}
+
+void ClassDiagramScene::itemRemoved() {
+    QString className = nodes.key(markedItem);
+    model.removeClass(className.toStdString());
     emit modelChanged();
 }
 

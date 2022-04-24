@@ -3,12 +3,15 @@
 #include "classdiagramscene.h"
 
 #include <QGraphicsView>
+#include <QDialog>
+#include <QMenu>
+#include <QGraphicsSceneContextMenuEvent>
 
 
-ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QString name, QGraphicsItem *parent)
-    : QGraphicsItem(parent)
+ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QMenu *contextMenu, QGraphicsItem *parent)
+    : QGraphicsItem(parent), myContextMenu(contextMenu)
 {
-    className = name;
+    className = QString::fromStdString(data.name);
     for (auto &attr: data.attributes) {
         attributes.push_back(QString::fromStdString(attr));
     }
@@ -96,6 +99,16 @@ QVariant ClassGraphicsItem::itemChange(QGraphicsItem::GraphicsItemChange change,
         moved = true;
     }
     return QGraphicsItem::itemChange(change, value);
+}
+
+void ClassGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+    // mark myself so i can be deleted or edited
+    // not relly the best practice but who cares at this point
+    qobject_cast<ClassDiagramScene *>(scene())->markItem(this);
+
+    if (myContextMenu != nullptr) {
+        myContextMenu->exec(event->screenPos());
+    }
 }
 
 void ClassGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) {
