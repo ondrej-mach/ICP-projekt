@@ -22,13 +22,12 @@ public:
     enum { Type = UserType + 15 };
     int type() const override { return Type; }
 
-    ClassGraphicsItem();
     ClassGraphicsItem(Model::ClassRepr data, QMenu *contextMenu=nullptr, QGraphicsItem *parent=nullptr);
     ~ClassGraphicsItem();
 
     QRectF boundingRect() const override;
     QPair<int, int> computeDimensions() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *widget) override;
 
     Model::ClassRepr convertToClassRepr();
     QString getName() const;

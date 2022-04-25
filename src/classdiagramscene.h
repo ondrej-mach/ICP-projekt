@@ -15,10 +15,9 @@ class ClassDiagramScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    ClassDiagramScene(QObject *parent = nullptr);
+    ClassDiagramScene(Tool &tool, QObject *parent = nullptr);
     ~ClassDiagramScene();
     void reloadData();
-    void setTool(Tool tool);
 
     // callbacks from items
     void itemMoved(ClassGraphicsItem *cgi);
@@ -39,13 +38,12 @@ protected:
 private:
     QMap<QString, ClassGraphicsItem *> nodes;
     QSet<LinkGraphicsItem *> links;
-    Tool tool;
+    Tool &tool;
 
     // temporary line when connecting classes
-    QGraphicsLineItem *line;
+    QGraphicsLineItem *line = nullptr;
 
     QMenu *editMenu; // edit menu for classes
-    QDialog *editDialog;
     ClassGraphicsItem *markedItem;
 
 };

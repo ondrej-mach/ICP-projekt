@@ -53,9 +53,8 @@ QRectF ClassGraphicsItem::boundingRect() const
     return QRectF(-a/2, -b/2, a, b);
 }
 
-void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-
     QBrush brushWhite(Qt::white);
     QBrush brushGray(Qt::lightGray);
     QRectF rect = boundingRect();

@@ -7,6 +7,7 @@
 
 #include "model.h"
 #include "classdiagramscene.h"
+#include "seqdiagramscene.h"
 #include "tool.h"
 
 
@@ -24,10 +25,11 @@ public:
 
     Tool getTool() const;
 
-public slots:
-    void reloadData();
+
+    void setTool(Tool newTool);
 
 private slots:
+    void reloadData();
     void tabChanged(int index);
 
     void selectToolMouse();
@@ -48,6 +50,7 @@ private:
     Ui::MainWindow *ui;
     QGraphicsView *view;
     ClassDiagramScene *classDiagramScene;
+    QVector<SeqDiagramScene *> seqDiagramScenes;
 
     Tool tool;
     QString filename;

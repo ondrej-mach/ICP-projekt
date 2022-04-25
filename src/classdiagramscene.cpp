@@ -13,7 +13,9 @@
 #include <QMenu>
 #include <QAction>
 
-ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
+ClassDiagramScene::ClassDiagramScene(Tool &tool, QObject *parent)
+    : QGraphicsScene(parent), tool(tool)
+{
     editMenu = new QMenu();
 
     QAction *editAction = editMenu->addAction("Edit");
@@ -24,19 +26,13 @@ ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
 }
 
 ClassDiagramScene::~ClassDiagramScene() {
+    clear(); // delete all QGraphicsItems
     delete editMenu;
-    delete editDialog;
 }
 
 void ClassDiagramScene::reloadData() {
-    for (auto item: qAsConst(nodes)) {
-        removeItem(item);
-    }
+    clear(); // destroy all Items, that are currently displayed
     nodes.clear();
-
-    for (auto item: qAsConst(links)) {
-        removeItem(item);
-    }
     links.clear();
 
     for (auto &name: model.getClasses()) {
@@ -55,11 +51,6 @@ void ClassDiagramScene::reloadData() {
         links.insert(lgi);
         addItem(lgi);
     }
-}
-
-void ClassDiagramScene::setTool(Tool tool) {
-    this->tool = tool;
-
 }
 
 void ClassDiagramScene::itemMoved(ClassGraphicsItem *cgi) {

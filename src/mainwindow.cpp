@@ -13,14 +13,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
     view = new QGraphicsView(this);
-    classDiagramScene = new ClassDiagramScene(view);
+    classDiagramScene = new ClassDiagramScene(tool, view);
     connect(classDiagramScene, &ClassDiagramScene::modelChanged, this, &MainWindow::reloadData);
     view->setScene(classDiagramScene);
 
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(0);
-    ui->tabWidget->addTab(view, tr("Class Diagram"));
-    ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
+    ui->tabWidget->addTab(view, "Class Diagram");
+    ui->tabWidget->addTab(new QWidget, "New Sequence");
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openFile);
@@ -45,6 +45,8 @@ void MainWindow::tabChanged(int index) {
     reloadData();
 }
 
+
+
 void MainWindow::reloadData()
 {
     // load everything
@@ -55,6 +57,8 @@ void MainWindow::reloadData()
     ui->tabWidget->setCurrentIndex(model.getTabIndex());
     ui->tabWidget->blockSignals(false);
     classDiagramScene->reloadData();
+
+    //for (sequenceDia)
 }
 
 void MainWindow::addSequence() {

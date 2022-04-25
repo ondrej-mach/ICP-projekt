@@ -7,6 +7,7 @@ HEADERS += \
     src/linkgraphicsitem.h \
     src/model.h \
     src/mainwindow.h \
+    src/seqdiagramscene.h \
     src/tool.h
 
 SOURCES += \
@@ -18,6 +19,7 @@ SOURCES += \
     src/mainwindow.cpp \
     src/mainwindow_tools.cpp \
     src/model.cpp \
+    src/seqdiagramscene.cpp
 
 FORMS += \
     src/classeditdialog.ui \
