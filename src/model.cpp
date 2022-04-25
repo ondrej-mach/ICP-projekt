@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 
 Model model;
@@ -15,7 +16,7 @@ Model::Model() {
     // everything is empty by default
     currentState.classDiagram = ClassDiagram{};
     currentState.classDiagram.classes = std::map<std::string, ClassRepr>{};
-    currentState.sequenceDiagrams = std::map<std::string, SequenceDiagram>{};
+    currentState.sequenceDiagrams = std::vector<SequenceDiagram>{};
 
     currentState.tabIndex = 0;
 
@@ -150,7 +151,6 @@ void Model::storeXML(const std::string &filename) {
     pt::write_xml(filename, tree);
 }
 
-
 int Model::getTabIndex() const {
     return currentState.tabIndex;
 }
@@ -160,6 +160,16 @@ std::vector<std::string> Model::getClasses() const {
 
     for (auto &classPair: currentState.classDiagram.classes) {
         classNames.push_back(classPair.first);
+    }
+    return classNames;
+}
+
+std::vector<std::string> Model::getSeqDiagrams() const
+{
+    std::vector<std::string> classNames;
+
+    for (auto &sd: currentState.sequenceDiagrams) {
+        classNames.push_back(sd.name);
     }
     return classNames;
 }
@@ -220,6 +230,13 @@ void Model::changeTab(int index) {
     applyCommand(cmd);
 }
 
+void Model::addSeqDiagram()
+{
+    Command cmd;
+    cmd.type = Command::ADD_SEQ_DIAGRAM;
+    applyCommand(cmd);
+}
+
 void Model::addLink(LinkRepr link) {
     Command cmd;
     cmd.type = Command::ADD_LINK;
@@ -260,6 +277,10 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
 
         case Command::REMOVE_CLASS:
             removeClassExecute(state, cmd.currentName);
+            break;
+
+        case Command::ADD_SEQ_DIAGRAM:
+            addSeqDiagramExecute(state);
             break;
 
         default:
@@ -355,6 +376,21 @@ void Model::changeClassPropertiesExecute(Snapshot &state, Command cmd) {
             throw 1;
         }
     }
+}
+
+void Model::addSeqDiagramExecute(Snapshot &state) {
+    auto &sds = state.sequenceDiagrams;
+    std::string newName = "Sequence diagram";
+    int n = 1;
+
+    while (find_if(sds.begin(), sds.end(), [newName](auto x){return x.name == newName;}) != sds.end()) {
+        newName = "Sequence diagram " + std::to_string(n);
+        n++;
+    }
+
+    SequenceDiagram newSeqDiagram;
+    newSeqDiagram.name = newName;
+    sds.push_back(newSeqDiagram);
 }
 
 

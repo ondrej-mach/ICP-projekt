@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "classdiagramscene.h"
+#include "seqdiagramscene.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -12,17 +13,18 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    view = new QGraphicsView(this);
-    classDiagramScene = new ClassDiagramScene(tool, view);
+
+    classDiagramView = new QGraphicsView(this);
+    classDiagramScene = new ClassDiagramScene(tool, classDiagramView);
     connect(classDiagramScene, &ClassDiagramScene::modelChanged, this, &MainWindow::reloadData);
-    view->setScene(classDiagramScene);
+    classDiagramView->setScene(classDiagramScene);
 
-    ui->tabWidget->removeTab(0);
-    ui->tabWidget->removeTab(0);
-    ui->tabWidget->addTab(view, "Class Diagram");
-    ui->tabWidget->addTab(new QWidget, "New Sequence");
+    seqDiagramView = new QGraphicsView(this);
+    seqDiagramScene = new SeqDiagramScene(tool, seqDiagramView);
+    connect(seqDiagramScene, &SeqDiagramScene::modelChanged, this, &MainWindow::reloadData);
+    seqDiagramView->setScene(seqDiagramScene);
+
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
-
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openFile);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::saveFileAs);
@@ -39,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 void MainWindow::tabChanged(int index) {
     // if the last tab was clicked
     if (index == ui->tabWidget->count()-1) {
-         addSequence();
+         model.addSeqDiagram();
     }
     model.changeTab(index);
     reloadData();
@@ -53,16 +55,32 @@ void MainWindow::reloadData()
     ui->actionUndo->setEnabled(model.canUndo());
     ui->actionRedo->setEnabled(model.canRedo());
 
+    // load stuff on tabs
     ui->tabWidget->blockSignals(true);
-    ui->tabWidget->setCurrentIndex(model.getTabIndex());
+
+    ui->tabWidget->clear();
+    ui->tabWidget->addTab(classDiagramView, "Class Diagram");
+
+    int currentTab = model.getTabIndex();
+    // Filthy hack to set just one sequential scene always on the selected tab
+    auto nameVector = model.getSeqDiagrams();
+    for (unsigned i=0; i < nameVector.size(); i++) {
+        auto name = nameVector[i];
+        if (int(i) == currentTab-1) {
+            ui->tabWidget->addTab(seqDiagramView, QString::fromStdString(name));
+            seqDiagramScene->reloadData(QString::fromStdString(name));
+        } else {
+            ui->tabWidget->addTab(new QWidget(this), QString::fromStdString(name));
+        }
+    }
+
+    if (currentTab == 0) {
+        classDiagramScene->reloadData();
+    }
+
+    ui->tabWidget->addTab(new QWidget(this), "New Sequence");
+    ui->tabWidget->setCurrentIndex(currentTab);
     ui->tabWidget->blockSignals(false);
-    classDiagramScene->reloadData();
-
-    //for (sequenceDia)
-}
-
-void MainWindow::addSequence() {
-    ui->tabWidget->addTab(new QWidget, tr("New Sequence"));
 }
 
 MainWindow::~MainWindow()

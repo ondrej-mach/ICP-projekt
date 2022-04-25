@@ -35,6 +35,35 @@ public:
         Type type;
     };
 
+    struct SeqEntity {
+        enum Type {
+            PARTICIPANT,
+        };
+
+        Type type;
+        std::string name;
+    };
+
+    struct Action {
+        enum Type {
+            // binary from -> to
+            SYNC,
+            ASYNC,
+            RETURN,
+            CREATE,
+            DESTROY,
+            // unary, use only [from] attribute
+            ACTIVATE,
+            DEACTIVATE,
+            DELETE,
+        };
+        std::string from;
+        std::string to;
+
+        bool isBinary();
+    };
+
+
     Model();
 
     void loadXML(const std::string &filename);
@@ -43,11 +72,14 @@ public:
     // functions to read the model
     int getTabIndex() const;
     std::vector<std::string> getClasses() const;
+    std::vector<std::string> getSeqDiagrams() const;
     ClassRepr getClass(std::string name) const;
     std::vector<LinkRepr> getLinks() const;
+
     bool classExists(std::string name) const;
     bool canUndo() const;
     bool canRedo() const;
+
 
     // model manipulations
     void addClass(double x=0, double y=0);
@@ -55,6 +87,9 @@ public:
     void addLink(LinkRepr link);
     void changeClassProperties(std::string name, ClassRepr cls);
     void changeTab(int index);
+
+    void addSeqDiagram();
+
     void undo();
     void redo();
 
@@ -70,6 +105,7 @@ private:
             ADD_LINK,
             ADD_CLASS,
             REMOVE_CLASS,
+            ADD_SEQ_DIAGRAM,
         };
         Type type;
 
@@ -90,12 +126,14 @@ private:
 
     struct SequenceDiagram {
         std::string name;
+        std::vector<SeqEntity> entities;
+        std::vector<Action> actions;
     };
 
     // Can store complete state of the model at one time
     struct Snapshot {
         ClassDiagram classDiagram;
-        std::map<std::string, SequenceDiagram> sequenceDiagrams;
+        std::vector<SequenceDiagram> sequenceDiagrams;
         int tabIndex;
     };
 
@@ -115,6 +153,8 @@ private:
     void addClassExecute(Snapshot &state, double x=0, double y=0);
     void removeClassExecute(Snapshot &state, std::string name);
     void changeClassPropertiesExecute(Snapshot &state, Command cmd);
+
+    void addSeqDiagramExecute(Snapshot &state);
 };
 
 extern Model model;

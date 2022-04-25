@@ -1,14 +1,11 @@
 #include "seqdiagramscene.h"
 
 
-SeqDiagramScene::SeqDiagramScene(QObject *parent) : QGraphicsScene(parent) {
+SeqDiagramScene::SeqDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(parent), tool(tool) {
 
 }
 
-void SeqDiagramScene::setTool(Tool tool) {
-    this->tool = tool;
-}
 
-void SeqDiagramScene::reloadData() {
+void SeqDiagramScene::reloadData(QString name) {
     model;
 }

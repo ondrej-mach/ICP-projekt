@@ -48,9 +48,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsView *view;
+    QGraphicsView *classDiagramView;
     ClassDiagramScene *classDiagramScene;
-    QVector<SeqDiagramScene *> seqDiagramScenes;
+    QGraphicsView *seqDiagramView;
+    SeqDiagramScene *seqDiagramScene;
 
     Tool tool;
     QString filename;

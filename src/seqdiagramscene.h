@@ -14,19 +14,18 @@ class SeqDiagramScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    SeqDiagramScene(QObject *parent = nullptr);
+    SeqDiagramScene(Tool &tool, QObject *parent = nullptr);
     //~SeqDiagramScene();
 
-public slots:
-    void setTool(Tool tool);
-    void reloadData();
+
+    void reloadData(QString name);
 
 signals:
     void modelChanged();
 
 private:
     Tool tool;
-
+    QString diagramName;
     // temporary line when connecting
     QGraphicsLineItem *line;
 
