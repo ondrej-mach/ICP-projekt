@@ -40,7 +40,7 @@ void ClassDiagramScene::reloadData() {
     links.clear();
 
     for (auto &name: model.getClasses()) {
-        Model::ClassRepr &data = model.getClass(name);
+        Model::ClassRepr data = model.getClass(name);
 
         QString qname = QString::fromStdString(name);
         ClassGraphicsItem *cgi = new ClassGraphicsItem{data, editMenu};

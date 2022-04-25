@@ -151,11 +151,11 @@ void Model::storeXML(const std::string &filename) {
 }
 
 
-int Model::getTabIndex() {
+int Model::getTabIndex() const {
     return currentState.tabIndex;
 }
 
-std::vector<std::string> Model::getClasses() {
+std::vector<std::string> Model::getClasses() const {
     std::vector<std::string> classNames;
 
     for (auto &classPair: currentState.classDiagram.classes) {
@@ -164,22 +164,27 @@ std::vector<std::string> Model::getClasses() {
     return classNames;
 }
 
-Model::ClassRepr &Model::getClass(std::string name)
+Model::ClassRepr Model::getClass(std::string name) const
 {
-    return currentState.classDiagram.classes[name];
+    return currentState.classDiagram.classes.at(name);
 }
 
-std::vector<Model::LinkRepr> Model::getLinks()
+std::vector<Model::LinkRepr> Model::getLinks() const
 {
     return currentState.classDiagram.links;
 }
 
-bool Model::canUndo()
+bool Model::classExists(std::string name) const {
+    auto &existingClasses = currentState.classDiagram.classes;
+    return existingClasses.find(name) != existingClasses.end();
+}
+
+bool Model::canUndo() const
 {
     return csHead >= 0;
 }
 
-bool Model::canRedo()
+bool Model::canRedo() const
 {
     return csHead < csTop;
 }
@@ -316,19 +321,39 @@ void Model::removeClassExecute(Snapshot &state, std::string name) {
 void Model::changeClassPropertiesExecute(Snapshot &state, Command cmd) {
     auto &existingClasses = state.classDiagram.classes;
 
-    if (existingClasses.find(cmd.currentName) != existingClasses.end()) {
-        if (cmd.currentName == cmd.cls.name) {
-            // name is the same
-            existingClasses[cmd.cls.name] = cmd.cls;
-        } else {
-            // name was changed
-            existingClasses[cmd.cls.name] = cmd.cls;
-            existingClasses.erase(cmd.currentName);
-        }
-
-    } else {
-        // this class does not exist
+    // Class with this name does not exist
+    if (existingClasses.find(cmd.currentName) == existingClasses.end()) {
         throw 1;
+    }
+
+    auto &curName = cmd.currentName;
+    auto &newName = cmd.cls.name;
+    // Do we have to rename or just set new attributes?
+    if (curName == newName) {
+        // name is the same
+        existingClasses[newName] = cmd.cls;
+    } else {
+        // name was changed
+        if (existingClasses.find(newName) == existingClasses.end()) {
+
+            existingClasses.erase(curName);
+            existingClasses[newName] = cmd.cls;
+
+            // change the links referring to this name
+            auto &links = state.classDiagram.links;
+            for (auto &link: links) {
+                if (link.from == curName) {
+                    link.from = newName;
+                }
+                if (link.to == curName) {
+                    link.to = newName;
+                }
+            }
+
+        } else {
+            // class with that name already exists
+            throw 1;
+        }
     }
 }
 

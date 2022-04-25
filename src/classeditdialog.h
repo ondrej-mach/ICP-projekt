@@ -2,6 +2,7 @@
 #define CLASSEDITDIALOG_H
 
 #include <QDialog>
+#include <QLineEdit>
 
 #include "model.h"
 
@@ -17,9 +18,25 @@ public:
     explicit ClassEditDialog(QString className, QWidget *parent = nullptr);
     ~ClassEditDialog();
 
+private slots:
+    void setDirty();
+    void newAttr();
+    void newMethod();
+    void submit();
+
+
 private:
     Ui::ClassEditDialog *ui;
     QString currentName;
+
+    QVector<QLineEdit *> attrLineEdits;
+    QVector<QLineEdit *> methodLineEdits;
+
+    void addAttr(QString name);
+    void addMethod(QString name);
+
+    bool dirty = false;
+    double coordX, coordY; // just saving for later
 };
 
 #endif // CLASSEDITDIALOG_H

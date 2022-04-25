@@ -41,12 +41,13 @@ public:
     void storeXML(const std::string &filename);
 
     // functions to read the model
-    int getTabIndex();
-    std::vector<std::string> getClasses();
-    ClassRepr &getClass(std::string name);
-    std::vector<LinkRepr> getLinks();
-    bool canUndo();
-    bool canRedo();
+    int getTabIndex() const;
+    std::vector<std::string> getClasses() const;
+    ClassRepr getClass(std::string name) const;
+    std::vector<LinkRepr> getLinks() const;
+    bool classExists(std::string name) const;
+    bool canUndo() const;
+    bool canRedo() const;
 
     // model manipulations
     void addClass(double x=0, double y=0);
