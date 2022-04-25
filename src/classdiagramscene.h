@@ -26,6 +26,7 @@ public:
 
 public slots:
     void itemRemoved();
+    void openEditDialog();
 
 signals:
     void modelChanged();

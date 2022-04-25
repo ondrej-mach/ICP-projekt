@@ -1,6 +1,7 @@
 #include "classdiagramscene.h"
 #include "model.h"
 #include "mainwindow.h"
+#include "classeditdialog.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QString>
@@ -14,9 +15,9 @@
 
 ClassDiagramScene::ClassDiagramScene(QObject *parent) : QGraphicsScene(parent) {
     editMenu = new QMenu();
-    editDialog = new QDialog();
+
     QAction *editAction = editMenu->addAction("Edit");
-    connect(editAction, &QAction::triggered, editDialog, &QDialog::exec);
+    connect(editAction, &QAction::triggered, this, &ClassDiagramScene::openEditDialog);
     QAction *removeAction = editMenu->addAction("Remove");
     connect(removeAction, &QAction::triggered, this, &ClassDiagramScene::itemRemoved);
 
@@ -76,6 +77,13 @@ void ClassDiagramScene::itemRemoved() {
     QString className = nodes.key(markedItem);
     model.removeClass(className.toStdString());
     emit modelChanged();
+}
+
+void ClassDiagramScene::openEditDialog() {
+    ClassEditDialog editDialog{markedItem->getName()};
+    if (editDialog.exec() == QDialog::Accepted) {
+        emit modelChanged();
+    }
 }
 
 void ClassDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)

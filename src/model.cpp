@@ -158,7 +158,7 @@ int Model::getTabIndex() {
 std::vector<std::string> Model::getClasses() {
     std::vector<std::string> classNames;
 
-    for (auto classPair: currentState.classDiagram.classes) {
+    for (auto &classPair: currentState.classDiagram.classes) {
         classNames.push_back(classPair.first);
     }
     return classNames;
