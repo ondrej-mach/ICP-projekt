@@ -23,9 +23,6 @@ public:
                      QGraphicsItem *parent=nullptr);
     ~LinkGraphicsItem();
 
-
-    void convertToLinkRepr(Model &m);
-
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void updatePosition();

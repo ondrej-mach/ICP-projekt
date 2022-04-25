@@ -1,5 +1,6 @@
 
 #include "linkgraphicsitem.h"
+#include "model.h"
 
 #include <QPainter>
 #include <QPen>
@@ -34,6 +35,7 @@ QRectF LinkGraphicsItem::boundingRect() const {
 
 QPainterPath LinkGraphicsItem::shape() const {
     QPainterPath path = QGraphicsLineItem::shape();
+
     path.addPolygon(linkHead);
     return path;
 }
@@ -71,16 +73,36 @@ void LinkGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
     double angle = std::atan2(-line().dy(), line().dx());
 
-    QPointF arrowP1 = line().p1() + QPointF(sin(angle + M_PI / 3) * arrowSize,
-                                    cos(angle + M_PI / 3) * arrowSize);
-    QPointF arrowP2 = line().p1() + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
-                                    cos(angle + M_PI - M_PI / 3) * arrowSize);
+    double arg = angle + M_PI / 3;
+    QPointF arrowP1 = line().p1() + arrowSize *
+                      QPointF(sin(arg), cos(arg));
+    arg += M_PI / 3;
+    QPointF arrowP2 = line().p1() + arrowSize *
+                      QPointF(sin(arg), cos(arg));
+    arg = angle + M_PI / 2;
+    QPointF arrowP3 = line().p1() + arrowSize * 2 *
+                      QPointF(sin(arg), cos(arg));
+    QPointF arrowP4 = line().p1() + arrowSize *
+                      QPointF(sin(arg), cos(arg));
 
     linkHead.clear();
-    linkHead << line().p1() << arrowP1 << arrowP2;
 
-    painter->drawLine(line());
-    painter->drawPolygon(linkHead);
+    if (linkType == Model::LinkRepr::AGGREGATION) {
+        linkHead << line().p1() << arrowP1 << arrowP3 << arrowP2 << line().p1();
+        painter->drawPolyline(linkHead);
+        setLine(QLineF(arrowP3, from->pos()));
+    }
+    else if (linkType == Model::LinkRepr::COMPOSITION) {
+        linkHead << line().p1() << arrowP1 << arrowP3 << arrowP2;
+        painter->drawPolygon(linkHead);
+        setLine(QLineF(arrowP3, from->pos()));
+    }
+    else if (linkType == Model::LinkRepr::GENERALIZATION) {
+        linkHead << line().p1() << arrowP1 << arrowP2 << line().p1();
+        painter->drawPolyline(linkHead);
+        setLine(QLineF(arrowP4, from->pos()));
+    }
+
     if (isSelected()) {
         painter->setPen(QPen(myColor, 1, Qt::DashLine));
         QLineF myLine = line();
@@ -89,16 +111,5 @@ void LinkGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         myLine.translate(0,-8.0);
         painter->drawLine(myLine);
     }
+    painter->drawLine(line());
 }
-
-void LinkGraphicsItem::convertToLinkRepr(Model &m)
-{
-    Model::LinkRepr linkRepr;
-    //linkRepr.from = from;
-    //linkRepr.to = to;
-
-    //m.changeClassProperties(, linkRepr);
-}
-
-
-
