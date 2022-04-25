@@ -32,7 +32,7 @@ Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
         } else if (element.first == "class") {
             ClassRepr cr{};
             std::string name = element.second.get<std::string>("<xmlattr>.name");
-
+            cr.name = name;
             cr.x = element.second.get<double>("<xmlattr>.x");
             cr.y = element.second.get<double>("<xmlattr>.y");
 
@@ -58,10 +58,10 @@ Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
             lr.to = element.second.get<std::string>("<xmlattr>.to");
 
             static std::map<std::string, LinkRepr::Type> typeTable{
-                {"aggregation", LinkRepr::AGGREGATION},
-                {"association", LinkRepr::ASSOCIATION},
-                {"composition", LinkRepr::COMPOSITION},
-                {"generalization", LinkRepr::GENERALIZATION},
+                {"AGGREGATION", LinkRepr::AGGREGATION},
+                {"ASSOCIATION", LinkRepr::ASSOCIATION},
+                {"COMPOSITION", LinkRepr::COMPOSITION},
+                {"GENERALIZATION", LinkRepr::GENERALIZATION},
             };
 
             lr.type = typeTable[type_str];
@@ -120,6 +120,7 @@ void Model::storeXML(const std::string &filename) {
     cdTree.put("<xmlattr>.type", "class");
     for (auto const &cls: currentState.classDiagram.classes) {
         pt::ptree clsTree;
+
         clsTree.put("<xmlattr>.name", cls.first);
         clsTree.put("<xmlattr>.x", cls.second.x);
         clsTree.put("<xmlattr>.y", cls.second.y);
@@ -134,10 +135,23 @@ void Model::storeXML(const std::string &filename) {
     }
     for (auto &link: currentState.classDiagram.links) {
         pt::ptree linkTree;
-        //linkTree.put("<xmlattr>.type", link.type);
+        switch(link.type) {
+            case LinkRepr::ASSOCIATION:
+                linkTree.put("<xmlattr>.type", "ASSOCIATION");
+                break;
+            case LinkRepr::AGGREGATION:
+                linkTree.put("<xmlattr>.type", "AGGREGATION");
+                break;
+            case LinkRepr::COMPOSITION:
+                linkTree.put("<xmlattr>.type", "COMPOSITION");
+                break;
+            case LinkRepr::GENERALIZATION:
+                linkTree.put("<xmlattr>.type", "GENERALIZATION");
+                break;
+        }
         linkTree.put("<xmlattr>.from", link.from);
         linkTree.put("<xmlattr>.to", link.to);
-        linkTree.push_back({"link", linkTree});
+        cdTree.push_back({"link", linkTree});
     }
 
     tree.push_back({"diagram", cdTree});

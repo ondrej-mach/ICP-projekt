@@ -12,8 +12,6 @@ LinkGraphicsItem::LinkGraphicsItem(ClassGraphicsItem *from, ClassGraphicsItem *t
 
     setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     this->linkType = linkType;
-    // TODO set polygon according to linktype
-
     to->addLink(this);
     from->addLink(this);
     setZValue(-1000.0);
@@ -35,7 +33,6 @@ QRectF LinkGraphicsItem::boundingRect() const {
 
 QPainterPath LinkGraphicsItem::shape() const {
     QPainterPath path = QGraphicsLineItem::shape();
-
     path.addPolygon(linkHead);
     return path;
 }
@@ -76,7 +73,7 @@ void LinkGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     double arg = angle + M_PI / 3;
     QPointF arrowP1 = line().p1() + arrowSize *
                       QPointF(sin(arg), cos(arg));
-    arg += M_PI / 3;
+    arg = angle + M_PI * 2 / 3;
     QPointF arrowP2 = line().p1() + arrowSize *
                       QPointF(sin(arg), cos(arg));
     arg = angle + M_PI / 2;
