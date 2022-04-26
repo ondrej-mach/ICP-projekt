@@ -1,3 +1,5 @@
+QMAKE_INCDIR += inc
+
 QT += core gui widgets
 
 HEADERS += \

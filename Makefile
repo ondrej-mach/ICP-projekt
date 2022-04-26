@@ -1,17 +1,17 @@
 app:
-	qmake -o build/qMakefile icp-projekt.pro
-	make -C build/ -f build/qMakefile
+	qmake -o build/Makefile ICP-projekt.pro
+	make -C build/ -f Makefile
 	
 run: app
-	./build/icp-projekt
+	./build/ICP-projekt
 	
 doxygen:
 	doxygen doc/Doxyfile
 	
 clean:
-	rm -f icp-projekt *.o qMakefile
+	rm -rf build
 
-zip:
-	zip -r xmacho12-xlanro00 README.txt Makefile src res icp-projekt.pro doc/Doxyfile
+pack:
+	zip -r xmacho12-xlanro00 README.txt Makefile src res ICP-projekt.pro doc/Doxyfile
 
 

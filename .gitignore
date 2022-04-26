@@ -1,3 +1,4 @@
 .qmake.stash
 ICP-projekt.pro.user
 *.o
+build
