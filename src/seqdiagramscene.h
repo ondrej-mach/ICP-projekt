@@ -2,9 +2,12 @@
 #define SEQDIAGRAMSCENE_H
 
 #include <QGraphicsScene>
+#include <QGraphicsItem>
 #include <QSet>
 #include <QtCore>
 #include <QtGui>
+#include <QMap>
+#include <QString>
 
 #include "model.h"
 #include "tool.h"
@@ -28,6 +31,12 @@ private:
     QString diagramName;
     // temporary line when connecting
     QGraphicsLineItem *line;
+
+    constexpr static double entityDistance = 200;
+    constexpr static double actionDistance = 50;
+
+    QMap<QString, QGraphicsItem *> entities;
+    QVector<QGraphicsItem *> actions;
 
 };
 

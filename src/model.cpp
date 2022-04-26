@@ -12,18 +12,17 @@ Model model;
 Model::Model() {
     csHead = -1;
     csTop = -1;
-
-    // everything is empty by default
-    currentState.classDiagram = ClassDiagram{};
-    currentState.classDiagram.classes = std::map<std::string, ClassRepr>{};
-    currentState.sequenceDiagrams = std::vector<SequenceDiagram>{};
-
     currentState.tabIndex = 0;
-
     currentState = baseState;
-}
 
-Model::ClassDiagram::ClassDiagram() {}
+    // stuff for testing
+    SequenceDiagram sd;
+    sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
+    sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
+    sd.name = "Test SD";
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    currentState.sequenceDiagrams.push_back(sd);
+}
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
     for (auto &element: tree) {

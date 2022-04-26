@@ -55,10 +55,15 @@ public:
             // unary, use only [from] attribute
             ACTIVATE,
             DEACTIVATE,
+            NEW,
             DELETE,
         };
+
+        Type type;
         std::string from;
         std::string to;
+        // text is only used on binary interactions
+        std::string text;
 
         bool isBinary();
     };
@@ -71,10 +76,15 @@ public:
 
     // functions to read the model
     int getTabIndex() const;
+    // class diagram
     std::vector<std::string> getClasses() const;
     std::vector<std::string> getSeqDiagrams() const;
     ClassRepr getClass(std::string name) const;
     std::vector<LinkRepr> getLinks() const;
+    // sequence diagram
+    std::vector<SeqEntity> getEntities(std::string name) const;
+    std::vector<Action> getActions(std::string name) const;
+
 
     bool classExists(std::string name) const;
     bool canUndo() const;
@@ -118,7 +128,7 @@ private:
 
     struct ClassDiagram {
         // constructor from ptree
-        ClassDiagram();
+        ClassDiagram() = default;
         ClassDiagram(pt::ptree &tree);
         std::map<std::string, ClassRepr> classes;
         std::vector<LinkRepr> links;
