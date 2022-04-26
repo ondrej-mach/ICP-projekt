@@ -37,5 +37,3 @@ QRectF LifeLineItem::boundingRect() const {
     double lineLength = yEnd-yStart;
     return QRectF(-rectWidth/2, rectHeight, rectWidth, rectHeight+lineLength);
 }
-
-

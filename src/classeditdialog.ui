@@ -25,10 +25,10 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>## Class Name</string>
+        <string>Class Name</string>
        </property>
        <property name="textFormat">
-        <enum>Qt::MarkdownText</enum>
+        <enum>Qt::PlainText</enum>
        </property>
       </widget>
      </item>
@@ -38,10 +38,10 @@
      <item>
       <widget class="QLabel" name="attributesLabel">
        <property name="text">
-        <string>## Attributes</string>
+        <string>Attributes</string>
        </property>
        <property name="textFormat">
-        <enum>Qt::MarkdownText</enum>
+        <enum>Qt::PlainText</enum>
        </property>
       </widget>
      </item>
@@ -64,10 +64,10 @@
      <item>
       <widget class="QLabel" name="methodsLabel">
        <property name="text">
-        <string>## Methods</string>
+        <string>Methods</string>
        </property>
        <property name="textFormat">
-        <enum>Qt::MarkdownText</enum>
+        <enum>Qt::PlainText</enum>
        </property>
       </widget>
      </item>

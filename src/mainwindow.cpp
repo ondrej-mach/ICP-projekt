@@ -44,6 +44,7 @@ void MainWindow::tabChanged(int index) {
          model.addSeqDiagram();
     }
     model.changeTab(index);
+
     reloadData();
 }
 

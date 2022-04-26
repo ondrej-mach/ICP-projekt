@@ -3,9 +3,11 @@ QMAKE_INCDIR += inc
 QT += core gui widgets
 
 HEADERS += \
+    src/activityitem.h \
     src/classdiagramscene.h \
     src/classeditdialog.h \
     src/classgraphicsitem.h \
+    src/interactionitem.h \
     src/lifelineitem.h \
     src/linkgraphicsitem.h \
     src/model.h \
@@ -14,9 +16,11 @@ HEADERS += \
     src/tool.h
 
 SOURCES += \
+    src/activityitem.cpp \
     src/classdiagramscene.cpp \
     src/classeditdialog.cpp \
     src/classgraphicsitem.cpp \
+    src/interactionitem.cpp \
     src/lifelineitem.cpp \
     src/linkgraphicsitem.cpp \
     src/main.cpp \

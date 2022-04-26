@@ -55,8 +55,8 @@ public:
             // unary, use only [from] attribute
             ACTIVATE,
             DEACTIVATE,
-            NEW,
-            DELETE,
+            //NEW,
+            //DELETE,
         };
 
         Type type;

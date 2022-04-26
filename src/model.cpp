@@ -21,9 +21,13 @@ Model::Model() {
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd.name = "Test SD";
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::ACTIVATE, "mycls", "mycls", "hello()"});
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::ACTIVATE, "bruh", "bruh", "hello()"});
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::DEACTIVATE, "mycls", "mycls", "hello()"});
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
     currentState.sequenceDiagrams.push_back(sd);
 }

@@ -100,13 +100,5 @@ void LinkGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         setLine(QLineF(arrowP4, from->pos()));
     }
 
-    if (isSelected()) {
-        painter->setPen(QPen(myColor, 1, Qt::DashLine));
-        QLineF myLine = line();
-        myLine.translate(0, 4.0);
-        painter->drawLine(myLine);
-        myLine.translate(0,-8.0);
-        painter->drawLine(myLine);
-    }
     painter->drawLine(line());
 }
