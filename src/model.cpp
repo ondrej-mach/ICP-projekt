@@ -197,6 +197,26 @@ std::vector<Model::LinkRepr> Model::getLinks() const
     return currentState.classDiagram.links;
 }
 
+std::vector<Model::SeqEntity> Model::getEntities(std::string name) const
+{
+    for (auto &sd: currentState.sequenceDiagrams) {
+        if (sd.name == name) {
+            return sd.entities;
+        }
+    }
+    throw 1;
+}
+
+std::vector<Model::Action> Model::getActions(std::string name) const
+{
+    for (auto &sd: currentState.sequenceDiagrams) {
+        if (sd.name == name) {
+            return sd.actions;
+        }
+    }
+    throw 1;
+}
+
 bool Model::classExists(std::string name) const {
     auto &existingClasses = currentState.classDiagram.classes;
     return existingClasses.find(name) != existingClasses.end();

@@ -4,6 +4,7 @@ HEADERS += \
     src/classdiagramscene.h \
     src/classeditdialog.h \
     src/classgraphicsitem.h \
+    src/lifelineitem.h \
     src/linkgraphicsitem.h \
     src/model.h \
     src/mainwindow.h \
@@ -14,6 +15,7 @@ SOURCES += \
     src/classdiagramscene.cpp \
     src/classeditdialog.cpp \
     src/classgraphicsitem.cpp \
+    src/lifelineitem.cpp \
     src/linkgraphicsitem.cpp \
     src/main.cpp \
     src/mainwindow.cpp \

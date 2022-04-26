@@ -35,8 +35,8 @@ private:
     constexpr static double entityDistance = 200;
     constexpr static double actionDistance = 50;
 
-    QMap<QString, QGraphicsItem *> entities;
-    QVector<QGraphicsItem *> actions;
+    //QMap<QString, QGraphicsItem *> entities;
+    //QVector<QGraphicsItem *> actions;
 
 };
 
