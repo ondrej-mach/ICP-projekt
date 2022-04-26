@@ -6,13 +6,18 @@
 class LifeLineItem : public QGraphicsItem
 {
 public:
-    LifeLineItem(double x, double yStart, double yEnd, QString name, QGraphicsItem *parent);
+    LifeLineItem(double x, double yStart, double yEnd, QString name, QGraphicsItem *parent=nullptr);
 
-    double rectWidth = 100;
-    double rectHeight = 30;
+    double rectWidth = 120;
+    double rectHeight = 40;
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const;
 
 private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+    double x, yStart, yEnd;
+    QString name;
+
 };
 
 #endif // LIFELINEITEM_H

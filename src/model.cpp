@@ -21,6 +21,10 @@ Model::Model() {
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd.name = "Test SD";
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
     currentState.sequenceDiagrams.push_back(sd);
 }
 
@@ -442,4 +446,12 @@ void Model::redo() {
         csHead++;
         executeCommand(currentState, commandStack[csHead]);
     }
+}
+
+bool Model::Action::isBinary() {
+    return (type == SYNC)
+           || (type ==  ASYNC)
+           || (type == RETURN)
+           || (type == CREATE)
+           || (type == DESTROY);
 }

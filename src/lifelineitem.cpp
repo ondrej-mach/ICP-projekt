@@ -4,7 +4,7 @@
 #include <QPainter>
 
 LifeLineItem::LifeLineItem(double x, double yStart, double yEnd, QString name, QGraphicsItem *parent)
-    : QGraphicsItem(parent) {
+    : QGraphicsItem(parent), x(x), yStart(yStart), yEnd(yEnd), name(name) {
 
     setPos(QPointF(x, yStart));
 }
@@ -12,11 +12,30 @@ LifeLineItem::LifeLineItem(double x, double yStart, double yEnd, QString name, Q
 
 
 void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
-    if (this->isSelected()) {
-        QPen pen(Qt::black);
-        painter->setPen(pen);
-    }
-    painter->drawRect(QRectF());
+
+    QPen pen(Qt::black);
+    QBrush brush(Qt::white);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+
+    // Draw the box with name
+    QRectF nameBox = QRectF(-rectWidth/2, -rectHeight, rectWidth, rectHeight);
+    painter->drawRect(nameBox);
+    painter->drawText(nameBox, Qt::AlignCenter, name);
+
+    // Draw the line
+    pen.setWidth(5);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+
+    painter->drawLine(QPointF(0,0), QPointF(0, yEnd-yStart));
+
+}
+
+QRectF LifeLineItem::boundingRect() const {
+    double lineLength = yEnd-yStart;
+    return QRectF(-rectWidth/2, rectHeight, rectWidth, rectHeight+lineLength);
 }
 
 

@@ -32,9 +32,11 @@ private:
     // temporary line when connecting
     QGraphicsLineItem *line;
 
-    constexpr static double entityDistance = 200;
-    constexpr static double actionDistance = 50;
+    double entityDistance = 150;
+    double actionDistance = 40;
 
+    double gridToX(int n);
+    double gridToY(int n);
     //QMap<QString, QGraphicsItem *> entities;
     //QVector<QGraphicsItem *> actions;
 
