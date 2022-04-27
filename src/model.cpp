@@ -16,20 +16,22 @@ Model::Model() {
     currentState = baseState;
 
     // stuff for testing
-    SequenceDiagram sd;
+    /*SequenceDiagram sd;
     sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
+    sd.entities.push_back({SeqEntity::PARTICIPANT, "general"});
     sd.name = "Test SD";
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
-    sd.actions.push_back({Action::ACTIVATE, "mycls", "mycls", "hello()"});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
-    sd.actions.push_back({Action::ACTIVATE, "bruh", "bruh", "hello()"});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
-    sd.actions.push_back({Action::DEACTIVATE, "mycls", "mycls", "hello()"});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello()"});
-    currentState.sequenceDiagrams.push_back(sd);
+    sd.actions.push_back({Action::CREATE, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello1()"});
+    sd.actions.push_back({Action::RETURN, "bruh", "mycls", "hello2()"});
+    sd.actions.push_back({Action::CREATE, "mycls", "general", "hello3()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "general", "hello4()"});
+    sd.actions.push_back({Action::RETURN, "general", "mycls", "hello5()"});
+    sd.actions.push_back({Action::ACTIVATE, "mycls", "bruh", "hello6()"});
+    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
+    sd.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", "hello8()"});
+    sd.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
+    currentState.sequenceDiagrams.push_back(sd);*/
 }
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
@@ -102,6 +104,7 @@ void Model::loadXML(const std::string &filename) {
             currentState.classDiagram = ClassDiagram(diagram.second);
 
         } else if (diagramType == "sequence") {
+            //currentState.sequenceDiagrams = SequenceDiagram(diagram.second);
             continue;
         } else {
             // invalid diagram type
@@ -165,9 +168,39 @@ void Model::storeXML(const std::string &filename) {
 
 
     // put each sequence diagram
+    pt::ptree sdTree;
+    sdTree.put("<xmlattr>.type", "sequence");
     for (auto const &sd: currentState.sequenceDiagrams) {
-        // TODO
+        pt::ptree entityTree;
+        for(auto entity: sd.entities) {
+            entityTree.put("<xmlattr>.name", entity.name);
+            switch(entity.type) {
+                case Model::SeqEntity::Type::PARTICIPANT:
+                    entityTree.put("<xmlattr>.type", "PARTICIPANT");
+                    break;
+                 default: throw 1;
+                    break;
+            }
+            sdTree.push_back({"entity", entityTree});
+        }
+
+        for(auto interaction: sd.actions) {
+            pt::ptree interactionTree;
+            if(interaction.isBinary()) {
+                interactionTree.put("<xmlattr>.type", interaction.type);
+                interactionTree.put("<xmlattr>.from", interaction.from);
+                interactionTree.put("<xmlattr>.to", interaction.to);
+                interactionTree.add("text", interaction.text);
+                sdTree.push_back({"interaction", interactionTree});
+            }
+            else {
+                interactionTree.put("<xmlattr>.type", interaction.type);
+                interactionTree.put("<xmlattr>.on", interaction.from);
+                sdTree.push_back({"action", interactionTree});
+            }
+        }
     }
+    tree.push_back({"diagram", sdTree});
 
     pt::write_xml(filename, tree);
 }

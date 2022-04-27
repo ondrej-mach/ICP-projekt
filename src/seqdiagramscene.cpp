@@ -92,10 +92,17 @@ void SeqDiagramScene::reloadData(QString name) {
     index = 0;
     for (auto &a: actions) {
         if (a.isBinary()) {
+            /*if (a.type == Model::Action::Type::RETURN)
+            {
+                swap(a.from, a.to);
+            }
+*/
             InteractionItem *arrow = new InteractionItem(
                         gridToY(index),
                         gridToX(nameToGridX[a.from]),
-                        gridToX(nameToGridX[a.to])
+                        gridToX(nameToGridX[a.to]),
+                        QString::fromStdString(a.text),
+                        a.type
                         );
             addItem(arrow);
             index++;
@@ -117,10 +124,10 @@ void SeqDiagramScene::reloadData(QString name) {
    }
 }
 
-double SeqDiagramScene::gridToX(int n){
+double SeqDiagramScene::gridToX(int n) {
     return n * entityDistance;
 }
 
-double SeqDiagramScene::gridToY(int n){
+double SeqDiagramScene::gridToY(int n) {
     return n * actionDistance;
 }
