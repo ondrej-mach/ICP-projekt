@@ -59,8 +59,10 @@ void LinkGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     for (int i = 1; i < endPolygon.count(); ++i) {
         QPointF p2 = endPolygon.at(i) + to->pos();
         QLineF polyLine = QLineF(p1, p2);
-        QLineF::IntersectionType intersectionType =
-            polyLine.intersects(centerLine, &intersectPoint);
+        // TODO QLineF::IntersectionType in modern code
+        // polyLine.intersects
+        QLineF::IntersectType intersectionType =
+            polyLine.intersect(centerLine, &intersectPoint); 
         if (intersectionType == QLineF::BoundedIntersection)
             break;
         p1 = p2;

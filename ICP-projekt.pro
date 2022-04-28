@@ -1,4 +1,5 @@
 QMAKE_INCDIR += inc
+CONFIG += c++17
 
 QT += core gui widgets
 

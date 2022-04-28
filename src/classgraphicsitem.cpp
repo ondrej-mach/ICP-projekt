@@ -47,7 +47,7 @@ QPair<int, int> ClassGraphicsItem::computeDimensions() const
 
 QRectF ClassGraphicsItem::boundingRect() const
 {
-    QPair pair = computeDimensions();
+    QPair<int, int> pair = computeDimensions();
     int a = pair.first;
     int b = pair.second;
     return QRectF(-a/2, -b/2, a, b);
@@ -62,7 +62,7 @@ void ClassGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->setPen(Qt::black);
     painter->drawRect(rect);
 
-    QPair pair = computeDimensions();
+    QPair<int, int> pair = computeDimensions();
     painter->translate(-pair.first/2, -pair.second/2);
 
     int len = pair.first;
