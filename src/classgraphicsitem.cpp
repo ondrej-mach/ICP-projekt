@@ -7,7 +7,6 @@
 #include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 
-
 ClassGraphicsItem::ClassGraphicsItem(Model::ClassRepr data, QMenu *contextMenu, QGraphicsItem *parent)
     : QGraphicsItem(parent), myContextMenu(contextMenu)
 {

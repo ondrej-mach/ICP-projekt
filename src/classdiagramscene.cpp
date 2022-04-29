@@ -86,14 +86,17 @@ void ClassDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     switch (tool) {
         case TOOL_DELETE:
             for (auto classname: model.getClasses()) {
-                /*Model::ClassRepr classStruct = model.getClass(classname);
-                QPair<int, int> coords = ClassGraphicsItem::computeDimensions();
-                if ((mouseEvent->scenePos().x() > classStruct.x) &&
-                    (mouseEvent->scenePos().x() < classStruct.x + coords.first) &&
-                    (mouseEvent->scenePos().y() > classStruct.y) &&
-                    (mouseEvent->scenePos().y() < classStruct.y + coords.second)) {*/
+                Model::ClassRepr classStruct = model.getClass(classname);
+
+                QString qname = QString::fromStdString(classname);
+                ClassGraphicsItem *cgi = new ClassGraphicsItem{classStruct, editMenu};
+                QPair<int, int> dimensions = cgi->computeDimensions();
+                if ((mouseEvent->scenePos().x() < classStruct.x + dimensions.first/2) &&
+                    (mouseEvent->scenePos().x() > classStruct.x - dimensions.first/2) &&
+                    (mouseEvent->scenePos().y() < classStruct.y + dimensions.second/2) &&
+                    (mouseEvent->scenePos().y() > classStruct.y - dimensions.second/2)) {
                     model.removeClass(classname);
-                //}
+                }
             }
             emit modelChanged();
             return;
@@ -133,6 +136,39 @@ void ClassDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         line->setLine(newLine);
     } else {
         QGraphicsScene::mouseMoveEvent(mouseEvent);
+    }
+    if (tool == TOOL_DELETE) {
+        for (auto classname: model.getClasses()) {
+            Model::ClassRepr classStruct = model.getClass(classname);
+            QString qname = QString::fromStdString(classname);
+            ClassGraphicsItem *cgi = new ClassGraphicsItem{classStruct, editMenu};
+            QPair<int, int> dimensions = cgi->computeDimensions();
+            if ((mouseEvent->scenePos().x() < classStruct.x + dimensions.first/2) &&
+                (mouseEvent->scenePos().x() > classStruct.x - dimensions.first/2) &&
+                (mouseEvent->scenePos().y() < classStruct.y + dimensions.second/2) &&
+                (mouseEvent->scenePos().y() > classStruct.y - dimensions.second/2)) {
+                model.removeClass(classname);
+                emit modelChanged();
+            }
+        }
+        /*for (auto link: model.getLinks()) {
+            Model::ClassRepr classFrom = model.getClass(link.from);
+            Model::ClassRepr classTo = model.getClass(link.to);
+            QString qnameFrom = QString::fromStdString(link.from);
+            QString qnameTo = QString::fromStdString(link.to);
+            ClassGraphicsItem *cgiFrom = new ClassGraphicsItem{classFrom, editMenu};
+            ClassGraphicsItem *cgiTo = new ClassGraphicsItem{classTo, editMenu};
+            LinkGraphicsItem *lgi = new LinkGraphicsItem(cgiFrom, cgiTo, link.type);
+            QPair<int, int> point1 = {cgiFrom->x(), cgiFrom->y()};
+            QPair<int, int> point2 = {cgiTo->x(), cgiTo->y()};
+            QPair<int, int> smerVec = {point1.first - point2.first, point1.second - point2.second};
+            QPair<int, int> newVec = {point1.first - mouseEvent->scenePos().x(), point1.second - mouseEvent->scenePos().y()};
+            if (newVec == smerVec) {
+                link.from = "";
+                link.to = "";
+                emit modelChanged();
+            }
+        }*/
     }
 }
 
