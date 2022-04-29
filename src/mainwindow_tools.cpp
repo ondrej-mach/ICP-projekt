@@ -8,6 +8,7 @@ void MainWindow::connectTools() {
     connect(ui->compositionToolButton, &QToolButton::pressed, this, &MainWindow::selectToolCompose);
     connect(ui->generalizationToolButton, &QToolButton::pressed, this, &MainWindow::selectToolGeneralize);
     connect(ui->classToolButton, &QToolButton::pressed, this, &MainWindow::selectToolClass);
+    connect(ui->deleteButton, &QToolButton::pressed, this, &MainWindow::selectToolDelete);
 }
 
 void MainWindow::selectToolMouse() {
@@ -32,5 +33,9 @@ void MainWindow::selectToolGeneralize() {
 
 void MainWindow::selectToolClass() {
     tool = TOOL_CLASS;
+}
+
+void MainWindow::selectToolDelete() {
+    tool = TOOL_DELETE;
 }
 

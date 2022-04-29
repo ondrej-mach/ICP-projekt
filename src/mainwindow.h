@@ -38,6 +38,7 @@ private slots:
     void selectToolCompose();
     void selectToolGeneralize();
     void selectToolClass();
+    void selectToolDelete();
 
     void openFile();
     void saveFile();

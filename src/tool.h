@@ -8,6 +8,7 @@ enum Tool{
     TOOL_COMPOSE,
     TOOL_GENERALIZE,
     TOOL_CLASS,
+    TOOL_DELETE,
 };
 
 #endif // TOOL_H

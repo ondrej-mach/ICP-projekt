@@ -12,6 +12,7 @@
 
 #include <QMenu>
 #include <QAction>
+#include "classgraphicsitem.h"
 
 ClassDiagramScene::ClassDiagramScene(Tool &tool, QObject *parent)
     : QGraphicsScene(parent), tool(tool)
@@ -83,6 +84,19 @@ void ClassDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 
     switch (tool) {
+        case TOOL_DELETE:
+            for (auto classname: model.getClasses()) {
+                /*Model::ClassRepr classStruct = model.getClass(classname);
+                QPair<int, int> coords = ClassGraphicsItem::computeDimensions();
+                if ((mouseEvent->scenePos().x() > classStruct.x) &&
+                    (mouseEvent->scenePos().x() < classStruct.x + coords.first) &&
+                    (mouseEvent->scenePos().y() > classStruct.y) &&
+                    (mouseEvent->scenePos().y() < classStruct.y + coords.second)) {*/
+                    model.removeClass(classname);
+                //}
+            }
+            emit modelChanged();
+            return;
         case TOOL_CLASS:
             model.addClass(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
             emit modelChanged();
