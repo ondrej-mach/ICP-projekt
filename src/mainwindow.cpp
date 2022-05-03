@@ -1,12 +1,16 @@
+/** @file mainwindow.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include "classdiagramscene.h"
 #include "seqdiagramscene.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
-
 #include <string>
 
 

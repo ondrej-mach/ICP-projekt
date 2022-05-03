@@ -1,3 +1,10 @@
+/** @file lifelineitem.h
+ *  @brief Graphical item for class' lifetime in sequence diagram.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef LIFELINEITEM_H
 #define LIFELINEITEM_H
 

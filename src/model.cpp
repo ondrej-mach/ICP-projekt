@@ -1,5 +1,10 @@
+/** @file model.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "model.h"
-#include "modeldata.h"
 
 #include <string>
 #include <vector>
@@ -16,7 +21,7 @@ Model::Model() {
     currentState = baseState;
 
     // stuff for testing
-    /*SequenceDiagram sd;
+    SequenceDiagram sd;
     sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "general"});
@@ -31,7 +36,7 @@ Model::Model() {
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
     sd.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", "hello8()"});
     sd.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
-    currentState.sequenceDiagrams.push_back(sd);*/
+    currentState.sequenceDiagrams.push_back(sd);
 }
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {

@@ -1,3 +1,10 @@
+/** @file classeditdialog.h
+ *  @brief Dialog window for editing classes' methdods and attributes.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef CLASSEDITDIALOG_H
 #define CLASSEDITDIALOG_H
 

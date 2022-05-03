@@ -1,3 +1,9 @@
+/** @file interactionitem.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "interactionitem.h"
 #include <QPainter>
 #include <QGraphicsScene>

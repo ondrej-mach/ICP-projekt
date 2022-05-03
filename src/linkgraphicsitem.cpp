@@ -1,3 +1,8 @@
+/** @file linkgraphicsitem.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
 
 #include "linkgraphicsitem.h"
 #include "model.h"

@@ -1,3 +1,10 @@
+/** @file model.h
+ *  @brief Application's internal representation of all the data.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef MODEL_H
 #define MODEL_H
 

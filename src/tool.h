@@ -1,3 +1,10 @@
+/** @file tool.h
+ *  @brief Tools that can be selected.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef TOOL_H
 #define TOOL_H
 

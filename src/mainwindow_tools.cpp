@@ -1,3 +1,10 @@
+/** @file mainwindow_tools.cpp
+ *  @brief Functions related to tools and their switching.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 

@@ -1,3 +1,10 @@
+/** @file classdiagramscene.h
+ *  @brief Graphical scene for drawing and editing the class diagrams.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef CLASSDIAGRAMSCENE_H
 #define CLASSDIAGRAMSCENE_H
 

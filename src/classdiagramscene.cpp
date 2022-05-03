@@ -1,3 +1,9 @@
+/** @file classdiagramscene.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "classdiagramscene.h"
 #include "model.h"
 #include "mainwindow.h"

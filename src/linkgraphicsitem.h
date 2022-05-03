@@ -1,3 +1,10 @@
+/** @file linkgraphicsitem.h
+ *  @brief Graphical item for a relationship in class diagram.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef LINKGRAPHICSITEM_H
 #define LINKGRAPHICSITEM_H
 
