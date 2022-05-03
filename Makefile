@@ -10,8 +10,9 @@ doxygen:
 	
 clean:
 	rm -rf build
+	rm -rf /doc/html
 
 pack:
-	zip -r xmacho12-xlanro00 README.txt Makefile src res ICP-projekt.pro doc/Doxyfile
+	zip -r xmacho12-xlanro00.zip README.txt Makefile src res inc ICP-projekt.pro doc/Doxyfile
 
 
