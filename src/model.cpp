@@ -21,7 +21,7 @@ Model::Model() {
     currentState = baseState;
 
     // stuff for testing
-    SequenceDiagram sd;
+    /*SequenceDiagram sd;
     sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "general"});
@@ -37,6 +37,22 @@ Model::Model() {
     sd.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", "hello8()"});
     sd.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
     currentState.sequenceDiagrams.push_back(sd);
+    SequenceDiagram sd1;
+    sd1.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
+    sd1.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
+    sd1.entities.push_back({SeqEntity::PARTICIPANT, "general"});
+    sd1.name = "Test SD1";
+    sd1.actions.push_back({Action::CREATE, "mycls", "bruh", "hello()"});
+    sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello1()"});
+    sd1.actions.push_back({Action::RETURN, "bruh", "mycls", "hello2()"});
+    sd1.actions.push_back({Action::CREATE, "mycls", "general", "hello3()"});
+    sd1.actions.push_back({Action::SYNC, "mycls", "general", "hello4()"});
+    sd1.actions.push_back({Action::RETURN, "general", "mycls", "hello5()"});
+    sd1.actions.push_back({Action::ACTIVATE, "mycls", "bruh", "hello6()"});
+    sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
+    sd1.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", "hello8()"});
+    sd1.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
+    currentState.sequenceDiagrams.push_back(sd1);*/
 }
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
@@ -87,10 +103,70 @@ Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
     }
 }
 
+Model::SequenceDiagram::SequenceDiagram(pt::ptree &tree)
+{
+this->name = tree.get<std::string>("<xmlattr>.name");
+for (auto &element: tree) {
+        if (element.first == "<xmlattr>") {
+            // do nothing
+        } else if (element.first == "entity") {\
+
+            SeqEntity se{};
+
+            std::string name = element.second.get<std::string>("<xmlattr>.name");
+            se.name = name;
+            static std::map<std::string, SeqEntity::Type> entityTable{
+                {"PARTICIPANT", SeqEntity::Type::PARTICIPANT},
+            };
+            se.type = entityTable[element.second.get<std::string>("<xmlattr>.type")];
+
+            this->entities.push_back(se);
+
+        } else if (element.first == "interaction") {
+            Action action{};
+
+            action.from = element.second.get<std::string>("<xmlattr>.from");
+            action.to = element.second.get<std::string>("<xmlattr>.to");
+
+            static std::map<std::string, Model::Action::Type> typeTable{
+                {"SYNC", Model::Action::Type::SYNC},
+                {"ASYNC", Model::Action::Type::ASYNC},
+                {"RETURN", Model::Action::Type::RETURN},
+                {"CREATE", Model::Action::Type::CREATE},
+                {"DESTROY", Model::Action::Type::DESTROY},
+            };
+
+            action.type = typeTable[element.second.get<std::string>("<xmlattr>.type")];
+            this->actions.push_back(action);
+
+        } else if (element.first == "action") {
+            Action action{};
+            action.from = element.second.get<std::string>("<xmlattr>.on");
+            static std::map<std::string, Model::Action::Type> typeTable{
+                {"ACTIVATE", Model::Action::Type::ACTIVATE},
+                {"DEACTIVATE", Model::Action::Type::DEACTIVATE},
+            };
+            action.type = typeTable[element.second.get<std::string>("<xmlattr>.type")];
+            for (auto &textElement: element.second) {
+                if (textElement.first == "text") {
+                    action.text = textElement.first.c_str();
+                }
+            }
+            // TODO check if preceeding interaction is binary
+            this->actions.push_back(action);
+
+        } else {
+            throw 1;
+        }
+    }
+}
+
+
 void Model::loadXML(const std::string &filename) {
     // empty tree object
     pt::ptree tree;
     pt::read_xml(filename, tree);
+    currentState = Snapshot{};
 
     bool classDiagramFound = false;
     // for each diagram
@@ -109,7 +185,8 @@ void Model::loadXML(const std::string &filename) {
             currentState.classDiagram = ClassDiagram(diagram.second);
 
         } else if (diagramType == "sequence") {
-            //currentState.sequenceDiagrams = SequenceDiagram(diagram.second);
+            SequenceDiagram seqDiag = SequenceDiagram(diagram.second);
+            currentState.sequenceDiagrams.push_back(seqDiag);
             continue;
         } else {
             // invalid diagram type
@@ -134,7 +211,7 @@ void Model::storeXML(const std::string &filename) {
     pt::ptree cdTree;
     cdTree.put("<xmlattr>.type", "class");
     for (auto const &cls: currentState.classDiagram.classes) {
-        pt::ptree clsTree;
+        pt::ptree clsTree{};
 
         clsTree.put("<xmlattr>.name", cls.first);
         clsTree.put("<xmlattr>.x", cls.second.x);
@@ -149,7 +226,7 @@ void Model::storeXML(const std::string &filename) {
         cdTree.push_back({"class", clsTree});
     }
     for (auto &link: currentState.classDiagram.links) {
-        pt::ptree linkTree;
+        pt::ptree linkTree{};
         switch(link.type) {
             case LinkRepr::ASSOCIATION:
                 linkTree.put("<xmlattr>.type", "ASSOCIATION");
@@ -173,10 +250,11 @@ void Model::storeXML(const std::string &filename) {
 
 
     // put each sequence diagram
-    pt::ptree sdTree;
-    sdTree.put("<xmlattr>.type", "sequence");
     for (auto const &sd: currentState.sequenceDiagrams) {
-        pt::ptree entityTree;
+        pt::ptree sdTree{};
+        sdTree.put("<xmlattr>.type", "sequence");
+        sdTree.put("<xmlattr>.name", sd.name);
+        pt::ptree entityTree{};
         for(auto entity: sd.entities) {
             entityTree.put("<xmlattr>.name", entity.name);
             switch(entity.type) {
@@ -190,22 +268,31 @@ void Model::storeXML(const std::string &filename) {
         }
 
         for(auto interaction: sd.actions) {
-            pt::ptree interactionTree;
+            pt::ptree interactionTree{};
+            static std::map<Model::Action::Type, std::string> typeTable{
+                {Model::Action::Type::SYNC, "SYNC"},
+                {Model::Action::Type::ASYNC, "ASYNC"},
+                {Model::Action::Type::RETURN, "RETURN"},
+                {Model::Action::Type::CREATE, "CREATE"},
+                {Model::Action::Type::DESTROY, "DESTROY"},
+                {Model::Action::Type::ACTIVATE, "ACTIVATE"},
+                {Model::Action::Type::DEACTIVATE, "DEACTIVATE"},
+            };
             if(interaction.isBinary()) {
-                interactionTree.put("<xmlattr>.type", interaction.type);
+                interactionTree.put("<xmlattr>.type", typeTable[interaction.type]);
                 interactionTree.put("<xmlattr>.from", interaction.from);
                 interactionTree.put("<xmlattr>.to", interaction.to);
                 interactionTree.add("text", interaction.text);
                 sdTree.push_back({"interaction", interactionTree});
             }
             else {
-                interactionTree.put("<xmlattr>.type", interaction.type);
+                interactionTree.put("<xmlattr>.type", typeTable[interaction.type]);
                 interactionTree.put("<xmlattr>.on", interaction.from);
                 sdTree.push_back({"action", interactionTree});
             }
         }
+        tree.push_back({"diagram", sdTree});
     }
-    tree.push_back({"diagram", sdTree});
 
     pt::write_xml(filename, tree);
 }

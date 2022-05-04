@@ -9,6 +9,7 @@
 #define TOOL_H
 
 enum Tool{
+    // class diagram tools
     TOOL_MOUSE,
     TOOL_ASSOCIATE,
     TOOL_AGGREGATE,
@@ -16,6 +17,15 @@ enum Tool{
     TOOL_GENERALIZE,
     TOOL_CLASS,
     TOOL_DELETE,
+    // seq. diagram tools
+    TOOL_OBJECT,
+    TOOL_ACTIVATE,
+    TOOL_DEACTIVATE,
+    TOOL_CREATE_MESSAGE,
+    TOOL_ASYNC_MESSAGE,
+    TOOL_SYNC_MESSAGE,
+    TOOL_RETURN_MESSAGE,
+    TOOL_DESTROY_MESSAGE,
 };
 
 #endif // TOOL_H

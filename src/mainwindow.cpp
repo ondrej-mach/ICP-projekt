@@ -44,9 +44,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 void MainWindow::tabChanged(int index) {
     // if the last tab was clicked
-    if (index == ui->tabWidget->count()-1) {
+    if (index == ui->tabWidget->count() - 1) {
          model.addSeqDiagram();
     }
+
     model.changeTab(index);
 
     reloadData();
@@ -59,6 +60,16 @@ void MainWindow::reloadData()
     // load everything
     ui->actionUndo->setEnabled(model.canUndo());
     ui->actionRedo->setEnabled(model.canRedo());
+
+    //set visibility of tools
+    if (model.getTabIndex() > 0) {
+        ui->seqWidget->setVisible(true);
+        ui->classWidget->setVisible(false);
+    }
+    else {
+        ui->seqWidget->setVisible(false);
+        ui->classWidget->setVisible(true);
+    }
 
     // load stuff on tabs
     ui->tabWidget->blockSignals(true);

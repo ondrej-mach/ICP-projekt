@@ -35,10 +35,12 @@ public:
 
     void setTool(Tool newTool);
 
+
 private slots:
     void reloadData();
     void tabChanged(int index);
 
+    //class diagram tools
     void selectToolMouse();
     void selectToolAssociate();
     void selectToolAggregate();
@@ -46,6 +48,15 @@ private slots:
     void selectToolGeneralize();
     void selectToolClass();
     void selectToolDelete();
+    //seq. diagram tools
+    void selectToolObject();
+    void selectToolActivate();
+    void selectToolDeactivate();
+    void selectToolCreateMessage();
+    void selectToolSyncMessage();
+    void selectToolAsyncMessage();
+    void selectToolReturnMessage();
+    void selectToolDestroyMessage();
 
     void openFile();
     void saveFile();

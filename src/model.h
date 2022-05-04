@@ -51,7 +51,7 @@ public:
         std::string name;
     };
 
-    struct Action {
+        struct Action {
         enum Type {
             // binary from -> to
             SYNC,
@@ -146,6 +146,8 @@ private:
     };
 
     struct SequenceDiagram {
+        SequenceDiagram() = default;
+        SequenceDiagram(pt::ptree &tree);
         std::string name;
         std::vector<SeqEntity> entities;
         std::vector<Action> actions;
