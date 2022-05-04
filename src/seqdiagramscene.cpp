@@ -10,7 +10,9 @@
 #include "interactionitem.h"
 #include "activityitem.h"
 
-SeqDiagramScene::SeqDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(parent), tool(tool) {
+#include <QGraphicsSceneMouseEvent>
+
+SeqDiagramScene::SeqDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(parent),  tool(tool) {
 
 }
 
@@ -18,15 +20,16 @@ SeqDiagramScene::SeqDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(p
 void SeqDiagramScene::reloadData(QString name) {
     clear();
 
-    QBrush redBrush{Qt::red};
     QPen pen{Qt::black};
+    QBrush redBrush{Qt::red};
 
-    std::vector<Model::SeqEntity> entities = model.getEntities(name.toStdString());
-    std::vector<Model::Action> actions = model.getActions(name.toStdString());
+    std::string sdName = name.toStdString();
+    std::vector<Model::SeqEntity> entities = model.getEntities(sdName);
+    std::vector<Model::Action> actions = model.getActions(sdName);
 
     // This is inferred from model, it is not actually stored there
     struct ActiveRegion {
-        std::string on;
+        std::string on; //entity name
         int from;
         int to;
     };
@@ -59,12 +62,14 @@ void SeqDiagramScene::reloadData(QString name) {
         // they happen on the last binary interaction
         if (a.isBinary()) {
             interactionCount++;
-        } else {
+        }
+        else {
             if (a.type == Model::Action::ACTIVATE) {
-                // Temporarily set from ant to to the same number
+                // Temporarily set from ant to the same number
                 // DEACTIVATE will find it afterwards
                 activeRegions.push_back({a.from, interactionCount, interactionCount});
-            } else {
+            }
+            else {
                 // Find the right activate action to complete the structure
                 for (auto &ar: activeRegions) {
                     if ((a.from == ar.on) && (ar.from == ar.to)) {
@@ -72,7 +77,6 @@ void SeqDiagramScene::reloadData(QString name) {
                         break;
                     }
                 }
-
             }
         }
     }
@@ -99,10 +103,8 @@ void SeqDiagramScene::reloadData(QString name) {
     for (auto &a: actions) {
         if (a.isBinary()) {
             /*if (a.type == Model::Action::Type::RETURN)
-            {
-                swap(a.from, a.to);
-            }
-*/
+            {swap(a.from, a.to);}*/
+
             InteractionItem *arrow = new InteractionItem(
                         gridToY(index),
                         gridToX(nameToGridX[a.from]),
@@ -136,4 +138,149 @@ double SeqDiagramScene::gridToX(int n) {
 
 double SeqDiagramScene::gridToY(int n) {
     return n * actionDistance;
+}
+
+int SeqDiagramScene::XtoGrid(double x) {
+    return x / entityDistance;
+}
+
+int SeqDiagramScene::YtoGrid(double y) {
+    return y / actionDistance;
+}
+
+void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+
+    QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
+    QList<QGraphicsItem *> itemsList = items(point);
+    QPair gridPoint{XtoGrid(point.x()), YtoGrid(point.y())};
+    InteractionItem *delItemInt;
+    LifeLineItem *delItemLife;
+    ActivityItem *delItemAct;
+
+    switch (tool) {
+        case TOOL_ENTITY:
+            model.addEntity(this->diagramName.toStdString());
+            emit modelChanged();
+            return; // do not pass mouse events
+
+        case TOOL_ACTIVATE:
+        case TOOL_DEACTIVATE:
+            //TODO
+            emit modelChanged();
+            break;
+        case TOOL_ASYNC_MESSAGE:
+        case TOOL_SYNC_MESSAGE:
+        case TOOL_CREATE_MESSAGE:
+        case TOOL_DESTROY_MESSAGE:
+        case TOOL_RETURN_MESSAGE:
+            break;
+        case TOOL_DELETE:
+            for (auto item: itemsList) {
+                if (item->type() == InteractionItem::Type) {
+                    delItemInt = qgraphicsitem_cast<InteractionItem *>(item);
+                    model.removeInteraction();
+                    //TODO zprovoznit delete
+                    qWarning( "delete interaction");
+                }
+                else if (item->type() == LifeLineItem::Type) {
+                    delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
+                    model.removeEntity();
+                    //TODO zprovoznit delete
+                    qWarning( "delete lifeline");
+                }
+                else if (item->type() == ActivityItem::Type) {
+                    delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
+                    model.removeActivity();
+                    //TODO zprovoznit delete
+                    qWarning( "delete activity");
+                }
+            }
+            break;
+        case TOOL_MOUSE:
+        default:;
+    }
+
+    QGraphicsScene::mousePressEvent(mouseEvent);
+}
+
+void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
+    QList<QGraphicsItem *> itemsList = items(point);
+    QPair gridPoint{XtoGrid(point.x()), YtoGrid(point.y())};
+    InteractionItem *delItemInt;
+    LifeLineItem *delItemLife;
+    ActivityItem *delItemAct;
+
+    switch (tool) {
+        case TOOL_ENTITY:
+            model.addEntity(this->diagramName.toStdString());
+            emit modelChanged();
+            return; // do not pass mouse events
+        case TOOL_ACTIVATE:
+        case TOOL_DEACTIVATE:
+            //emit modelChanged();
+            break;
+        case TOOL_ASYNC_MESSAGE:
+        case TOOL_SYNC_MESSAGE:
+        case TOOL_CREATE_MESSAGE:
+        case TOOL_DESTROY_MESSAGE:
+        case TOOL_RETURN_MESSAGE:
+            //emit modelChanged();
+            break;
+        case TOOL_DELETE:
+            for (auto item: itemsList) {
+                if (item->type() == InteractionItem::Type) {
+                    delItemInt = qgraphicsitem_cast<InteractionItem *>(item);
+                    model.removeInteraction();
+                    //TODO zprovoznit delete
+                    qWarning( "delete interaction");
+                }
+                else if (item->type() == LifeLineItem::Type) {
+                    delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
+                    model.removeEntity();
+                    //TODO zprovoznit delete
+                    qWarning( "delete lifeline");
+                }
+                else if (item->type() == ActivityItem::Type) {
+                    delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
+                    model.removeActivity();
+                    //TODO zprovoznit delete
+                    qWarning( "delete activity");
+                }
+            }
+            break;
+        case TOOL_MOUSE:
+        default:;
+    }
+
+    QGraphicsScene::mouseMoveEvent(mouseEvent);
+}
+
+void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    switch (tool) {
+        case TOOL_ENTITY:
+            //emit modelChanged();
+            return;
+        case TOOL_ACTIVATE:
+        case TOOL_DEACTIVATE:
+            //emit modelChanged();
+
+        case TOOL_ASYNC_MESSAGE:
+        case TOOL_SYNC_MESSAGE:
+        case TOOL_CREATE_MESSAGE:
+        case TOOL_DESTROY_MESSAGE:
+        case TOOL_RETURN_MESSAGE:
+            //emit modelChanged();
+
+        case TOOL_DELETE:
+            //emit modelChanged();
+
+        case TOOL_MOUSE:
+        default:;
+    }
+
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }

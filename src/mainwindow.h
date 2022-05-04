@@ -49,7 +49,7 @@ private slots:
     void selectToolClass();
     void selectToolDelete();
     //seq. diagram tools
-    void selectToolObject();
+    void selectToolEntity();
     void selectToolActivate();
     void selectToolDeactivate();
     void selectToolCreateMessage();

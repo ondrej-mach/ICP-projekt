@@ -18,7 +18,7 @@ void MainWindow::connectTools() {
     connect(ui->classToolButton, &QToolButton::pressed, this, &MainWindow::selectToolClass);
     connect(ui->deleteButton, &QToolButton::pressed, this, &MainWindow::selectToolDelete);
     // seq. diagram tools
-    connect(ui->objectToolButton, &QToolButton::pressed, this, &MainWindow::selectToolObject);
+    connect(ui->entityToolButton, &QToolButton::pressed, this, &MainWindow::selectToolEntity);
     connect(ui->activateButton, &QToolButton::pressed, this, &MainWindow::selectToolActivate);
     connect(ui->deactivateButton, &QToolButton::pressed, this, &MainWindow::selectToolDeactivate);
     connect(ui->createMessageButton, &QToolButton::pressed, this, &MainWindow::selectToolCreateMessage);
@@ -26,6 +26,7 @@ void MainWindow::connectTools() {
     connect(ui->asyncMessageButton, &QToolButton::pressed, this, &MainWindow::selectToolAsyncMessage);
     connect(ui->returnMessageButton, &QToolButton::pressed, this, &MainWindow::selectToolReturnMessage);
     connect(ui->destroyMessageButton, &QToolButton::pressed, this, &MainWindow::selectToolDestroyMessage);
+    connect(ui->deleteButtonSeq, &QToolButton::pressed, this, &MainWindow::selectToolDelete);
 }
 
 void MainWindow::selectToolMouse() {
@@ -56,8 +57,8 @@ void MainWindow::selectToolDelete() {
     tool = TOOL_DELETE;
 }
 
-void MainWindow::selectToolObject() {
-    tool = TOOL_OBJECT;
+void MainWindow::selectToolEntity() {
+    tool = TOOL_ENTITY;
 }
 
 void MainWindow::selectToolActivate() {

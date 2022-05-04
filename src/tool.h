@@ -18,7 +18,7 @@ enum Tool{
     TOOL_CLASS,
     TOOL_DELETE,
     // seq. diagram tools
-    TOOL_OBJECT,
+    TOOL_ENTITY,
     TOOL_ACTIVATE,
     TOOL_DEACTIVATE,
     TOOL_CREATE_MESSAGE,

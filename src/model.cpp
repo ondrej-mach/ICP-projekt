@@ -21,7 +21,7 @@ Model::Model() {
     currentState = baseState;
 
     // stuff for testing
-    /*SequenceDiagram sd;
+    SequenceDiagram sd;
     sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "general"});
@@ -52,7 +52,7 @@ Model::Model() {
     sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
     sd1.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", "hello8()"});
     sd1.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
-    currentState.sequenceDiagrams.push_back(sd1);*/
+    currentState.sequenceDiagrams.push_back(sd1);
 }
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
@@ -153,6 +153,12 @@ for (auto &element: tree) {
                 }
             }
             // TODO check if preceeding interaction is binary
+            /*std::vector<Model::Action>::iterator iter = this->actions.end();
+            Model::Action interaction = *iter;
+
+            if (!interaction.isBinary()) {
+                throw 1;
+            }*/
             this->actions.push_back(action);
 
         } else {
@@ -418,6 +424,44 @@ void Model::removeLink(std::string from, std::string to) {
     applyCommand(cmd);
 }
 
+void Model::addEntity(std::string sdName) {
+    Command cmd;
+    cmd.type = Command::ADD_ENTITY;
+    cmd.sdName = sdName;
+    applyCommand(cmd);
+}
+
+void Model::removeEntity() {
+    Command cmd;
+    cmd.type = Command::REMOVE_ENTITY;
+    applyCommand(cmd);
+}
+
+void Model::addInteraction() {
+    Command cmd;
+    cmd.type = Command::ADD_INTERACTION;
+    applyCommand(cmd);
+}
+
+void Model::removeInteraction() {
+    Command cmd;
+    cmd.type = Command::REMOVE_INTERACTION;
+    applyCommand(cmd);
+}
+
+void Model::addActivity() {
+    Command cmd;
+    cmd.type = Command::ADD_ACTIVITY;
+    applyCommand(cmd);
+}
+
+void Model::removeActivity() {
+    Command cmd;
+    cmd.type = Command::REMOVE_ACTIVITY;
+    applyCommand(cmd);
+}
+
+
 // High-level, applies command to the current state and commandStack
 void Model::applyCommand(Command cmd) {
     executeCommand(currentState, cmd);
@@ -461,10 +505,81 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             addSeqDiagramExecute(state);
             break;
 
+        case Command::ADD_ENTITY:
+            addEntityExecute(state, cmd.sdName);
+            break;
+
+        case Command::REMOVE_ENTITY:
+            removeEntityExecute(state);
+            break;
+
+        case Command::ADD_INTERACTION:
+            addInteractionExecute(state);
+            break;
+
+        case Command::REMOVE_INTERACTION:
+            removeInteractionExecute(state);
+            break;
+        case Command::ADD_ACTIVITY:
+            addActivityExecute(state);
+            break;
+
+        case Command::REMOVE_ACTIVITY:
+            removeActivityExecute(state);
+            break;
+
         default:
             throw 1;
             break;
     }
+}
+
+void Model::removeActivityExecute(Snapshot &state) {
+
+}
+
+void Model::addActivityExecute(Snapshot &state) {
+
+}
+
+void Model::removeInteractionExecute(Snapshot &state) {
+
+}
+
+void Model::addInteractionExecute(Snapshot &state) {
+
+}
+
+void Model::removeEntityExecute(Snapshot &state) {
+
+}
+
+
+
+void Model::addEntityExecute(Snapshot &state, std::string sdName) {
+
+    std::vector<SequenceDiagram> &existingSds = state.sequenceDiagrams;
+    SequenceDiagram seqDiag;
+
+    for (auto &sd: existingSds) {
+        if (sd.name == sdName) {
+                seqDiag = sd;
+        }
+    }
+
+    std::string newName = "NewEntity";
+    int n = 1;
+    std::vector<SeqEntity> &existingEntities = seqDiag.entities;
+
+    for (auto entity: existingEntities) {
+        if (entity.name == entity.name) {
+            newName = "NewEntity" + std::to_string(n);
+            n++;
+        }
+    }
+
+    SeqEntity entity {SeqEntity::Type::PARTICIPANT, newName};
+    seqDiag.entities.push_back(entity);
 }
 
 void Model::addLinkExecute(Snapshot &state, LinkRepr newLink) {

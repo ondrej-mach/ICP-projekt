@@ -29,13 +29,17 @@ public:
 
 
     void reloadData(QString name);
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    QString diagramName;
 
 signals:
     void modelChanged();
 
+
 private:
-    Tool tool;
-    QString diagramName;
+    Tool &tool;
     // temporary line when connecting
     QGraphicsLineItem *line;
 
@@ -44,8 +48,10 @@ private:
 
     double gridToX(int n);
     double gridToY(int n);
-    //QMap<QString, QGraphicsItem *> entities;
-    //QVector<QGraphicsItem *> actions;
+    int XtoGrid(double x);
+    int YtoGrid(double y);
+    QMap<QString, QGraphicsItem *> entities;
+    QVector<QGraphicsItem *> actions;
 
 };
 

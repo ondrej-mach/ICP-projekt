@@ -61,7 +61,7 @@ void MainWindow::reloadData()
     ui->actionUndo->setEnabled(model.canUndo());
     ui->actionRedo->setEnabled(model.canRedo());
 
-    //set visibility of tools
+    //set visibility of toolbars
     if (model.getTabIndex() > 0) {
         ui->seqWidget->setVisible(true);
         ui->classWidget->setVisible(false);
@@ -79,9 +79,9 @@ void MainWindow::reloadData()
 
     int currentTab = model.getTabIndex();
     // Filthy hack to set just one sequential scene always on the selected tab
-    auto nameVector = model.getSeqDiagrams();
-    for (unsigned i=0; i < nameVector.size(); i++) {
-        auto name = nameVector[i];
+    auto diagrams = model.getSeqDiagrams();
+    for (unsigned i=0; i < diagrams.size(); i++) {
+        auto name = diagrams[i];
         if (int(i) == currentTab-1) {
             ui->tabWidget->addTab(seqDiagramView, QString::fromStdString(name));
             seqDiagramScene->reloadData(QString::fromStdString(name));

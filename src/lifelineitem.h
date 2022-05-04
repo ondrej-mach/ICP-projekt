@@ -9,6 +9,7 @@
 #define LIFELINEITEM_H
 
 #include <QGraphicsItem>
+#include <qpainterpath.h>
 
 class LifeLineItem : public QGraphicsItem
 {
@@ -18,9 +19,10 @@ public:
     double rectWidth = 120;
     double rectHeight = 40;
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+    QRectF boundingRect() const override;
 
+    QPainterPath shape() const override;
 private:
     double x, yStart, yEnd;
     QString name;

@@ -12,10 +12,15 @@
 LifeLineItem::LifeLineItem(double x, double yStart, double yEnd, QString name, QGraphicsItem *parent)
     : QGraphicsItem(parent), x(x), yStart(yStart), yEnd(yEnd), name(name) {
 
+
     setPos(QPointF(x, yStart));
 }
 
-
+QPainterPath LifeLineItem::shape() const {
+    QPainterPath path;
+    path.addPolygon(QRectF(-rectWidth/2, -rectHeight, rectWidth, rectHeight));
+    return path;
+}
 
 void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
 
@@ -24,6 +29,7 @@ void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QW
     pen.setWidth(2);
     painter->setPen(pen);
     painter->setBrush(brush);
+    //setFlags(QGraphicsItem::ItemIsMovable);
 
     // Draw the box with name
     QRectF nameBox = QRectF(-rectWidth/2, -rectHeight, rectWidth, rectHeight);
@@ -41,5 +47,5 @@ void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QW
 
 QRectF LifeLineItem::boundingRect() const {
     double lineLength = yEnd-yStart;
-    return QRectF(-rectWidth/2, rectHeight, rectWidth, rectHeight+lineLength);
+    return QRectF(-rectWidth/2, -rectHeight, rectWidth, rectHeight + lineLength);
 }

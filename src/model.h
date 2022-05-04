@@ -105,12 +105,17 @@ public:
     void removeLink(std::string from, std::string to);
     void changeClassProperties(std::string name, ClassRepr cls);
     void changeTab(int index);
-
+    //seq. diagram
     void addSeqDiagram();
+    void addEntity(std::string sdName);
+    void removeEntity();
+    void addInteraction();
+    void removeInteraction();
+    void addActivity();
+    void removeActivity();
 
     void undo();
     void redo();
-
 
 
 
@@ -125,6 +130,12 @@ private:
             ADD_CLASS,
             REMOVE_CLASS,
             ADD_SEQ_DIAGRAM,
+            ADD_ENTITY,
+            REMOVE_ENTITY,
+            ADD_INTERACTION,
+            REMOVE_INTERACTION,
+            ADD_ACTIVITY,
+            REMOVE_ACTIVITY,
         };
         Type type;
 
@@ -135,12 +146,14 @@ private:
         std::string from; //REMOVE_LINK
         std::string to; //REMOVE_LINK
         int x, y; // ADD_CLASS
+        std::string sdName;
     };
 
     struct ClassDiagram {
         // constructor from ptree
         ClassDiagram() = default;
         ClassDiagram(pt::ptree &tree);
+
         std::map<std::string, ClassRepr> classes;
         std::vector<LinkRepr> links;
     };
@@ -148,6 +161,7 @@ private:
     struct SequenceDiagram {
         SequenceDiagram() = default;
         SequenceDiagram(pt::ptree &tree);
+
         std::string name;
         std::vector<SeqEntity> entities;
         std::vector<Action> actions;
@@ -178,6 +192,12 @@ private:
     void changeClassPropertiesExecute(Snapshot &state, Command cmd);
 
     void addSeqDiagramExecute(Snapshot &state);
+    void addEntityExecute(Snapshot &state, std::string sdName);
+    void removeEntityExecute(Snapshot &state);
+    void addInteractionExecute(Snapshot &state);
+    void removeInteractionExecute(Snapshot &state);
+    void addActivityExecute(Snapshot &state);
+    void removeActivityExecute(Snapshot &state);
 };
 
 extern Model model;
