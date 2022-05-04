@@ -1,9 +1,12 @@
+/** @file activityitem.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "activityitem.h"
 #include <QGraphicsLineItem>
 #include <QGraphicsScene>
-//#incl
-
-
 
 
 ActivityItem::ActivityItem(double x, double yStart, double yEnd, QGraphicsItem *parent)

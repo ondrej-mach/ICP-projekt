@@ -1,3 +1,9 @@
+/** @file classgraphicsitem.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "classgraphicsitem.h"
 #include "linkgraphicsitem.h"
 #include "classdiagramscene.h"

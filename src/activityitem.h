@@ -1,3 +1,10 @@
+/** @file activityitem.h
+ *  @brief Graphical item to indicate activity.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef ACTIVITYITEM_H
 #define ACTIVITYITEM_H
 

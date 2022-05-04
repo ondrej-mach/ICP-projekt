@@ -1,3 +1,9 @@
+/** @file lifelineitem.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "lifelineitem.h"
 #include <QPointF>
 #include <QGraphicsScene>

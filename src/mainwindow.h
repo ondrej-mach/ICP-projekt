@@ -1,3 +1,10 @@
+/** @file mainwindow.h
+ *  @brief Application's main window with all the scenes and tools.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

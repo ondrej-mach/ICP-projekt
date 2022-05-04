@@ -1,3 +1,10 @@
+/** @file classgraphicsitem.h
+ *  @brief Graphical item that represents class in class diagram.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef CLASSGRAPHICSITEM_H
 #define CLASSGRAPHICSITEM_H
 

@@ -1,3 +1,9 @@
+/** @file classeditdialog.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "classeditdialog.h"
 #include "ui_classeditdialog.h"
 #include <QLineEdit>

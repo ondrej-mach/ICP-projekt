@@ -1,3 +1,10 @@
+/** @file seqdiagramscene.h
+ *  @brief Graphical scene for showing and editing sequence diagrams.
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #ifndef SEQDIAGRAMSCENE_H
 #define SEQDIAGRAMSCENE_H
 

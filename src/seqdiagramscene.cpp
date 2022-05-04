@@ -1,3 +1,9 @@
+/** @file seqdiagramscene.cpp
+ *
+ *  @author Ondřej Mach (xmacho12)
+ *  @author Rostislav Lán (xlanro00)
+ */
+
 #include "seqdiagramscene.h"
 #include "model.h"
 #include "lifelineitem.h"
