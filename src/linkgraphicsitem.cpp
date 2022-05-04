@@ -34,7 +34,11 @@ QRectF LinkGraphicsItem::boundingRect() const {
 QPainterPath LinkGraphicsItem::shape() const {
     QPainterPath path = QGraphicsLineItem::shape();
     path.addPolygon(linkHead);
-    return path;
+    QPainterPathStroker stroker;
+    stroker.setWidth(10);
+    stroker.setJoinStyle(Qt::MiterJoin); // and other adjustments you need
+    QPainterPath newpath = (stroker.createStroke(path) + path).simplified();
+    return newpath;
 }
 
 void LinkGraphicsItem::updatePosition() {

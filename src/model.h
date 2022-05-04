@@ -95,6 +95,7 @@ public:
     void addClass(double x=0, double y=0);
     void removeClass(std::string name);
     void addLink(LinkRepr link);
+    void removeLink(std::string from, std::string to);
     void changeClassProperties(std::string name, ClassRepr cls);
     void changeTab(int index);
 
@@ -113,6 +114,7 @@ private:
             SWITCH_TAB,
             CHANGE_CLASS_PROPS, // changing class methods, attributes, renaming
             ADD_LINK,
+            REMOVE_LINK,
             ADD_CLASS,
             REMOVE_CLASS,
             ADD_SEQ_DIAGRAM,
@@ -123,6 +125,8 @@ private:
         ClassRepr cls; // CHANGE_CLASS_PROPS
         LinkRepr link; // ADD_LINK
         std::string currentName; // CHANGE_CLASS_PROPS, REMOVE_CLASS
+        std::string from; //REMOVE_LINK
+        std::string to; //REMOVE_LINK
         int x, y; // ADD_CLASS
     };
 
@@ -158,8 +162,8 @@ private:
 
     void applyCommand(Command cmd);
     void executeCommand(Snapshot &state, Command cmd);
-
     void addLinkExecute(Snapshot &state, LinkRepr newLink);
+    void removeLinkExecute(Snapshot &state, std::string from, std::string to);
     void addClassExecute(Snapshot &state, double x=0, double y=0);
     void removeClassExecute(Snapshot &state, std::string name);
     void changeClassPropertiesExecute(Snapshot &state, Command cmd);

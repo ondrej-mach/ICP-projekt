@@ -9,6 +9,7 @@
 #include <QGraphicsItem>
 #include <QMap>
 #include <string>
+// TODO #include <math>
 
 #include <QMenu>
 #include <QAction>
@@ -83,19 +84,21 @@ void ClassDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
+    QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
+    QList<QGraphicsItem *> itemsList = items(point);
+    ClassGraphicsItem *deletedClass;
+    LinkGraphicsItem *deletedLink;
+
     switch (tool) {
         case TOOL_DELETE:
-            for (auto classname: model.getClasses()) {
-                Model::ClassRepr classStruct = model.getClass(classname);
-
-                QString qname = QString::fromStdString(classname);
-                ClassGraphicsItem *cgi = new ClassGraphicsItem{classStruct, editMenu};
-                QPair<int, int> dimensions = cgi->computeDimensions();
-                if ((mouseEvent->scenePos().x() < classStruct.x + dimensions.first/2) &&
-                    (mouseEvent->scenePos().x() > classStruct.x - dimensions.first/2) &&
-                    (mouseEvent->scenePos().y() < classStruct.y + dimensions.second/2) &&
-                    (mouseEvent->scenePos().y() > classStruct.y - dimensions.second/2)) {
-                    model.removeClass(classname);
+            for (auto item: itemsList) {
+                if (item->type() == ClassGraphicsItem::Type) {
+                    deletedClass = qgraphicsitem_cast<ClassGraphicsItem *>(item);
+                    model.removeClass(deletedClass->getName().toStdString());
+                }
+                else if (item->type() == LinkGraphicsItem::Type) {
+                    deletedLink = qgraphicsitem_cast<LinkGraphicsItem *>(item);
+                    model.removeLink(deletedLink->from->getName().toStdString(), deletedLink->to->getName().toStdString());
                 }
             }
             emit modelChanged();
@@ -138,37 +141,22 @@ void ClassDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
     if (tool == TOOL_DELETE) {
-        for (auto classname: model.getClasses()) {
-            Model::ClassRepr classStruct = model.getClass(classname);
-            QString qname = QString::fromStdString(classname);
-            ClassGraphicsItem *cgi = new ClassGraphicsItem{classStruct, editMenu};
-            QPair<int, int> dimensions = cgi->computeDimensions();
-            if ((mouseEvent->scenePos().x() < classStruct.x + dimensions.first/2) &&
-                (mouseEvent->scenePos().x() > classStruct.x - dimensions.first/2) &&
-                (mouseEvent->scenePos().y() < classStruct.y + dimensions.second/2) &&
-                (mouseEvent->scenePos().y() > classStruct.y - dimensions.second/2)) {
-                model.removeClass(classname);
-                emit modelChanged();
+        QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
+        QList<QGraphicsItem *> itemsList = items(point);
+        ClassGraphicsItem *deletedClass;
+        LinkGraphicsItem *deletedLink;
+
+        for (auto item: itemsList) {
+            if (item->type() == ClassGraphicsItem::Type) {
+                deletedClass = qgraphicsitem_cast<ClassGraphicsItem *>(item);
+                model.removeClass(deletedClass->getName().toStdString());
+            }
+            else if (item->type() == LinkGraphicsItem::Type) {
+                deletedLink = qgraphicsitem_cast<LinkGraphicsItem *>(item);
+                model.removeLink(deletedLink->from->getName().toStdString(), deletedLink->to->getName().toStdString());
             }
         }
-        /*for (auto link: model.getLinks()) {
-            Model::ClassRepr classFrom = model.getClass(link.from);
-            Model::ClassRepr classTo = model.getClass(link.to);
-            QString qnameFrom = QString::fromStdString(link.from);
-            QString qnameTo = QString::fromStdString(link.to);
-            ClassGraphicsItem *cgiFrom = new ClassGraphicsItem{classFrom, editMenu};
-            ClassGraphicsItem *cgiTo = new ClassGraphicsItem{classTo, editMenu};
-            LinkGraphicsItem *lgi = new LinkGraphicsItem(cgiFrom, cgiTo, link.type);
-            QPair<int, int> point1 = {cgiFrom->x(), cgiFrom->y()};
-            QPair<int, int> point2 = {cgiTo->x(), cgiTo->y()};
-            QPair<int, int> smerVec = {point1.first - point2.first, point1.second - point2.second};
-            QPair<int, int> newVec = {point1.first - mouseEvent->scenePos().x(), point1.second - mouseEvent->scenePos().y()};
-            if (newVec == smerVec) {
-                link.from = "";
-                link.to = "";
-                emit modelChanged();
-            }
-        }*/
+        emit modelChanged();
     }
 }
 

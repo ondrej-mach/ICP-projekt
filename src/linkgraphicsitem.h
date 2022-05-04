@@ -26,10 +26,11 @@ public:
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void updatePosition();
-
-private:
     ClassGraphicsItem *from;
     ClassGraphicsItem *to;
+
+private:
+
     QColor myColor = Qt::black;
     QPolygonF linkHead;
     Model::LinkRepr::Type linkType;

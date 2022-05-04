@@ -318,6 +318,14 @@ void Model::addLink(LinkRepr link) {
     applyCommand(cmd);
 }
 
+void Model::removeLink(std::string from, std::string to) {
+    Command cmd;
+    cmd.type = Command::REMOVE_LINK;
+    cmd.from = from;
+    cmd.to = to;
+    applyCommand(cmd);
+}
+
 // High-level, applies command to the current state and commandStack
 void Model::applyCommand(Command cmd) {
     executeCommand(currentState, cmd);
@@ -339,6 +347,10 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
 
         case Command::ADD_LINK:
             addLinkExecute(state, cmd.link);
+            break;
+
+        case Command::REMOVE_LINK:
+            removeLinkExecute(state, cmd.from, cmd.to);
             break;
 
         case Command::ADD_CLASS:
@@ -380,6 +392,18 @@ void Model::addLinkExecute(Snapshot &state, LinkRepr newLink) {
         state.classDiagram.links.push_back(newLink);
     } else {
         throw 1;
+    }
+}
+
+void Model::removeLinkExecute(Snapshot &state, std::string from, std::string to) {
+    for (std::vector<LinkRepr>::iterator it = state.classDiagram.links.begin(); it != state.classDiagram.links.end(); ) {
+        auto &existingLink = (*it);
+        if ((existingLink.from == from) && (existingLink.to == to)) {
+            it = state.classDiagram.links.erase(it);
+            return;
+        } else {
+            ++it;
+        }
     }
 }
 
