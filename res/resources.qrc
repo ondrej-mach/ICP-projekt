@@ -7,5 +7,13 @@
         <file>icons/generalization.png</file>
         <file>icons/class.png</file>
         <file>icons/mouse.png</file>
+        <file>icons/entity.png</file>
+        <file>icons/activate.png</file>
+        <file>icons/deactivate.png</file>
+        <file>icons/async_msg.png</file>
+        <file>icons/sync_msg.png</file>
+        <file>icons/create_msg.png</file>
+        <file>icons/return_msg.png</file>
+        <file>icons/destroy_msg.png</file>
     </qresource>
 </RCC>
