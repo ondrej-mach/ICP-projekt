@@ -86,3 +86,8 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->drawLine(line());
 }
 
+QVector<double> InteractionItem::getCoords(InteractionItem *item)
+{
+    return QVector{item->y, item->xStart, item->xEnd};
+}
+

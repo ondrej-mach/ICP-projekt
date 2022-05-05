@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <qstring.h>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -19,6 +20,7 @@ namespace pt = boost::property_tree;
 #include <vector>
 #include <string>
 #include <map>
+#include <QVector>
 
 class Model {
 public:
@@ -108,9 +110,9 @@ public:
     //seq. diagram
     void addSeqDiagram();
     void addEntity(std::string sdName);
-    void removeEntity();
+    void removeEntity(QString diagName, QString entityName);
     void addInteraction();
-    void removeInteraction();
+    void removeInteraction(QString diagName, QVector<double> coords);
     void addActivity();
     void removeActivity();
 
@@ -146,7 +148,10 @@ private:
         std::string from; //REMOVE_LINK
         std::string to; //REMOVE_LINK
         int x, y; // ADD_CLASS
-        std::string sdName;
+        std::string sdName; //sequence diag. name
+        std::string entityName; //entity name
+        std::string actionName;
+        QVector<double> coords;
     };
 
     struct ClassDiagram {
@@ -192,10 +197,11 @@ private:
     void changeClassPropertiesExecute(Snapshot &state, Command cmd);
 
     void addSeqDiagramExecute(Snapshot &state);
-    void addEntityExecute(Snapshot &state, std::string sdName);
-    void removeEntityExecute(Snapshot &state);
-    void addInteractionExecute(Snapshot &state);
-    void removeInteractionExecute(Snapshot &state);
+    void addEntityExecute(Snapshot &state, std::string sdName /*, entita na smazani string*/);
+    void removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName);
+    void addInteractionExecute(Snapshot &state/*, jakej sd string, interakce na pridani string*/);
+    void removeInteractionExecute(Snapshot &state, std::string sdName, QVector<double> coords);
+    //smazat
     void addActivityExecute(Snapshot &state);
     void removeActivityExecute(Snapshot &state);
 };

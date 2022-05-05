@@ -18,6 +18,7 @@ public:
 
     QRectF boundingRect() const;
      void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QVector<double> getCoords(InteractionItem *item);
 
 private:
     double y, xStart, xEnd;

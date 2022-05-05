@@ -24,6 +24,7 @@ void SeqDiagramScene::reloadData(QString name) {
     QBrush redBrush{Qt::red};
 
     std::string sdName = name.toStdString();
+    diagramName = name;
     std::vector<Model::SeqEntity> entities = model.getEntities(sdName);
     std::vector<Model::Action> actions = model.getActions(sdName);
 
@@ -179,20 +180,24 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             for (auto item: itemsList) {
                 if (item->type() == InteractionItem::Type) {
                     delItemInt = qgraphicsitem_cast<InteractionItem *>(item);
-                    model.removeInteraction();
+                    QVector<double> coords = delItemInt->getCoords(delItemInt);
+                    model.removeInteraction(getName(this), coords);
                     //TODO zprovoznit delete
+                    emit modelChanged();
                     qWarning( "delete interaction");
                 }
                 else if (item->type() == LifeLineItem::Type) {
                     delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
-                    model.removeEntity();
+                    model.removeEntity(getName(this), delItemLife->getName(delItemLife));
                     //TODO zprovoznit delete
+                    emit modelChanged();
                     qWarning( "delete lifeline");
                 }
                 else if (item->type() == ActivityItem::Type) {
                     delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
-                    model.removeActivity();
+                    //model.removeActivity();
                     //TODO zprovoznit delete
+                    emit modelChanged();
                     qWarning( "delete activity");
                 }
             }
@@ -233,20 +238,24 @@ void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             for (auto item: itemsList) {
                 if (item->type() == InteractionItem::Type) {
                     delItemInt = qgraphicsitem_cast<InteractionItem *>(item);
-                    model.removeInteraction();
+                    QVector<double> coords = delItemInt->getCoords(delItemInt);
+                    model.removeInteraction(getName(this), coords);
                     //TODO zprovoznit delete
+                    emit modelChanged();
                     qWarning( "delete interaction");
                 }
                 else if (item->type() == LifeLineItem::Type) {
                     delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
-                    model.removeEntity();
+                    model.removeEntity(getName(this), delItemLife->getName(delItemLife));
                     //TODO zprovoznit delete
+                    emit modelChanged();
                     qWarning( "delete lifeline");
                 }
                 else if (item->type() == ActivityItem::Type) {
                     delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
-                    model.removeActivity();
+                    //model.removeActivity();
                     //TODO zprovoznit delete
+                    emit modelChanged();
                     qWarning( "delete activity");
                 }
             }
@@ -283,4 +292,9 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
+
+QString SeqDiagramScene::getName(SeqDiagramScene *scene)
+{
+    return scene->diagramName;
 }

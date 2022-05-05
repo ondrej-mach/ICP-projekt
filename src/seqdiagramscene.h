@@ -32,7 +32,7 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
-    QString diagramName;
+    QString getName(SeqDiagramScene *scene);
 
 signals:
     void modelChanged();
@@ -52,6 +52,7 @@ private:
     int YtoGrid(double y);
     QMap<QString, QGraphicsItem *> entities;
     QVector<QGraphicsItem *> actions;
+    QString diagramName;
 
 };
 

@@ -22,6 +22,11 @@ QPainterPath LifeLineItem::shape() const {
     return path;
 }
 
+QString LifeLineItem::getName(LifeLineItem *entity)
+{
+    return entity->name;
+}
+
 void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
 
     QPen pen(Qt::black);

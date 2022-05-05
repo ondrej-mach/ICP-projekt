@@ -431,9 +431,11 @@ void Model::addEntity(std::string sdName) {
     applyCommand(cmd);
 }
 
-void Model::removeEntity() {
+void Model::removeEntity(QString diagName, QString entityName) {
     Command cmd;
     cmd.type = Command::REMOVE_ENTITY;
+    cmd.sdName = diagName.toStdString();
+    cmd.entityName = entityName.toStdString();
     applyCommand(cmd);
 }
 
@@ -443,9 +445,11 @@ void Model::addInteraction() {
     applyCommand(cmd);
 }
 
-void Model::removeInteraction() {
+void Model::removeInteraction(QString diagName, QVector<double> coords) {
     Command cmd;
     cmd.type = Command::REMOVE_INTERACTION;
+    cmd.coords = coords;
+    cmd.sdName = diagName.toStdString();
     applyCommand(cmd);
 }
 
@@ -510,7 +514,7 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             break;
 
         case Command::REMOVE_ENTITY:
-            removeEntityExecute(state);
+            removeEntityExecute(state, cmd.sdName, cmd.entityName);
             break;
 
         case Command::ADD_INTERACTION:
@@ -518,7 +522,7 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             break;
 
         case Command::REMOVE_INTERACTION:
-            removeInteractionExecute(state);
+            removeInteractionExecute(state, cmd.sdName, cmd.coords);
             break;
         case Command::ADD_ACTIVITY:
             addActivityExecute(state);
@@ -535,27 +539,57 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
 }
 
 void Model::removeActivityExecute(Snapshot &state) {
-
+    return;
 }
 
 void Model::addActivityExecute(Snapshot &state) {
-
+    return;
 }
 
-void Model::removeInteractionExecute(Snapshot &state) {
-
+void Model::removeInteractionExecute(Snapshot &state, std::string sdName, QVector<double> coords) {
+    SequenceDiagram seqDiag;
+    for (auto &sd: state.sequenceDiagrams) {
+        if (sd.name == sdName) {
+                seqDiag = sd;
+                break;
+        }
+    }
+//   for (std::vector<Action>::iterator it = seqDiag.actions.begin(); it != seqDiag.actions.end(); ) {
+//        auto &interaction = (*it);
+//        if (interaction) {
+//            it = seqDiag.entities.erase(it);
+//            return;
+//        } else {
+//            ++it;
+//        }
+//    }
 }
 
 void Model::addInteractionExecute(Snapshot &state) {
-
+    return;
 }
 
-void Model::removeEntityExecute(Snapshot &state) {
-
+void Model::removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName) {
+    SequenceDiagram seqDiag;
+    for (auto &sd: state.sequenceDiagrams) {
+        if (sd.name == sdName) {
+                seqDiag = sd;
+                break;
+        }
+    }
+    for (std::vector<SeqEntity>::iterator it = seqDiag.entities.begin(); it != seqDiag.entities.end(); ) {
+        auto &entity = (*it);
+        if (entity.name == entityName) {
+            it = seqDiag.entities.erase(it);
+            return;
+        } else {
+            ++it;
+        }
+    }
 }
 
 
-
+// not working
 void Model::addEntityExecute(Snapshot &state, std::string sdName) {
 
     std::vector<SequenceDiagram> &existingSds = state.sequenceDiagrams;
@@ -564,6 +598,7 @@ void Model::addEntityExecute(Snapshot &state, std::string sdName) {
     for (auto &sd: existingSds) {
         if (sd.name == sdName) {
                 seqDiag = sd;
+                break;
         }
     }
 
@@ -572,7 +607,7 @@ void Model::addEntityExecute(Snapshot &state, std::string sdName) {
     std::vector<SeqEntity> &existingEntities = seqDiag.entities;
 
     for (auto entity: existingEntities) {
-        if (entity.name == entity.name) {
+        if (entity.name == newName) {
             newName = "NewEntity" + std::to_string(n);
             n++;
         }
@@ -635,7 +670,7 @@ void Model::removeClassExecute(Snapshot &state, std::string name) {
     for (auto it=links.begin(); it!=links.end(); ) {
         auto &link = *it;
         if ((link.from == name) || (link.to == name)) {
-           state.classDiagram.links.erase(it);
+           it = state.classDiagram.links.erase(it);
         } else {
             it++;
         }
