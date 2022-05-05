@@ -45,7 +45,6 @@ void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QW
     pen.setWidth(5);
     pen.setStyle(Qt::DashLine);
     painter->setPen(pen);
-
     painter->drawLine(QPointF(0,0), QPointF(0, yEnd-yStart));
 
 }
@@ -53,4 +52,19 @@ void LifeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QW
 QRectF LifeLineItem::boundingRect() const {
     double lineLength = yEnd-yStart;
     return QRectF(-rectWidth/2, -rectHeight, rectWidth, rectHeight + lineLength);
+}
+
+QVector<double> LifeLineItem::getCoords(LifeLineItem *item)
+{
+    return QVector{item->x, item->yStart, item->yEnd};
+}
+
+
+Model::SeqEntity LifeLineItem::convertToSeqEntity(LifeLineItem *item)
+{
+    Model::SeqEntity seqEntity{};
+    seqEntity.name = this->name.toStdString();
+    // hardcoded for now
+    seqEntity.type = Model::SeqEntity::Type::PARTICIPANT;
+    return seqEntity;
 }

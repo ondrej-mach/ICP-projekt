@@ -11,7 +11,7 @@
 #include <QtMath>
 
 InteractionItem::InteractionItem(double y, double xStart, double xEnd, QString desc, Model::Action::Type type)
-    : y(y), xStart(xStart), xEnd(xEnd), desc(desc), type(type)
+    : y(y), xStart(xStart), xEnd(xEnd), type(type), desc(desc)
 {
     setPos(xStart, y);
     double len = xEnd - xStart;
@@ -35,25 +35,33 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     QPointF P2 = QPointF(xEnd-xStart, 0);
     setLine(QLineF(P1, P2));
 
-    bool arrowLeft = (xStart - xEnd) > 0;
-    double arg = 0;
+    painter->setBrush(Qt::black);
+    QPen polyPen {Qt::black, 3, Qt::SolidLine};
+    QPen linePen {Qt::black, 3, Qt::SolidLine};
+    painter->setPen(polyPen);
+
+    int baseLength = 150;
+    int intLength =  (xEnd - xStart);
+    int ticks = intLength / baseLength;
+    qDebug("%d", intLength);
+    bool arrowLeft = intLength < 0;
     if (arrowLeft) {
-        arg = M_PI / 3;
+        // going left
+        painter->drawText(-intLength/ (2 * ticks) - 40 , -8, this->desc);
     }
     else {
-        arg = - M_PI / 3;
+        // going right
+        painter->drawText(intLength/ (2 * ticks) - 40, -8, this->desc);
     }
+
+    double arg = 0;
+    (arrowLeft) ? arg = (M_PI / 3) : (arg = - M_PI / 3);
     QPointF arrowP1 = line().p2() + arrowSize * QPointF(sin(arg), cos(arg));
     arg *= 2;
     QPointF arrowP2 = line().p2() + arrowSize * QPointF(sin(arg), cos(arg));
 
     interactionHead.clear();
 
-    painter->setBrush(Qt::black);
-    QPen polyPen {Qt::black, 3, Qt::SolidLine};
-    QPen linePen {Qt::black, 3, Qt::SolidLine};
-
-    painter->setPen(polyPen);
 
     //TODO text nad sipkou
     if (type == Model::Action::Type::SYNC) {
@@ -71,6 +79,9 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         linePen = {Qt::black, 3, Qt::DashLine};
     }
     else if (type == Model::Action::Type::CREATE) {
+        P2 = P2 - QPointF(60, 0);
+        arrowP1 = arrowP1 - QPointF(60, 0);
+        arrowP2 = arrowP2 - QPointF(60, 0);
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
     }

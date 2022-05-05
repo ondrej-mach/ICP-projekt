@@ -18,6 +18,7 @@
 
 #include "model.h"
 #include "tool.h"
+#include "interactionitem.h"
 
 class SeqDiagramScene : public QGraphicsScene
 {
@@ -33,6 +34,7 @@ public:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     QString getName(SeqDiagramScene *scene);
+
 
 signals:
     void modelChanged();
@@ -53,6 +55,8 @@ private:
     QMap<QString, QGraphicsItem *> entities;
     QVector<QGraphicsItem *> actions;
     QString diagramName;
+
+    void checkEntities(QString entityName, InteractionItem *delItemInt);
 
 };
 

@@ -10,6 +10,7 @@
 
 #include <QGraphicsItem>
 #include <qpainterpath.h>
+#include "model.h"
 
 class LifeLineItem : public QGraphicsItem
 {
@@ -28,6 +29,9 @@ public:
 
     QPainterPath shape() const override;
     QString getName(LifeLineItem *entity);
+    QVector<double> getCoords(LifeLineItem *item);
+
+    Model::SeqEntity convertToSeqEntity(LifeLineItem *item);
 private:
     double x, yStart, yEnd;
     QString name;

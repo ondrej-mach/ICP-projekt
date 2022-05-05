@@ -53,7 +53,7 @@ public:
         std::string name;
     };
 
-        struct Action {
+    struct Action {
         enum Type {
             // binary from -> to
             SYNC,
@@ -245,12 +245,10 @@ private:
             REMOVE_ENTITY,
             ADD_INTERACTION,
             REMOVE_INTERACTION,
-            ADD_ACTIVITY,
-            REMOVE_ACTIVITY,
         };
         Type type;
 
-        int newTab; // SWITCH_TAB    
+        int newTab; // SWITCH_TAB
         ClassRepr cls; // CHANGE_CLASS_PROPS
         LinkRepr link; // ADD_LINK
         std::string currentName; // CHANGE_CLASS_PROPS, REMOVE_CLASS
@@ -355,9 +353,6 @@ private:
     void removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName);
     void addInteractionExecute(Snapshot &state/*, jakej sd string, interakce na pridani string*/);
     void removeInteractionExecute(Snapshot &state, std::string sdName, QVector<double> coords);
-    //smazat
-    void addActivityExecute(Snapshot &state);
-    void removeActivityExecute(Snapshot &state);
 };
 
 extern Model model;

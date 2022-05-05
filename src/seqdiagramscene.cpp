@@ -6,9 +6,9 @@
 
 #include "seqdiagramscene.h"
 #include "model.h"
-#include "lifelineitem.h"
 #include "interactionitem.h"
 #include "activityitem.h"
+#include "lifelineitem.h"
 
 #include <QGraphicsSceneMouseEvent>
 
@@ -59,10 +59,19 @@ void SeqDiagramScene::reloadData(QString name) {
                 createdAt[createdObject] = interactionCount;
             }
         }
+
         // Unary actions dont occupy any space
         // they happen on the last binary interaction
         if (a.isBinary()) {
             interactionCount++;
+//            for (auto &entityRepr: entities) {
+//                LifeLineItem *entity {};
+//                if () {
+//                    a.from = ;
+//                } else if () {
+//                    a.to = ;
+//                }
+//            }
         }
         else {
             if (a.type == Model::Action::ACTIVATE) {
@@ -149,59 +158,48 @@ int SeqDiagramScene::YtoGrid(double y) {
     return y / actionDistance;
 }
 
+void SeqDiagramScene::checkEntities(QString entityName, InteractionItem *delItemInteraction) {
+    for (QGraphicsItem *activity: this->actions) {
+        InteractionItem *intItem = qgraphicsitem_cast<InteractionItem *>(activity);
+        if ((intItem->from == entityName) || (intItem->to == entityName)) {
+            QVector<double> coords = delItemInteraction->getCoords(delItemInteraction);
+            model.removeInteraction(getName(this), coords);
+            emit modelChanged();
+        }
+    }
+}
+
 void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 
     QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
     QList<QGraphicsItem *> itemsList = items(point);
-    QPair gridPoint{XtoGrid(point.x()), YtoGrid(point.y())};
-    InteractionItem *delItemInt;
     LifeLineItem *delItemLife;
-    ActivityItem *delItemAct;
 
     switch (tool) {
         case TOOL_ENTITY:
             model.addEntity(this->diagramName.toStdString());
             emit modelChanged();
-            return; // do not pass mouse events
-
+            return;
+        case TOOL_DELETE:
+            for (auto item: itemsList) {
+                if (item->type() == LifeLineItem::Type) {
+                    delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
+                    QString entityName = delItemLife->getName(delItemLife);
+                    model.removeEntity(getName(this), entityName);
+                    // TODO remove interactions dependent on deleted entity
+                    //checkEntities(entityName, delItemInteraction);
+                    emit modelChanged();
+                }
+            }
+            break;
         case TOOL_ACTIVATE:
         case TOOL_DEACTIVATE:
-            //TODO
-            emit modelChanged();
-            break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            break;
-        case TOOL_DELETE:
-            for (auto item: itemsList) {
-                if (item->type() == InteractionItem::Type) {
-                    delItemInt = qgraphicsitem_cast<InteractionItem *>(item);
-                    QVector<double> coords = delItemInt->getCoords(delItemInt);
-                    model.removeInteraction(getName(this), coords);
-                    //TODO zprovoznit delete
-                    emit modelChanged();
-                    qWarning( "delete interaction");
-                }
-                else if (item->type() == LifeLineItem::Type) {
-                    delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
-                    model.removeEntity(getName(this), delItemLife->getName(delItemLife));
-                    //TODO zprovoznit delete
-                    emit modelChanged();
-                    qWarning( "delete lifeline");
-                }
-                else if (item->type() == ActivityItem::Type) {
-                    delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
-                    //model.removeActivity();
-                    //TODO zprovoznit delete
-                    emit modelChanged();
-                    qWarning( "delete activity");
-                }
-            }
-            break;
         case TOOL_MOUSE:
         default:;
     }
@@ -213,53 +211,34 @@ void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
     QList<QGraphicsItem *> itemsList = items(point);
-    QPair gridPoint{XtoGrid(point.x()), YtoGrid(point.y())};
-    InteractionItem *delItemInt;
-    LifeLineItem *delItemLife;
+    InteractionItem *delItemInteraction;
     ActivityItem *delItemAct;
 
     switch (tool) {
-        case TOOL_ENTITY:
-            model.addEntity(this->diagramName.toStdString());
-            emit modelChanged();
-            return; // do not pass mouse events
+        case TOOL_DELETE:
+            for (auto item: itemsList) {
+            //TODO zprovoznit delete
+                if (item->type() == InteractionItem::Type) {
+                    delItemInteraction = qgraphicsitem_cast<InteractionItem *>(item);
+                    QVector<double> coords = delItemInteraction->getCoords(delItemInteraction);
+                    model.removeInteraction(getName(this), coords);
+                    emit modelChanged();
+                }
+                else if (item->type() == ActivityItem::Type) {
+                    delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
+                    // TODO fce, co neni v modelu a co rusi aktivitu
+                    // model.removeActivity();
+                    emit modelChanged();
+                }
+            }
+            break;
         case TOOL_ACTIVATE:
         case TOOL_DEACTIVATE:
-            //emit modelChanged();
-            break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            //emit modelChanged();
-            break;
-        case TOOL_DELETE:
-            for (auto item: itemsList) {
-                if (item->type() == InteractionItem::Type) {
-                    delItemInt = qgraphicsitem_cast<InteractionItem *>(item);
-                    QVector<double> coords = delItemInt->getCoords(delItemInt);
-                    model.removeInteraction(getName(this), coords);
-                    //TODO zprovoznit delete
-                    emit modelChanged();
-                    qWarning( "delete interaction");
-                }
-                else if (item->type() == LifeLineItem::Type) {
-                    delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
-                    model.removeEntity(getName(this), delItemLife->getName(delItemLife));
-                    //TODO zprovoznit delete
-                    emit modelChanged();
-                    qWarning( "delete lifeline");
-                }
-                else if (item->type() == ActivityItem::Type) {
-                    delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
-                    //model.removeActivity();
-                    //TODO zprovoznit delete
-                    emit modelChanged();
-                    qWarning( "delete activity");
-                }
-            }
-            break;
         case TOOL_MOUSE:
         default:;
     }
@@ -270,25 +249,16 @@ void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     switch (tool) {
-        case TOOL_ENTITY:
-            //emit modelChanged();
-            return;
         case TOOL_ACTIVATE:
         case TOOL_DEACTIVATE:
-            //emit modelChanged();
-
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            //emit modelChanged();
-
-        case TOOL_DELETE:
-            //emit modelChanged();
-
         case TOOL_MOUSE:
-        default:;
+        default:
+            ;//emit modelChanged();
     }
 
     QGraphicsScene::mouseReleaseEvent(mouseEvent);

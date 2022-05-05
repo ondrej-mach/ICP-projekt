@@ -14,11 +14,12 @@
 class InteractionItem : public QGraphicsLineItem
 {
 public:
-    InteractionItem(double y, double xStart, double xEnd, QString desc="", Model::Action::Type type=Model::Action::SYNC);
+    InteractionItem(double y, double xStart, double xEnd, QString desc, Model::Action::Type type=Model::Action::SYNC);
 
     QRectF boundingRect() const;
      void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
     QVector<double> getCoords(InteractionItem *item);
+    QString from, to;
 
 private:
     double y, xStart, xEnd;
