@@ -71,9 +71,6 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         linePen = {Qt::black, 3, Qt::DashLine};
     }
     else if (type == Model::Action::Type::CREATE) {
-        P2 = P2 - QPointF(60, 0);
-        arrowP1 = arrowP1 - QPointF(60, 0);
-        arrowP2 = arrowP2 - QPointF(60, 0);
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
     }
