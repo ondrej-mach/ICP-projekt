@@ -33,14 +33,35 @@ public:
     ~ClassGraphicsItem();
 
     QRectF boundingRect() const override;
+
+    /** @brief Computes dimensions of the item.
+     *  @return Returns width and height of the item.
+     */
     QPair<int, int> computeDimensions() const;
+
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *widget) override;
 
+    /** @brief Converts current class to model classrepr.
+     *  @return The item converted to model representation.
+     */
     Model::ClassRepr convertToClassRepr();
+
+    /** @brief Fetches name of the class.
+     *  @return The name of the class.
+     */
     QString getName() const;
 
-    void addLink(LinkGraphicsItem *);
-    void removeLink(LinkGraphicsItem *);
+    /** @brief Connects a link to the class.
+     *  @param link Link to be connected to the class.
+     *  @return Void.
+     */
+    void addLink(LinkGraphicsItem *link);
+
+    /** @brief Disconnects a link from the class.
+     *  @param link Link to be disconnected from the class.
+     *  @return Void.
+     */
+    void removeLink(LinkGraphicsItem *link);
 
 private:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;

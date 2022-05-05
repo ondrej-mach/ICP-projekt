@@ -23,7 +23,6 @@ class LinkGraphicsItem : public QGraphicsLineItem
 {
 
 public:
-    //LinkGraphicsItem(Model::LinkRepr data);
     LinkGraphicsItem(ClassGraphicsItem *from,
                      ClassGraphicsItem *to,
                      Model::LinkRepr::Type linkType=Model::LinkRepr::ASSOCIATION,
@@ -31,8 +30,17 @@ public:
     ~LinkGraphicsItem();
 
     QRectF boundingRect() const override;
+
+    /** @brief Sets hitbox of this line.
+     *  @return Path with hitbox for deletion.
+     */
     QPainterPath shape() const override;
+    /** @brief Updates the position of this link after one of classes link is connected to is moved.
+     *  @param link Link to be connected to the class.
+     *  @return Void.
+     */
     void updatePosition();
+
     ClassGraphicsItem *from;
     ClassGraphicsItem *to;
 

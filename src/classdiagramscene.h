@@ -24,10 +24,21 @@ class ClassDiagramScene : public QGraphicsScene
 public:
     ClassDiagramScene(Tool &tool, QObject *parent = nullptr);
     ~ClassDiagramScene();
+    /** @brief Reloads data from model, puts them onto scene.
+     *  @return Void.
+     */
     void reloadData();
 
     // callbacks from items
+    /** @brief Checks, whether an item has been moved.
+     *  @param cgi The item to be checked.
+     *  @return Void.
+     */
     void itemMoved(ClassGraphicsItem *cgi);
+    /** @brief Marks item.
+     *  @param cgi The item to be marked.
+     *  @return Void.
+     */
     void markItem(ClassGraphicsItem *cgi);
 
 public slots:
