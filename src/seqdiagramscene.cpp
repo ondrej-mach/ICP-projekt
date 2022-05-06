@@ -91,7 +91,6 @@ void SeqDiagramScene::reloadData(QString name) {
         }
     }
 
-
     // drawing after all calculations are done
     for (auto &ent: entities) {
         // if the object was not created with an action
@@ -106,25 +105,30 @@ void SeqDiagramScene::reloadData(QString name) {
                 gridToY(interactionCount),
                 QString::fromStdString(ent.name)
                 );
+        this->entities.insert(QString::fromStdString(ent.name), ll);
         addItem(ll);
     }
 
     index = 0;
+    int binaryIndex = 0;
     for (auto &a: actions) {
         if (a.isBinary()) {
-            /*if (a.type == Model::Action::Type::RETURN)
-            {swap(a.from, a.to);}*/
 
             InteractionItem *arrow = new InteractionItem(
-                        gridToY(index),
+                        gridToY(binaryIndex),
                         gridToX(nameToGridX[a.from]),
                         gridToX(nameToGridX[a.to]),
                         QString::fromStdString(a.text),
-                        a.type
+                        a.type,
+                        a.from.c_str(),
+                        a.to.c_str(),
+                        index
                         );
+            this->actions.append(arrow);
             addItem(arrow);
-            index++;
+            binaryIndex++;
         }
+        index++;
     }
 
     for (auto &ar: activeRegions) {
@@ -158,23 +162,15 @@ int SeqDiagramScene::YtoGrid(double y) {
     return y / actionDistance;
 }
 
-void SeqDiagramScene::checkEntities(QString entityName, InteractionItem *delItemInteraction) {
-    for (QGraphicsItem *activity: this->actions) {
-        InteractionItem *intItem = qgraphicsitem_cast<InteractionItem *>(activity);
-        if ((intItem->from == entityName) || (intItem->to == entityName)) {
-            QVector<double> coords = delItemInteraction->getCoords(delItemInteraction);
-            model.removeInteraction(getName(this), coords);
-            emit modelChanged();
-        }
-    }
-}
-
-void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
+void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
 
     QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
     QList<QGraphicsItem *> itemsList = items(point);
-    LifeLineItem *delItemLife;
+    LifeLineItem *delEntity;
+    QVector<double> intCoords, entCoords;
+    InteractionItem *delItemInteraction;
+    ActivityItem *delItemAct;
+    QString from, to;
 
     switch (tool) {
         case TOOL_ENTITY:
@@ -182,46 +178,33 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             emit modelChanged();
             return;
         case TOOL_DELETE:
+            // TODO nesmaze se destroy akce
             for (auto item: itemsList) {
                 if (item->type() == LifeLineItem::Type) {
-                    delItemLife = qgraphicsitem_cast<LifeLineItem *>(item);
-                    QString entityName = delItemLife->getName(delItemLife);
+                    delEntity = qgraphicsitem_cast<LifeLineItem *>(item);
+                    QString entityName = delEntity->getName(delEntity); 
                     model.removeEntity(getName(this), entityName);
-                    // TODO remove interactions dependent on deleted entity
-                    //checkEntities(entityName, delItemInteraction);
                     emit modelChanged();
                 }
-            }
-            break;
-        case TOOL_ACTIVATE:
-        case TOOL_DEACTIVATE:
-        case TOOL_ASYNC_MESSAGE:
-        case TOOL_SYNC_MESSAGE:
-        case TOOL_CREATE_MESSAGE:
-        case TOOL_DESTROY_MESSAGE:
-        case TOOL_RETURN_MESSAGE:
-        case TOOL_MOUSE:
-        default:;
-    }
-
-    QGraphicsScene::mousePressEvent(mouseEvent);
-}
-
-void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-    QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
-    QList<QGraphicsItem *> itemsList = items(point);
-    InteractionItem *delItemInteraction;
-    ActivityItem *delItemAct;
-
-    switch (tool) {
-        case TOOL_DELETE:
-            for (auto item: itemsList) {
-            //TODO zprovoznit delete
-                if (item->type() == InteractionItem::Type) {
+                // TODO smazat spravny interaction(ted to maze jen od predu ty se stejnymi from a to)
+                else if (item->type() == InteractionItem::Type) {
                     delItemInteraction = qgraphicsitem_cast<InteractionItem *>(item);
-                    QVector<double> coords = delItemInteraction->getCoords(delItemInteraction);
-                    model.removeInteraction(getName(this), coords);
+                    intCoords = delItemInteraction->getCoords(delItemInteraction);
+                    intCoords.pop_front();
+                    double fromX = intCoords.first();
+                    double toX = intCoords.last();
+                    for (auto entity: this->entities) {
+                        entity = qgraphicsitem_cast<LifeLineItem *>(entity);
+                        entCoords = entity->getCoords(entity);
+                        double entX = entCoords.first();
+                        if (entX == fromX) {
+                            from = entity->getName(entity);
+                        }
+                        if (entX == toX) {
+                            to = entity->getName(entity);
+                        }
+                    }
+                    model.removeInteraction(getName(this), delItemInteraction->index);
                     emit modelChanged();
                 }
                 else if (item->type() == ActivityItem::Type) {
@@ -233,12 +216,42 @@ void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
             break;
         case TOOL_ACTIVATE:
+            model.addActivity();
+            emit modelChanged();
+            break;
         case TOOL_DEACTIVATE:
+            model.removeActivity();
+            emit modelChanged();
+            break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
+            model.addInteraction(getName(this), point.x(), point.y());
+            emit modelChanged();
+            break;
+        case TOOL_MOUSE:
+        default:;
+    }
+
+    QGraphicsScene::mousePressEvent(mouseEvent);
+}
+
+void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    switch (tool) {
+        case TOOL_ACTIVATE:
+        case TOOL_DEACTIVATE:
+            break;
+        case TOOL_ASYNC_MESSAGE:
+        case TOOL_SYNC_MESSAGE:
+        case TOOL_CREATE_MESSAGE:
+        case TOOL_DESTROY_MESSAGE:
+        case TOOL_RETURN_MESSAGE:
+            emit modelChanged();
+            break;
+        case TOOL_DELETE:
         case TOOL_MOUSE:
         default:;
     }
@@ -251,11 +264,14 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     switch (tool) {
         case TOOL_ACTIVATE:
         case TOOL_DEACTIVATE:
+            break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
+            emit modelChanged();
+            break;
         case TOOL_MOUSE:
         default:
             ;//emit modelChanged();

@@ -10,16 +10,22 @@
 #include <QPen>
 #include <QtMath>
 
-InteractionItem::InteractionItem(double y, double xStart, double xEnd, QString desc, Model::Action::Type type)
-    : y(y), xStart(xStart), xEnd(xEnd), type(type), desc(desc)
+InteractionItem::InteractionItem(double y, double xStart, double xEnd, QString desc, Model::Action::Type type, QString from, QString to, int index)
+    : from(from), to(to), y(y), xStart(xStart), xEnd(xEnd), intType(type), desc(desc)
 {
     setPos(xStart, y);
     double len = xEnd - xStart;
+    this->index = index;
 
     setLine(QLineF(QPointF(), QPointF(len,0)));
     setZValue(-1000);
 }
 
+QPainterPath InteractionItem::shape() const {
+    QPainterPath path;
+    path.addPolygon(QRectF(0,-10,xEnd-xStart, 20));
+    return path;
+}
 
 QRectF InteractionItem::boundingRect() const {
 
@@ -43,15 +49,16 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     int baseLength = 150;
     int intLength =  (xEnd - xStart);
     int ticks = intLength / baseLength;
-    qDebug("%d", intLength);
     bool arrowLeft = intLength < 0;
-    if (arrowLeft) {
-        // going left
-        painter->drawText(-intLength/ (2 * ticks) - 40 , -8, this->desc);
-    }
-    else {
-        // going right
-        painter->drawText(intLength/ (2 * ticks) - 40, -8, this->desc);
+    if (ticks != 0) {
+        if (arrowLeft) {
+            // going left
+            painter->drawText(-intLength/ (2 * ticks) - 40 , -8, this->desc);
+        }
+        else {
+            // going right
+            painter->drawText(intLength/ (2 * ticks) - 40, -8, this->desc);
+        }
     }
 
     double arg = 0;
@@ -64,28 +71,28 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
 
     //TODO text nad sipkou
-    if (type == Model::Action::Type::SYNC) {
+    if (intType == Model::Action::Type::SYNC) {
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolygon(interactionHead);
     }
-    else if (type == Model::Action::Type::ASYNC) {
+    else if (intType == Model::Action::Type::ASYNC) {
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
         linePen = {Qt::black, 3, Qt::DashLine};
     }
-    else if (type == Model::Action::Type::RETURN) {
+    else if (intType == Model::Action::Type::RETURN) {
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
         linePen = {Qt::black, 3, Qt::DashLine};
     }
-    else if (type == Model::Action::Type::CREATE) {
+    else if (intType == Model::Action::Type::CREATE) {
         P2 = P2 - QPointF(60, 0);
         arrowP1 = arrowP1 - QPointF(60, 0);
         arrowP2 = arrowP2 - QPointF(60, 0);
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
     }
-    else if (type == Model::Action::Type::DESTROY) {
+    else if (intType == Model::Action::Type::DESTROY) {
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
     }

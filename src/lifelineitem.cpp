@@ -59,7 +59,7 @@ QVector<double> LifeLineItem::getCoords(LifeLineItem *item)
     return QVector{item->x, item->yStart, item->yEnd};
 }
 
-
+// idk if this is necessary
 Model::SeqEntity LifeLineItem::convertToSeqEntity(LifeLineItem *item)
 {
     Model::SeqEntity seqEntity{};

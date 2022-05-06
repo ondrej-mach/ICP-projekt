@@ -210,8 +210,8 @@ public:
 
     void addEntity(std::string sdName);
     void removeEntity(QString diagName, QString entityName);
-    void addInteraction();
-    void removeInteraction(QString diagName, QVector<double> coords);
+    void addInteraction(QString sdName, double x, double y);
+    void removeInteraction(QString diagName, int index);
     void addActivity();
     void removeActivity();
 
@@ -254,11 +254,11 @@ private:
         std::string currentName; // CHANGE_CLASS_PROPS, REMOVE_CLASS
         std::string from; //REMOVE_LINK
         std::string to; //REMOVE_LINK
-        int x, y; // ADD_CLASS
+        int x, y; // ADD_CLASS, ADD_INTERACTION
         std::string sdName; //sequence diag. name
         std::string entityName; //entity name
         std::string actionName;
-        QVector<double> coords;
+        int index;
     };
 
     /** @brief Representation of a class diagram at one time.
@@ -351,8 +351,8 @@ private:
     void addSeqDiagramExecute(Snapshot &state);
     void addEntityExecute(Snapshot &state, std::string sdName /*, entita na smazani string*/);
     void removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName);
-    void addInteractionExecute(Snapshot &state/*, jakej sd string, interakce na pridani string*/);
-    void removeInteractionExecute(Snapshot &state, std::string sdName, QVector<double> coords);
+    void addInteractionExecute(Snapshot &state, std::string sdName, double x, double y);
+    void removeInteractionExecute(Snapshot &state, std::string sdName, int index);
 };
 
 extern Model model;

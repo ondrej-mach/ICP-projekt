@@ -19,6 +19,7 @@
 #include "model.h"
 #include "tool.h"
 #include "interactionitem.h"
+#include "lifelineitem.h"
 
 class SeqDiagramScene : public QGraphicsScene
 {
@@ -52,12 +53,9 @@ private:
     double gridToY(int n);
     int XtoGrid(double x);
     int YtoGrid(double y);
-    QMap<QString, QGraphicsItem *> entities;
-    QVector<QGraphicsItem *> actions;
+    QMap<QString, LifeLineItem *> entities;
+    QVector<InteractionItem *> actions;
     QString diagramName;
-
-    void checkEntities(QString entityName, InteractionItem *delItemInt);
-
 };
 
 #endif // SEQDIAGRAMSCENE_H

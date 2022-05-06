@@ -22,12 +22,13 @@ Model::Model() {
     currentState = baseState;
 
     // stuff for testing
+    // TODO remove before end
     SequenceDiagram sd;
     sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd.entities.push_back({SeqEntity::PARTICIPANT, "general"});
     sd.name = "Test SD";
-    sd.actions.push_back({Action::CREATE, "mycls", "bruh", "hello()"});
+    sd.actions.push_back({Action::CREATE, "mycls", "bruh", "create"});
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello1()"});
     sd.actions.push_back({Action::RETURN, "bruh", "mycls", "hello2()"});
     sd.actions.push_back({Action::CREATE, "mycls", "general", "hello3()"});
@@ -36,14 +37,14 @@ Model::Model() {
     sd.actions.push_back({Action::ACTIVATE, "mycls", "bruh", ""});
     sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
     sd.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", ""});
-    sd.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
+    sd.actions.push_back({Action::DESTROY, "mycls", "bruh", "destroy"});
     currentState.sequenceDiagrams.push_back(sd);
     SequenceDiagram sd1;
     sd1.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
     sd1.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
     sd1.entities.push_back({SeqEntity::PARTICIPANT, "general"});
     sd1.name = "Test SD1";
-    sd1.actions.push_back({Action::CREATE, "mycls", "bruh", "hello()"});
+    sd1.actions.push_back({Action::CREATE, "mycls", "bruh", "create"});
     sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello1()"});
     sd1.actions.push_back({Action::RETURN, "bruh", "mycls", "hello2()"});
     sd1.actions.push_back({Action::CREATE, "mycls", "general", "hello3()"});
@@ -52,7 +53,7 @@ Model::Model() {
     sd1.actions.push_back({Action::ACTIVATE, "mycls", "bruh", ""});
     sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
     sd1.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", ""});
-    sd1.actions.push_back({Action::DESTROY, "mycls", "bruh", "hello9()"});
+    sd1.actions.push_back({Action::DESTROY, "mycls", "bruh", "destroy"});
     currentState.sequenceDiagrams.push_back(sd1);
 }
 
@@ -440,17 +441,20 @@ void Model::removeEntity(QString diagName, QString entityName) {
     applyCommand(cmd);
 }
 
-void Model::addInteraction() {
+void Model::addInteraction(QString sdName, double x, double y) {
     Command cmd;
     cmd.type = Command::ADD_INTERACTION;
+    cmd.x = x;
+    cmd.y = y;
+    cmd.sdName = sdName.toStdString();
     applyCommand(cmd);
 }
 
-void Model::removeInteraction(QString diagName, QVector<double> coords) {
+void Model::removeInteraction(QString diagName, int index) {
     Command cmd;
     cmd.type = Command::REMOVE_INTERACTION;
-    cmd.coords = coords;
     cmd.sdName = diagName.toStdString();
+    cmd.index = index;
     applyCommand(cmd);
 }
 
@@ -506,11 +510,11 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             break;
 
         case Command::ADD_INTERACTION:
-            addInteractionExecute(state);
+            addInteractionExecute(state, cmd.sdName, cmd.x, cmd.y);
             break;
 
         case Command::REMOVE_INTERACTION:
-            removeInteractionExecute(state, cmd.sdName, cmd.coords);
+            removeInteractionExecute(state, cmd.sdName, cmd.index);
             break;
 
         default:
@@ -520,30 +524,22 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
 }
 
 // not working
-void Model::removeInteractionExecute(Snapshot &state, std::string sdName, QVector<double> coords) {
-    SequenceDiagram seqDiag;
-    for (auto &sd: state.sequenceDiagrams) {
-        if (sd.name == sdName) {
-                seqDiag = sd;
-                break;
-        }
-    }
-//   for (std::vector<Action>::iterator it = seqDiag.actions.begin(); it != seqDiag.actions.end(); ) {
-//        auto &interaction = (*it);
-//        if (interaction) {
-//            it = seqDiag.entities.erase(it);
-//            return;
-//        } else {
-//            ++it;
-//        }
-//    }
-}
-
-// not working
-void Model::addInteractionExecute(Snapshot &state) {
+void Model::addInteractionExecute(Snapshot &state, std::string sdName, double x, double y) {
     return;
 }
 
+// working
+void Model::removeInteractionExecute(Snapshot &state, std::string sdName, int index) {
+
+    SequenceDiagram *seqDiag;
+    for (auto &sd: state.sequenceDiagrams) {
+        if (sd.name == sdName) {
+                seqDiag = &sd;
+                break;
+        }
+    }
+    seqDiag->actions.erase(seqDiag->actions.begin() + index);
+}
 
 // working
 void Model::addEntityExecute(Snapshot &state, std::string sdName) {
@@ -568,19 +564,25 @@ void Model::addEntityExecute(Snapshot &state, std::string sdName) {
             n++;
         }
     }
-    // create lifelineitem as well?
 
     SeqEntity entity {SeqEntity::Type::PARTICIPANT, newName};
     seqDiag->entities.push_back(entity);
 }
 
-// not working
 void Model::removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName) {
     SequenceDiagram *seqDiag;
     for (auto &sd: state.sequenceDiagrams) {
         if (sd.name == sdName) {
                 seqDiag = &sd;
                 break;
+        }
+    }
+    for (auto it=seqDiag->actions.begin(); it!=seqDiag->actions.end(); ) {
+        auto &interaction = *it;
+        if ((interaction.to == entityName) || (interaction.from == entityName)) {
+           it = seqDiag->actions.erase(it);
+        } else {
+            it++;
         }
     }
     for (std::vector<SeqEntity>::iterator it = seqDiag->entities.begin(); it != seqDiag->entities.end(); ) {
@@ -593,7 +595,6 @@ void Model::removeEntityExecute(Snapshot &state, std::string sdName, std::string
         }
     }
 }
-
 
 
 void Model::addLinkExecute(Snapshot &state, LinkRepr newLink) {
