@@ -441,11 +441,10 @@ void Model::removeEntity(QString diagName, QString entityName) {
     applyCommand(cmd);
 }
 
-void Model::addInteraction(QString sdName, double x, double y) {
+void Model::addInteraction(QString sdName, int index) {
     Command cmd;
     cmd.type = Command::ADD_INTERACTION;
-    cmd.x = x;
-    cmd.y = y;
+    cmd.index = index;
     cmd.sdName = sdName.toStdString();
     applyCommand(cmd);
 }
@@ -510,7 +509,7 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             break;
 
         case Command::ADD_INTERACTION:
-            addInteractionExecute(state, cmd.sdName, cmd.x, cmd.y);
+            addInteractionExecute(state, cmd.sdName, cmd.index);
             break;
 
         case Command::REMOVE_INTERACTION:
@@ -524,11 +523,17 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
 }
 
 // not working
-void Model::addInteractionExecute(Snapshot &state, std::string sdName, double x, double y) {
-    return;
+void Model::addInteractionExecute(Snapshot &state, std::string sdName, int index) {
+    SequenceDiagram *seqDiag;
+    for (auto &sd: state.sequenceDiagrams) {
+        if (sd.name == sdName) {
+                seqDiag = &sd;
+                break;
+        }
+    }
+
 }
 
-// working
 void Model::removeInteractionExecute(Snapshot &state, std::string sdName, int index) {
 
     SequenceDiagram *seqDiag;
@@ -541,7 +546,7 @@ void Model::removeInteractionExecute(Snapshot &state, std::string sdName, int in
     seqDiag->actions.erase(seqDiag->actions.begin() + index);
 }
 
-// working
+
 void Model::addEntityExecute(Snapshot &state, std::string sdName) {
 
     std::vector<SequenceDiagram> &existingSds = state.sequenceDiagrams;

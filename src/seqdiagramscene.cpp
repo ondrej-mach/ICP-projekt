@@ -171,6 +171,7 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
     InteractionItem *delItemInteraction;
     ActivityItem *delItemAct;
     QString from, to;
+    int index = 0;
 
     switch (tool) {
         case TOOL_ENTITY:
@@ -189,21 +190,6 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
                 // TODO smazat spravny interaction(ted to maze jen od predu ty se stejnymi from a to)
                 else if (item->type() == InteractionItem::Type) {
                     delItemInteraction = qgraphicsitem_cast<InteractionItem *>(item);
-                    intCoords = delItemInteraction->getCoords(delItemInteraction);
-                    intCoords.pop_front();
-                    double fromX = intCoords.first();
-                    double toX = intCoords.last();
-                    for (auto entity: this->entities) {
-                        entity = qgraphicsitem_cast<LifeLineItem *>(entity);
-                        entCoords = entity->getCoords(entity);
-                        double entX = entCoords.first();
-                        if (entX == fromX) {
-                            from = entity->getName(entity);
-                        }
-                        if (entX == toX) {
-                            to = entity->getName(entity);
-                        }
-                    }
                     model.removeInteraction(getName(this), delItemInteraction->index);
                     emit modelChanged();
                 }
@@ -216,11 +202,11 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
             }
             break;
         case TOOL_ACTIVATE:
-            model.addActivity();
+            //model.addActivity();
             emit modelChanged();
             break;
         case TOOL_DEACTIVATE:
-            model.removeActivity();
+            //model.removeActivity();
             emit modelChanged();
             break;
         case TOOL_ASYNC_MESSAGE:
@@ -228,7 +214,7 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            model.addInteraction(getName(this), point.x(), point.y());
+            model.addInteraction(getName(this), index);
             emit modelChanged();
             break;
         case TOOL_MOUSE:
@@ -249,7 +235,7 @@ void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            emit modelChanged();
+            //emit modelChanged();
             break;
         case TOOL_DELETE:
         case TOOL_MOUSE:
@@ -270,7 +256,7 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            emit modelChanged();
+            //emit modelChanged();
             break;
         case TOOL_MOUSE:
         default:
