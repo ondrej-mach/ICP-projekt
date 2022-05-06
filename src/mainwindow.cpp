@@ -80,11 +80,13 @@ void MainWindow::reloadData()
     int currentTab = model.getTabIndex();
     // Filthy hack to set just one sequential scene always on the selected tab
     auto diagrams = model.getSeqDiagrams();
+    bool sdViewUsed = false;
     for (unsigned i=0; i < diagrams.size(); i++) {
         auto name = diagrams[i];
         if (int(i) == currentTab-1) {
             ui->tabWidget->addTab(seqDiagramView, QString::fromStdString(name));
             seqDiagramScene->reloadData(QString::fromStdString(name));
+            sdViewUsed = true;
         } else {
             ui->tabWidget->addTab(new QWidget(this), QString::fromStdString(name));
         }
@@ -94,7 +96,14 @@ void MainWindow::reloadData()
         classDiagramScene->reloadData();
     }
 
-    ui->tabWidget->addTab(new QWidget(this), "New Sequence");
+    // Another filthy hack to always keep seqDiagramView displayed.
+    // It would cause graphical bugs otherwise
+    if (sdViewUsed) {
+        ui->tabWidget->addTab(new QWidget(this), "New Sequence");
+    } else {
+        ui->tabWidget->addTab(seqDiagramView, "New Sequence");
+    }
+
     ui->tabWidget->setCurrentIndex(currentTab);
     ui->tabWidget->blockSignals(false);
 }
