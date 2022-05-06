@@ -95,6 +95,10 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     else if (intType == Model::Action::Type::DESTROY) {
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
+        interactionHead.clear();
+        P2 = P2 + QPointF(0, 40);
+        interactionHead << P2 + QPointF(20,20) << P2 + QPointF(-20,-20) << P2 << P2 + QPointF(20,-20) << P2 + QPointF(-20,20);
+        painter->drawPolyline(interactionHead);
     }
 
     painter->setPen(linePen);

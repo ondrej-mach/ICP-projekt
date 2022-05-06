@@ -544,11 +544,18 @@ void Model::addInteractionExecute(Snapshot &state, std::string sdName, std::stri
 
     // Check if create interaction already exists on to item
     if (actionType == Action::Type::CREATE) {
-        for (auto &isCreateAction: seqDiag->actions) {
+        for (auto isCreateAction: seqDiag->actions) {
             if (((to == isCreateAction.to) || (to == isCreateAction.from))
              && (isCreateAction.type == Action::Type::CREATE)) {
                 return;
             }
+        }
+    }
+    for (auto isCreateAction: seqDiag->actions) {
+        if (((to == isCreateAction.to) || (to == isCreateAction.from)
+        || (from == isCreateAction.from) || (from == isCreateAction.to))
+         && (isCreateAction.type == Action::Type::DESTROY)) {
+            return;
         }
     }
 

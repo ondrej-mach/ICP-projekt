@@ -286,10 +286,13 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 removeItem(line);
                 delete line;
 
+                // Check for correct length of line
                 if (((distance > 0) && (distance % 150 < 130) && (distance % 150 > 20)) ||
                  ((distance <= 0) && (distance % 150 > -130) && (distance % 150 < -20))) {
                     return;
                 }
+
+                // Select correct entities
                 for (auto entity: this->entities) {
                     coords = entity->getCoords(entity);
                     entityX = coords.first();
@@ -300,6 +303,8 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                         to = entity->getName(entity);
                     }
                 }
+
+                // Add if between two different entities
                 if (from != to) {
                     model.addInteraction(getName(this), from, to, actionType);
                     emit modelChanged();
