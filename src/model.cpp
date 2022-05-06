@@ -441,11 +441,13 @@ void Model::removeEntity(QString diagName, QString entityName) {
     applyCommand(cmd);
 }
 
-void Model::addInteraction(QString sdName, int index) {
+void Model::addInteraction(QString sdName, QString from, QString to, Action::Type type) {
     Command cmd;
     cmd.type = Command::ADD_INTERACTION;
-    cmd.index = index;
+    cmd.from = from.toStdString();
+    cmd.to = to.toStdString();
     cmd.sdName = sdName.toStdString();
+    cmd.actionType = type;
     applyCommand(cmd);
 }
 
@@ -509,7 +511,7 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             break;
 
         case Command::ADD_INTERACTION:
-            addInteractionExecute(state, cmd.sdName, cmd.index);
+            addInteractionExecute(state, cmd.sdName, cmd.from, cmd.to, cmd.actionType);
             break;
 
         case Command::REMOVE_INTERACTION:
@@ -522,8 +524,7 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
     }
 }
 
-// not working
-void Model::addInteractionExecute(Snapshot &state, std::string sdName, int index) {
+void Model::addInteractionExecute(Snapshot &state, std::string sdName, std::string from, std::string to, Action::Type actionType) {
     SequenceDiagram *seqDiag;
     for (auto &sd: state.sequenceDiagrams) {
         if (sd.name == sdName) {
@@ -532,6 +533,28 @@ void Model::addInteractionExecute(Snapshot &state, std::string sdName, int index
         }
     }
 
+    // Write new message according to interaction type
+    static std::map<Model::Action::Type, std::string> typeTable {
+        {Model::Action::Type::SYNC, "new_sync_message"},
+        {Model::Action::Type::ASYNC, "new_async_message"},
+        {Model::Action::Type::RETURN, "return"},
+        {Model::Action::Type::CREATE, "create"},
+        {Model::Action::Type::DESTROY, "destroy"},
+    };
+
+    // Check if create interaction already exists on to item
+    if (actionType == Action::Type::CREATE) {
+        for (auto &isCreateAction: seqDiag->actions) {
+            if (((to == isCreateAction.to) || (to == isCreateAction.from))
+             && (isCreateAction.type == Action::Type::CREATE)) {
+                return;
+            }
+        }
+    }
+
+    // Create a new interaction, push it to seq. diagram
+    Action action{actionType, from, to, typeTable[actionType]};
+    seqDiag->actions.push_back(action);
 }
 
 void Model::removeInteractionExecute(Snapshot &state, std::string sdName, int index) {
@@ -543,6 +566,8 @@ void Model::removeInteractionExecute(Snapshot &state, std::string sdName, int in
                 break;
         }
     }
+
+    // Delete interaction from seq. diagram
     seqDiag->actions.erase(seqDiag->actions.begin() + index);
 }
 
@@ -570,6 +595,7 @@ void Model::addEntityExecute(Snapshot &state, std::string sdName) {
         }
     }
 
+    // Create a new entity, push it to seq. diagram
     SeqEntity entity {SeqEntity::Type::PARTICIPANT, newName};
     seqDiag->entities.push_back(entity);
 }

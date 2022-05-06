@@ -210,7 +210,7 @@ public:
 
     void addEntity(std::string sdName);
     void removeEntity(QString diagName, QString entityName);
-    void addInteraction(QString sdName, int index);
+    void addInteraction(QString sdName, QString from, QString to, Action::Type type);
     void removeInteraction(QString diagName, int index);
     void addActivity();
     void removeActivity();
@@ -259,6 +259,7 @@ private:
         std::string entityName; //entity name
         std::string actionName;
         int index;
+        Action::Type actionType;
     };
 
     /** @brief Representation of a class diagram at one time.
@@ -351,7 +352,7 @@ private:
     void addSeqDiagramExecute(Snapshot &state);
     void addEntityExecute(Snapshot &state, std::string sdName /*, entita na smazani string*/);
     void removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName);
-    void addInteractionExecute(Snapshot &state, std::string sdName, int index);
+    void addInteractionExecute(Snapshot &state, std::string sdName, std::string from, std::string to, Action::Type type);
     void removeInteractionExecute(Snapshot &state, std::string sdName, int index);
 };
 
