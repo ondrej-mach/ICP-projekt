@@ -552,8 +552,7 @@ void Model::addInteractionExecute(Snapshot &state, std::string sdName, std::stri
         }
     }
     for (auto isCreateAction: seqDiag->actions) {
-        if (((to == isCreateAction.to) || (to == isCreateAction.from)
-        || (from == isCreateAction.from) || (from == isCreateAction.to))
+        if (((to == isCreateAction.to) || (from == isCreateAction.to))
          && (isCreateAction.type == Action::Type::DESTROY)) {
             return;
         }
