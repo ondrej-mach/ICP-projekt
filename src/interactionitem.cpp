@@ -78,7 +78,6 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     else if (intType == Model::Action::Type::ASYNC) {
         interactionHead << arrowP1 << P2 << arrowP2;
         painter->drawPolyline(interactionHead);
-        linePen = {Qt::black, 3, Qt::DashLine};
     }
     else if (intType == Model::Action::Type::RETURN) {
         interactionHead << arrowP1 << P2 << arrowP2;

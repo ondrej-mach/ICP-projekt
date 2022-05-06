@@ -65,14 +65,6 @@ void SeqDiagramScene::reloadData(QString name) {
         // they happen on the last binary interaction
         if (a.isBinary()) {
             interactionCount++;
-//            for (auto &entityRepr: entities) {
-//                LifeLineItem *entity {};
-//                if () {
-//                    a.from = ;
-//                } else if () {
-//                    a.to = ;
-//                }
-//            }
         }
         else {
             if (a.type == Model::Action::ACTIVATE) {
@@ -172,14 +164,12 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
     InteractionItem *delItemInteraction;
     //ActivityItem *delItemAct;
 
-
     switch (tool) {
         case TOOL_ENTITY:
             model.addEntity(this->diagramName.toStdString());
             emit modelChanged();
             return;
         case TOOL_DELETE:
-            // TODO nesmaze se destroy akce
             for (auto item: itemsList) {
                 if (item->type() == LifeLineItem::Type) {
                     delEntity = qgraphicsitem_cast<LifeLineItem *>(item);
@@ -187,7 +177,6 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
                     model.removeEntity(getName(this), entityName);
                     emit modelChanged();
                 }
-                // TODO smazat spravny interaction(ted to maze jen od predu ty se stejnymi from a to)
                 else if (item->type() == InteractionItem::Type) {
                     delItemInteraction = qgraphicsitem_cast<InteractionItem *>(item);
                     model.removeInteraction(getName(this), delItemInteraction->index);
@@ -196,18 +185,9 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
                 else if (item->type() == ActivityItem::Type) {
                     //delItemAct = qgraphicsitem_cast<ActivityItem *>(item);
                     // TODO fce, co neni v modelu a co rusi aktivitu
-                    // model.removeActivity();
                     emit modelChanged();
                 }
             }
-            break;
-        case TOOL_ACTIVATE:
-            //model.addActivity();
-            emit modelChanged();
-            break;
-        case TOOL_DEACTIVATE:
-            //model.removeActivity();
-            emit modelChanged();
             break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
@@ -229,9 +209,6 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
 void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     switch (tool) {
-        case TOOL_ACTIVATE:
-        case TOOL_DEACTIVATE:
-            break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
@@ -263,7 +240,10 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     switch (tool) {
         case TOOL_ACTIVATE:
+
+            break;
         case TOOL_DEACTIVATE:
+
             break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
@@ -282,7 +262,6 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 int startPointX = line->line().p1().x();
                 int endPointX = line->line().p2().x();
                 int distance = startPointX - endPointX;
-                qDebug("%d", distance % 150);
                 removeItem(line);
                 delete line;
 
@@ -311,9 +290,9 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 }
             }
             return;
+        case TOOL_DELETE:
         case TOOL_MOUSE:
-        default:
-            ;//emit modelChanged();
+        default:;
     }
 
     QGraphicsScene::mouseReleaseEvent(mouseEvent);

@@ -17,8 +17,6 @@ public:
 
     double thickness = 10;
     double x, yStart, yEnd;
-
-
 };
 
 #endif // ACTIVITYITEM_H
