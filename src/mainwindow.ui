@@ -470,9 +470,6 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
-    <addaction name="actionCopy"/>
-    <addaction name="actionCut"/>
-    <addaction name="actionPaste"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>

@@ -20,41 +20,6 @@ Model::Model() {
     csTop = -1;
     currentState.tabIndex = 0;
     currentState = baseState;
-
-    // stuff for testing
-    // TODO remove before end
-    SequenceDiagram sd;
-    sd.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
-    sd.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
-    sd.entities.push_back({SeqEntity::PARTICIPANT, "general"});
-    sd.name = "Test SD";
-    sd.actions.push_back({Action::CREATE, "mycls", "bruh", "create"});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello1()"});
-    sd.actions.push_back({Action::RETURN, "bruh", "mycls", "hello2()"});
-    sd.actions.push_back({Action::CREATE, "mycls", "general", "hello3()"});
-    sd.actions.push_back({Action::SYNC, "mycls", "general", "hello4()"});
-    sd.actions.push_back({Action::RETURN, "general", "mycls", "hello5()"});
-    sd.actions.push_back({Action::ACTIVATE, "mycls", "bruh", ""});
-    sd.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
-    sd.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", ""});
-    sd.actions.push_back({Action::DESTROY, "mycls", "bruh", "destroy"});
-    currentState.sequenceDiagrams.push_back(sd);
-    SequenceDiagram sd1;
-    sd1.entities.push_back({SeqEntity::PARTICIPANT, "mycls"});
-    sd1.entities.push_back({SeqEntity::PARTICIPANT, "bruh"});
-    sd1.entities.push_back({SeqEntity::PARTICIPANT, "general"});
-    sd1.name = "Test SD1";
-    sd1.actions.push_back({Action::CREATE, "mycls", "bruh", "create"});
-    sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello1()"});
-    sd1.actions.push_back({Action::RETURN, "bruh", "mycls", "hello2()"});
-    sd1.actions.push_back({Action::CREATE, "mycls", "general", "hello3()"});
-    sd1.actions.push_back({Action::SYNC, "mycls", "general", "hello4()"});
-    sd1.actions.push_back({Action::RETURN, "general", "mycls", "hello5()"});
-    sd1.actions.push_back({Action::ACTIVATE, "mycls", "bruh", ""});
-    sd1.actions.push_back({Action::SYNC, "mycls", "bruh", "hello7()"});
-    sd1.actions.push_back({Action::DEACTIVATE, "mycls", "bruh", ""});
-    sd1.actions.push_back({Action::DESTROY, "mycls", "bruh", "destroy"});
-    currentState.sequenceDiagrams.push_back(sd1);
 }
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {
