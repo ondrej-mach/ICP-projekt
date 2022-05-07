@@ -1,5 +1,5 @@
-Ondřej Mach (xmacho12)  
-Rostislav Lán (xlanro00)  
+Ondřej Mach (xmacho12)
+Rostislav Lán (xlanro00)
 
 # ICP projekt
 
@@ -22,7 +22,6 @@ Pro rychlejší použití je vhodné používat běžné zkratky `Ctrl+Z` a `Ctr
 Uprostřed hlavního okna se nachází kreslící plocha.
 Ta může být ve dvou režimech, na kreslení class diagramů a na kreslení sequence diagramů.
 Mezi režimy se přepíná pomocí tabů nahoře, class diagram je vždy první a sekvenční diagramy následují.
-Na konci všech tabů se nachází `New Sequence`, kterým lze přidat nový sekvenční diagram.
 
 Po levé straně se nachází nástroje, které jsou různé pro oba typy diagramů.
 
@@ -35,9 +34,9 @@ Ta má předvyplněné údaje, které lze editovat pravým tlačítkem a kliknut
 Tím se zobrazí dialog, ve kterém lze přepsat jmémo třídy, její atributy a metody.
 Pokud políčko metody nebo atributy yůstane nevyplněné, nebude uložena do modelu.
 
-Nástroj přidání vazby se používá 'natažením' nové vazby mezi dvěma třídami. 
-Kurzorem myši njedeme na jednu třídu a striskneme levé tlačítko. 
-Stále držíme tlačítko a dotáhneme kurozor až nad druhou třídu. 
+Nástroj přidání vazby se používá 'natažením' nové vazby mezi dvěma třídami.
+Kurzorem myši njedeme na jednu třídu a striskneme levé tlačítko.
+Stále držíme tlačítko a dotáhneme kurozor až nad druhou třídu.
 Pustíme tlačítko myši a položíme tím vazbu.
 Mezi dvěma třídami může existovat pouze jedna vazba, v případě přidání nové bude původní přepsána.
 
@@ -48,5 +47,20 @@ Nástroj `Myš` se používá k přesouvání tříd.
 
 ## Editor sekvenčních diagramů
 
-Pro demonstraci veškerých možností tohoto editoru je třeba načíst z přiloženého testovacího souboru.
-Program totiž umí zobrazit mnoho věcí, ale ne všechny z nich umí nakreslit.
+Pro demonstraci veškerých možností tohoto editoru je třeba načíst z přiložených testovacích souborů.
+Program totiž umí načíst kompletní reprezentaci ze souboru, ale ne všechny prvky z nich umí také nakreslit.
+Do editoru se lze dostat kliknutím na tlačítko `New sequence`, které se nachází na konci všech tabů.
+
+Po otevření je vytvořen prázdný sekvenční diagram. Do něj je poté možné nástrojem `New entity` přidat novou entitu.
+Ta je umístěna na předem definované místo, nelze s ní hýbat. Kliknutím pravým tlačítkem ji lze přejmenovat, smazat ji lze nástrojem `Delete`.
+Pokud v třídním diagramu neexistuje objekt se stejným názvem, je entita vyznačena červeně.
+
+Po přidání alespoň dvou entit je možné natahovat mezi jejich osami zprávy.
+Ty jsou typů vytvářející(`Create`) synchronní(`Sync`), asynchronní(`Async`), návratová(`Return`) a mazací(`Destroy`).
+Nad zprávu se umístí příslušný popis, který nelze editovat, je však možné jej správně načíst a vykreslit z xml souboru.
+Zprávy create a destroy nelze natáhnout do jedné entity vícekrát, ostatní zprávy nejsou nijak omezeny.
+Mazání zpráv je možné provést nástrojem (`Delete`), po jehož zvolení stačí na zprávu kliknout levým tlačítkem myši.
+
+Nástroje `Activate` a `Deactivate` pro editaci aktivit entit nebyly implementovány. Program je však umí správně načíst a vykreslit z xml souboru.
+
+Nástroj `Myš` se používá k označení entit pro přejmenování.
