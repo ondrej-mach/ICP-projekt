@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diagram type="class">
+    <class name="Darth Tyranus" x="-1112" y="-327">
+        <attribute>+attribute</attribute>
+        <attribute>+ force lightning</attribute>
+        <method>+method</method>
+        <method>+old</method>
+    </class>
+    <class name="General Grievous" x="-972" y="-556">
+        <attribute>+attribute</attribute>
+        <attribute>four really fast spinning hands</attribute>
+        <method>+method</method>
+        <method>+lost them</method>
+    </class>
+    <class name="General Kenobi" x="-639" y="-446">
+        <attribute>+attribute</attribute>
+        <attribute>hello</attribute>
+        <attribute>there</attribute>
+        <method>+method</method>
+        <method>+jump</method>
+    </class>
+    <class name="General Plo-Koon" x="-889" y="-791">
+        <attribute>+attribute</attribute>
+        <method>+method</method>
+    </class>
+    <class name="General Skywalker" x="-1329" y="-674">
+        <attribute>+attribute</attribute>
+        <attribute>+one arm</attribute>
+        <method>+method</method>
+        <method>+weak against high ground</method>
+    </class>
+    <link type="AGGREGATION" from="Darth Tyranus" to="General Kenobi" />
+    <link type="ASSOCIATION" from="General Skywalker" to="Darth Tyranus" />
+    <link type="COMPOSITION" from="General Skywalker" to="General Plo-Koon" />
+    <link type="GENERALIZATION" from="General Plo-Koon" to="General Kenobi" />
+    <link type="ASSOCIATION" from="General Grievous" to="General Kenobi" />
+    <link type="GENERALIZATION" from="General Grievous" to="Darth Tyranus" />
+    <link type="COMPOSITION" from="General Grievous" to="General Skywalker" />
+    <link type="ASSOCIATION" from="General Grievous" to="General Plo-Koon" />
+</diagram>
+<diagram type="sequence" name="Sequence diagram">
+    <entity name="General Kenobi" type="PARTICIPANT" />
+    <entity name="General Skywalker" type="PARTICIPANT" />
+    <entity name="Darth Tyranus" type="PARTICIPANT" />
+    <entity name="General Plo-Koon" type="PARTICIPANT" />
+    <entity name="General Grievous" type="PARTICIPANT" />
+    <interaction type="CREATE" from="General Kenobi" to="General Skywalker">
+        <text>create</text>
+    </interaction>
+    <action type="ACTIVATE" on="General Skywalker" />
+    <interaction type="CREATE" from="General Skywalker" to="Darth Tyranus">
+        <text>create</text>
+    </interaction>
+    <interaction type="CREATE" from="Darth Tyranus" to="General Plo-Koon">
+        <text>create</text>
+    </interaction>
+    <interaction type="CREATE" from="General Plo-Koon" to="General Grievous">
+        <text>create</text>
+    </interaction>
+    <interaction type="SYNC" from="General Kenobi" to="Darth Tyranus">
+        <text>new_sync_message</text>
+    </interaction>
+    <action type="ACTIVATE" on="Darth Tyranus" />
+    <interaction type="SYNC" from="General Skywalker" to="Darth Tyranus">
+        <text>new_sync_message</text>
+    </interaction>
+    <interaction type="SYNC" from="Darth Tyranus" to="General Grievous">
+        <text>new_sync_message</text>
+    </interaction>
+    <action type="ACTIVATE" on="General Grievous" />
+    <interaction type="SYNC" from="General Grievous" to="Darth Tyranus">
+        <text>new_sync_message</text>
+    </interaction>
+    <interaction type="SYNC" from="General Grievous" to="General Skywalker">
+        <text>new_sync_message</text>
+    </interaction>
+    <action type="DEACTIVATE" on="General Skywalker" />
+    <interaction type="SYNC" from="General Kenobi" to="General Grievous">
+        <text>new_sync_message</text>
+    </interaction>
+    <action type="DEACTIVATE" on="General Grievous" />
+    <interaction type="DESTROY" from="General Skywalker" to="Darth Tyranus">
+        <text>destroy</text>
+    </interaction>
+    <action type="DEACTIVATE" on="Darth Tyranus" />
+    <interaction type="DESTROY" from="General Kenobi" to="General Grievous">
+        <text>destroy</text>
+    </interaction>
+    <interaction type="DESTROY" from="General Skywalker" to="General Plo-Koon">
+        <text>destroy</text>
+    </interaction>
+    <interaction type="DESTROY" from="General Skywalker" to="General Kenobi">
+        <text>destroy</text>
+    </interaction>
+</diagram>
+<diagram type="sequence" name="Sequence diagram 1">
+    <entity name="General Skywalker" type="PARTICIPANT" />
+    <entity name="Not in class diag" type="PARTICIPANT" />
+    <entity name="NotInClassDiag" type="PARTICIPANT" />
+    <interaction type="CREATE" from="General Skywalker" to="Not in class diag">
+        <text>create</text>
+    </interaction>
+    <interaction type="CREATE" from="General Skywalker" to="NotInClassDiag">
+        <text>create</text>
+    </interaction>
+    <interaction type="SYNC" from="NotInClassDiag" to="General Skywalker">
+        <text>new_sync_message</text>
+    </interaction>
+    <interaction type="SYNC" from="Not in class diag" to="General Skywalker">
+        <text>new_sync_message</text>
+    </interaction>
+    <interaction type="ASYNC" from="NotInClassDiag" to="Not in class diag">
+        <text>new_async_message</text>
+    </interaction>
+    <interaction type="RETURN" from="Not in class diag" to="General Skywalker">
+        <text>return</text>
+    </interaction>
+    <interaction type="DESTROY" from="Not in class diag" to="NotInClassDiag">
+        <text>destroy</text>
+    </interaction>
+    <interaction type="DESTROY" from="General Skywalker" to="Not in class diag">
+        <text>destroy</text>
+    </interaction>
+</diagram>

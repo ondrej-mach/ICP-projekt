@@ -30,12 +30,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    /** @brief Sets the tool for editing diagrams.
-     *  @param newTool Tool
-     *  @return Returns name of this entity.
-     */
-    Tool getTool() const;
-
 private slots:
     void reloadData();
     void tabChanged(int index);

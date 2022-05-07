@@ -53,8 +53,6 @@ void MainWindow::tabChanged(int index) {
     reloadData();
 }
 
-
-
 void MainWindow::reloadData()
 {
     // load everything
@@ -111,10 +109,6 @@ void MainWindow::reloadData()
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-Tool MainWindow::getTool() const {
-    return tool;
 }
 
 void MainWindow::openFile() {

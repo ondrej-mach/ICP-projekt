@@ -741,6 +741,14 @@ void Model::changeEntityPropertiesExecute(Snapshot &state, std::string sdName, s
                 break;
         }
     }
+
+    // If entity with this name exists, do not rename
+    for (Model::SeqEntity &entityMod: seqDiag->entities) {
+        if (entityMod.name == newName) {
+            return;
+        }
+    }
+
     // change entity to new name
     for (Model::SeqEntity &entityMod: seqDiag->entities) {
         if (entityMod.name == currName) {
