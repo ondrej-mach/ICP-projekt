@@ -9,10 +9,8 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
-
 ClassEditDialog::ClassEditDialog(QString className, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ClassEditDialog)
+    QDialog(parent), ui(new Ui::ClassEditDialog)
 {
     ui->setupUi(this);
     setModal(true);
@@ -21,7 +19,7 @@ ClassEditDialog::ClassEditDialog(QString className, QWidget *parent) :
     Model::ClassRepr cls = model.getClass(currentName.toStdString());
     coordX = cls.x;
     coordY = cls.y;
-    // TODO name should check, whether class with the same name does not exist already
+
     ui->nameEdit->setText(currentName);
     connect(ui->nameEdit, &QLineEdit::textChanged, this, &ClassEditDialog::setDirty);
 
@@ -38,10 +36,7 @@ ClassEditDialog::ClassEditDialog(QString className, QWidget *parent) :
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ClassEditDialog::submit);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &ClassEditDialog::reject);
-
 }
-
-
 
 ClassEditDialog::~ClassEditDialog() {
     delete ui;

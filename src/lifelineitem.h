@@ -15,27 +15,38 @@
 class LifeLineItem : public QGraphicsItem
 {
 public:
-    LifeLineItem(double x, double yStart, double yEnd, QString name, QGraphicsItem *parent=nullptr);
+    LifeLineItem(double x, double yStart, double yEnd, QString name, bool inClassDiag=false, QMenu *contextMenu=nullptr, QGraphicsItem *parent=nullptr);
 
     // black magic DO NOT TOUCH
     enum { Type = UserType + 17 };
     int type() const override { return Type; }
 
-    double rectWidth = 120;
-    double rectHeight = 40;
+    bool inClassDiag;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
     QRectF boundingRect() const override;
-
     QPainterPath shape() const override;
-    QString getName(LifeLineItem *entity);
+
+    /** @brief Gets the name of this entity.
+     *
+     *  @return Returns name of this entity.
+     */
+    QString getName();
+
+    /** @brief Gets position of this entity.
+     *  @param item Entity whose position we want.
+     *  @return Returns position of this entity.
+     */
     QVector<double> getCoords(LifeLineItem *item);
 
-    Model::SeqEntity convertToSeqEntity(LifeLineItem *item);
 private:
     double x, yStart, yEnd;
+    double rectWidth = 120;
+    double rectHeight = 40;
     QString name;
 
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+    QMenu *myContextMenu;
 };
 
 #endif // LIFELINEITEM_H

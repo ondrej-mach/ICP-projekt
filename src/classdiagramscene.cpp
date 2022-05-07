@@ -15,27 +15,40 @@
 #include <QGraphicsItem>
 #include <QMap>
 #include <string>
-// TODO #include <math>
 
 #include <QMenu>
 #include <QAction>
 #include "classgraphicsitem.h"
 
-ClassDiagramScene::ClassDiagramScene(Tool &tool, QObject *parent)
-    : QGraphicsScene(parent), tool(tool)
-{
+ClassDiagramScene::ClassDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(parent), tool(tool) {
     editMenu = new QMenu();
 
     QAction *editAction = editMenu->addAction("Edit");
     connect(editAction, &QAction::triggered, this, &ClassDiagramScene::openEditDialog);
     QAction *removeAction = editMenu->addAction("Remove");
     connect(removeAction, &QAction::triggered, this, &ClassDiagramScene::itemRemoved);
-
 }
 
 ClassDiagramScene::~ClassDiagramScene() {
     clear(); // delete all QGraphicsItems
     delete editMenu;
+}
+
+void ClassDiagramScene::markItem(ClassGraphicsItem *cgi) {
+    markedItem = cgi;
+}
+
+void ClassDiagramScene::itemRemoved() {
+    QString className = nodes.key(markedItem);
+    model.removeClass(className.toStdString());
+    emit modelChanged();
+}
+
+void ClassDiagramScene::openEditDialog() {
+    ClassEditDialog editDialog{markedItem->getName()};
+    if (editDialog.exec() == QDialog::Accepted) {
+        emit modelChanged();
+    }
 }
 
 void ClassDiagramScene::reloadData() {
@@ -66,23 +79,6 @@ void ClassDiagramScene::itemMoved(ClassGraphicsItem *cgi) {
     QString currentName = nodes.key(cgi);
     model.changeClassProperties(currentName.toStdString(), classRepr);
     emit modelChanged();
-}
-
-void ClassDiagramScene::markItem(ClassGraphicsItem *cgi) {
-    markedItem = cgi;
-}
-
-void ClassDiagramScene::itemRemoved() {
-    QString className = nodes.key(markedItem);
-    model.removeClass(className.toStdString());
-    emit modelChanged();
-}
-
-void ClassDiagramScene::openEditDialog() {
-    ClassEditDialog editDialog{markedItem->getName()};
-    if (editDialog.exec() == QDialog::Accepted) {
-        emit modelChanged();
-    }
 }
 
 void ClassDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)

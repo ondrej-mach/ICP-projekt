@@ -397,6 +397,16 @@ void Model::changeClassProperties(std::string name, Model::ClassRepr cls)
     applyCommand(cmd);
 }
 
+void Model::changeEntityProperties(std::string sdName, std::string currName, std::string newName)
+{
+    Command cmd;
+    cmd.type = Command::CHANGE_ENTITY_PROPS;
+    cmd.sdName = sdName;
+    cmd.currentName = currName;
+    cmd.newName = newName;
+    applyCommand(cmd);
+}
+
 void Model::changeTab(int index) {
     Command cmd;
     cmd.type = Command::SWITCH_TAB;
@@ -494,6 +504,10 @@ void Model::executeCommand(Snapshot &state, Command cmd) {
             changeClassPropertiesExecute(state, cmd);
             break;
 
+        case Command::CHANGE_ENTITY_PROPS:
+            changeEntityPropertiesExecute(state, cmd.sdName, cmd.currentName, cmd.newName);
+            break;
+
         case Command::REMOVE_CLASS:
             removeClassExecute(state, cmd.currentName);
             break;
@@ -577,7 +591,6 @@ void Model::removeInteractionExecute(Snapshot &state, std::string sdName, int in
     seqDiag->actions.erase(seqDiag->actions.begin() + index);
 }
 
-
 void Model::addEntityExecute(Snapshot &state, std::string sdName) {
 
     std::vector<SequenceDiagram> &existingSds = state.sequenceDiagrams;
@@ -632,7 +645,6 @@ void Model::removeEntityExecute(Snapshot &state, std::string sdName, std::string
         }
     }
 }
-
 
 void Model::addLinkExecute(Snapshot &state, LinkRepr newLink) {
     for (auto &existingLink: state.classDiagram.links) {
@@ -727,10 +739,58 @@ void Model::changeClassPropertiesExecute(Snapshot &state, Command cmd) {
                     link.to = newName;
                 }
             }
+            // change entities with the same name to match
+            for (auto &sd: state.sequenceDiagrams) {
+
+                auto &entities = sd.entities;
+                for (auto &entity: entities) {
+                    if (entity.name == curName) {
+                        entity.name = newName;
+                    }
+                }
+
+                for (auto &action: sd.actions) {
+                    if (action.from == curName) {
+                        action.from = newName;
+                    }
+                    if (action.to == curName) {
+                        action.to = newName;
+                    }
+                }
+            }
 
         } else {
             // class with that name already exists
             throw 1;
+        }
+    }
+}
+
+void Model::changeEntityPropertiesExecute(Snapshot &state, std::string sdName, std::string currName, std::string newName) {
+
+    SequenceDiagram *seqDiag;
+
+    for (auto &sd: state.sequenceDiagrams) {
+        if (sd.name == sdName) {
+                seqDiag = &sd;
+                break;
+        }
+    }
+    // change entity to new name
+    for (Model::SeqEntity &entityMod: seqDiag->entities) {
+        if (entityMod.name == currName) {
+            entityMod.name = newName;
+            break;
+        }
+    }
+
+    // change interactions with the same name to match
+    for (auto &action: seqDiag->actions) {
+        if (action.from == currName) {
+            action.from = newName;
+        }
+        if (action.to == currName) {
+            action.to = newName;
         }
     }
 }

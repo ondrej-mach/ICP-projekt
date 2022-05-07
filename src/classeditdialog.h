@@ -1,5 +1,5 @@
 /** @file classeditdialog.h
- *  @brief Dialog window for editing classes' methdods and attributes.
+ *  @brief Dialog window for editing classes' name, methods and attributes.
  *
  *  @author Ondřej Mach (xmacho12)
  *  @author Rostislav Lán (xlanro00)
@@ -31,11 +31,10 @@ private slots:
     void newMethod();
     void submit();
 
-
 private:
     Ui::ClassEditDialog *ui;
-    QString currentName;
 
+    QString currentName;
     QVector<QLineEdit *> attrLineEdits;
     QVector<QLineEdit *> methodLineEdits;
 

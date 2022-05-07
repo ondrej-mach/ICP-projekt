@@ -99,7 +99,6 @@ void ClassGraphicsItem::removeLink(LinkGraphicsItem *link) {
 QVariant ClassGraphicsItem::itemChange(QGraphicsItem::GraphicsItemChange change,
                                      const QVariant &value) {
     if (change == ItemPositionChange) {
-        //         update links?
         moved = true;
     }
     return QGraphicsItem::itemChange(change, value);
@@ -107,7 +106,7 @@ QVariant ClassGraphicsItem::itemChange(QGraphicsItem::GraphicsItemChange change,
 
 void ClassGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     // mark myself so i can be deleted or edited
-    // not relly the best practice but who cares at this point
+    // not really the best practice but who cares at this point
     qobject_cast<ClassDiagramScene *>(scene())->markItem(this);
 
     if (myContextMenu != nullptr) {

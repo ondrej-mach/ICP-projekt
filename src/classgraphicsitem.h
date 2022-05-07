@@ -25,26 +25,15 @@ class ClassGraphicsItem : public QGraphicsItem
 {
 
 public:
+    ClassGraphicsItem(Model::ClassRepr data, QMenu *contextMenu=nullptr, QGraphicsItem *parent=nullptr);
+    ~ClassGraphicsItem();
+
     // Qt black magic for recognizing types. do NOT touch
     enum { Type = UserType + 15 };
     int type() const override { return Type; }
 
-    ClassGraphicsItem(Model::ClassRepr data, QMenu *contextMenu=nullptr, QGraphicsItem *parent=nullptr);
-    ~ClassGraphicsItem();
-
     QRectF boundingRect() const override;
-
-    /** @brief Computes dimensions of the item.
-     *  @return Returns width and height of the item.
-     */
-    QPair<int, int> computeDimensions() const;
-
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *widget) override;
-
-    /** @brief Converts current class to model classrepr.
-     *  @return The item converted to model representation.
-     */
-    Model::ClassRepr convertToClassRepr();
 
     /** @brief Fetches name of the class.
      *  @return The name of the class.
@@ -63,7 +52,18 @@ public:
      */
     void removeLink(LinkGraphicsItem *link);
 
+    /** @brief Converts current class to model classrepr.
+     *  @return The item converted to model representation.
+     */
+    Model::ClassRepr convertToClassRepr();
+
 private:
+
+    /** @brief Computes dimensions of the item.
+     *  @return Returns width and height of the item.
+     */
+    QPair<int, int> computeDimensions() const;
+
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value) override;
     bool moved;
@@ -79,8 +79,6 @@ private:
     static const int lineHeight = 13;
     static const int charWidth = 9;
     static const int margin = 10;
-
-
 };
 
 #endif // CLASSGRAPHICSITEM_H

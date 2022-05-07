@@ -8,6 +8,7 @@ HEADERS += \
     src/classdiagramscene.h \
     src/classeditdialog.h \
     src/classgraphicsitem.h \
+    src/entityeditdialog.h \
     src/interactionitem.h \
     src/lifelineitem.h \
     src/linkgraphicsitem.h \
@@ -21,6 +22,7 @@ SOURCES += \
     src/classdiagramscene.cpp \
     src/classeditdialog.cpp \
     src/classgraphicsitem.cpp \
+    src/entityeditdialog.cpp \
     src/interactionitem.cpp \
     src/lifelineitem.cpp \
     src/linkgraphicsitem.cpp \
@@ -32,6 +34,7 @@ SOURCES += \
 
 FORMS += \
     src/classeditdialog.ui \
+    src/entityeditdialog.ui \
     src/mainwindow.ui
 
 RESOURCES     = res/resources.qrc
@@ -39,6 +42,8 @@ RESOURCES     = res/resources.qrc
 # install
 target.path = ./install
 INSTALLS += target
+
+DISTFILES +=
 
 
 

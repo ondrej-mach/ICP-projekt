@@ -142,6 +142,13 @@ public:
      */
     bool classExists(std::string name) const;
 
+    /** @brief Checks, whether the entity exists in the sequence diagram.
+     *  @param name The name of the entity
+     *  @param sdName The name of the sequence diagram
+     *  @return Void.
+     */
+    bool entityExists(std::string sdName, std::string name) const;
+
     /** @brief Checks, whether the undo operation is available.
      *  @return True if the model can undo.
      */
@@ -194,6 +201,17 @@ public:
      */
     void changeClassProperties(std::string name, ClassRepr cls);
 
+    /** @brief Changes properties of the entity.
+     *
+     *  This can change entities' name.
+     *
+     *  @param sdName The name of sequence diagram of entity in the model.
+     *  @param name The current name of the entity in the model.
+     *  @param entity The new properties of the entity.
+     *  @return Void.
+     */
+    void changeEntityProperties(std::string sdName, std::string currName, std::string newName);
+
     /** @brief Changes current tab in the model.
      *  @param index Index of the newly chosen tab.
      *  @return Void.
@@ -227,6 +245,7 @@ public:
 
 
 
+
 private:
     /** @brief Keeps every command so it can be executed later.
      *  The structure  stores type and operands of every possible command.
@@ -236,6 +255,7 @@ private:
         enum Type {
             SWITCH_TAB,
             CHANGE_CLASS_PROPS, // changing class methods, attributes, renaming
+            CHANGE_ENTITY_PROPS, // changing class name
             ADD_LINK,
             REMOVE_LINK,
             ADD_CLASS,
@@ -251,6 +271,7 @@ private:
         int newTab; // SWITCH_TAB
         ClassRepr cls; // CHANGE_CLASS_PROPS
         LinkRepr link; // ADD_LINK
+        std::string newName; //CHANGE_ENTITY_PROPS
         std::string currentName; // CHANGE_CLASS_PROPS, REMOVE_CLASS
         std::string from; //REMOVE_LINK
         std::string to; //REMOVE_LINK
@@ -354,6 +375,7 @@ private:
     void removeEntityExecute(Snapshot &state, std::string sdName, std::string entityName);
     void addInteractionExecute(Snapshot &state, std::string sdName, std::string from, std::string to, Action::Type type);
     void removeInteractionExecute(Snapshot &state, std::string sdName, int index);
+    void changeEntityPropertiesExecute(Snapshot &state, std::string sdName, std::string name, std::string newName);
 };
 
 extern Model model;

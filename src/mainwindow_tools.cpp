@@ -18,6 +18,7 @@ void MainWindow::connectTools() {
     connect(ui->classToolButton, &QToolButton::pressed, this, &MainWindow::selectToolClass);
     connect(ui->deleteButton, &QToolButton::pressed, this, &MainWindow::selectToolDelete);
     // seq. diagram tools
+    connect(ui->cursorButtonSeq, &QToolButton::pressed, this, &MainWindow::selectToolMouse);
     connect(ui->entityToolButton, &QToolButton::pressed, this, &MainWindow::selectToolEntity);
     connect(ui->activateButton, &QToolButton::pressed, this, &MainWindow::selectToolActivate);
     connect(ui->deactivateButton, &QToolButton::pressed, this, &MainWindow::selectToolDeactivate);

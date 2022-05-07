@@ -9,17 +9,40 @@
 #include "interactionitem.h"
 #include "activityitem.h"
 #include "lifelineitem.h"
+#include "entityeditdialog.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
+#include <QMenu>
 
-SeqDiagramScene::SeqDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(parent),  tool(tool) {
+SeqDiagramScene::SeqDiagramScene(Tool &tool, QObject *parent) : QGraphicsScene(parent), tool(tool) {
+    entityEditMenu = new QMenu();
 
+    QAction *editAction = entityEditMenu->addAction("Rename");
+    connect(editAction, &QAction::triggered, this, &SeqDiagramScene::openEditDialog);
+}
+
+SeqDiagramScene::~SeqDiagramScene() {
+    clear();
+    delete entityEditMenu;
 }
 
 
+void SeqDiagramScene::markItem(LifeLineItem *lli) {
+    markedItem = lli;
+}
+
+void SeqDiagramScene::openEditDialog() {
+    EntityEditDialog editDialog{markedItem->getName(), getName(this)};
+    if (editDialog.exec() == QDialog::Accepted) {
+        emit modelChanged();
+    }
+}
+
 void SeqDiagramScene::reloadData(QString name) {
     clear();
+    this->entities.clear();
+    this->actions.clear();
 
     QPen pen{Qt::black};
     QBrush redBrush{Qt::red};
@@ -45,6 +68,7 @@ void SeqDiagramScene::reloadData(QString name) {
     int index = 0;
     for (Model::SeqEntity &ent: entities) {
         nameToGridX[ent.name] = index;
+
         index++;
     }
 
@@ -96,8 +120,14 @@ void SeqDiagramScene::reloadData(QString name) {
                 gridToX(nameToGridX[ent.name]),
                 gridToY(createdAt[ent.name]),
                 gridToY(interactionCount),
-                QString::fromStdString(ent.name)
+                QString::fromStdString(ent.name),
+                false,
+                entityEditMenu
                 );
+        std::vector<std::string> classes = model.getClasses();
+        if (std::find(classes.begin(), classes.end(), ent.name) != classes.end()) {
+            ll->inClassDiag = true;
+        }
         this->entities.insert(QString::fromStdString(ent.name), ll);
         addItem(ll);
     }
@@ -139,20 +169,17 @@ void SeqDiagramScene::reloadData(QString name) {
    }
 }
 
+QString SeqDiagramScene::getName(SeqDiagramScene *scene)
+{
+    return scene->diagramName;
+}
+
 double SeqDiagramScene::gridToX(int n) {
     return n * entityDistance;
 }
 
 double SeqDiagramScene::gridToY(int n) {
     return n * actionDistance;
-}
-
-int SeqDiagramScene::XtoGrid(double x) {
-    return x / entityDistance;
-}
-
-int SeqDiagramScene::YtoGrid(double y) {
-    return y / actionDistance;
 }
 
 void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
@@ -173,7 +200,7 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
             for (auto item: itemsList) {
                 if (item->type() == LifeLineItem::Type) {
                     delEntity = qgraphicsitem_cast<LifeLineItem *>(item);
-                    QString entityName = delEntity->getName(delEntity);
+                    QString entityName = delEntity->getName();
                     model.removeEntity(getName(this), entityName);
                     emit modelChanged();
                 }
@@ -194,8 +221,13 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
-            line = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(),
-            mouseEvent->scenePos()));
+            line = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(), mouseEvent->scenePos()));
+            line->setPen(QPen(Qt::black, 2));
+            addItem(line);
+            break;
+        case TOOL_ACTIVATE:
+        case TOOL_DEACTIVATE:
+            line = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(), mouseEvent->scenePos()));
             line->setPen(QPen(Qt::black, 2));
             addItem(line);
             break;
@@ -209,18 +241,30 @@ void SeqDiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
 void SeqDiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     switch (tool) {
+
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
         case TOOL_CREATE_MESSAGE:
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
             if (line != nullptr) {
-                QLineF newLine(line->line().p1(), mouseEvent->scenePos());
+                QLineF newLine(line->line().p1(),
+                    QPointF(mouseEvent->scenePos().x(), line->line().p1().y()));
                 line->setLine(newLine);
             } else {
                 QGraphicsScene::mouseMoveEvent(mouseEvent);
             }
             break;
+        case TOOL_ACTIVATE:
+            if (line != nullptr) {
+                QLineF newLine(line->line().p1(),
+                    QPointF(line->line().p1().x(), mouseEvent->scenePos().y()));
+                line->setLine(newLine);
+            } else {
+                QGraphicsScene::mouseMoveEvent(mouseEvent);
+            }
+            break;
+        case TOOL_DEACTIVATE:
         case TOOL_DELETE:
         case TOOL_MOUSE:
         default:;
@@ -234,16 +278,21 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QPointF point = {mouseEvent->scenePos().x(), mouseEvent->scenePos().y()};
     QList<QGraphicsItem *> itemsList = items(point);
     QVector<double> coords;
-    QString from, to;
+    QString from, to, on;
     double entityX;
     Model::Action::Type actionType;
 
     switch (tool) {
         case TOOL_ACTIVATE:
-
-            break;
         case TOOL_DEACTIVATE:
-
+            actionType = Model::Action::Type::ACTIVATE;
+            for (auto entity: this->entities) {
+                coords = entity->getCoords(entity);
+                entityX = coords.first();
+            }
+            removeItem(line);
+            reloadData(this->getName(this));
+            delete line;
             break;
         case TOOL_ASYNC_MESSAGE:
         case TOOL_SYNC_MESSAGE:
@@ -251,6 +300,9 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         case TOOL_DESTROY_MESSAGE:
         case TOOL_RETURN_MESSAGE:
             if (line != nullptr) {
+                int startPointX = line->line().p1().x();
+                int endPointX = line->line().p2().x();
+                int distance = startPointX - endPointX;
                 switch (tool) {
                     default:
                     case TOOL_ASYNC_MESSAGE: actionType = Model::Action::Type::ASYNC; break;
@@ -259,9 +311,6 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     case TOOL_DESTROY_MESSAGE: actionType = Model::Action::Type::DESTROY; break;
                     case TOOL_RETURN_MESSAGE: actionType = Model::Action::Type::RETURN; break;
                 }
-                int startPointX = line->line().p1().x();
-                int endPointX = line->line().p2().x();
-                int distance = startPointX - endPointX;
                 removeItem(line);
                 delete line;
 
@@ -272,14 +321,14 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 }
 
                 // Select correct entities
-                for (auto entity: this->entities) {
+                for (auto &entity: this->entities) {
                     coords = entity->getCoords(entity);
                     entityX = coords.first();
                     if ((entityX < (startPointX + 20)) && (entityX > (startPointX - 20))) {
-                        from = entity->getName(entity);
+                        from = entity->getName();
                     }
                     if ((entityX < (endPointX + 20)) && (entityX > (endPointX - 20))) {
-                        to = entity->getName(entity);
+                        to = entity->getName();
                     }
                 }
 
@@ -298,7 +347,3 @@ void SeqDiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
-QString SeqDiagramScene::getName(SeqDiagramScene *scene)
-{
-    return scene->diagramName;
-}

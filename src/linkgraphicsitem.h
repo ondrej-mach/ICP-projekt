@@ -29,29 +29,23 @@ public:
                      QGraphicsItem *parent=nullptr);
     ~LinkGraphicsItem();
 
-    QRectF boundingRect() const override;
+    ClassGraphicsItem *from;
+    ClassGraphicsItem *to;
 
-    /** @brief Sets hitbox of this line.
-     *  @return Path with hitbox for deletion.
-     */
+    QRectF boundingRect() const override;
     QPainterPath shape() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+
     /** @brief Updates the position of this link after one of classes link is connected to is moved.
      *  @param link Link to be connected to the class.
      *  @return Void.
      */
     void updatePosition();
 
-    ClassGraphicsItem *from;
-    ClassGraphicsItem *to;
-
 private:
-
     QColor myColor = Qt::black;
     QPolygonF linkHead;
     Model::LinkRepr::Type linkType;
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-
 };
 
 #endif // LINKGRAPHICSITEM_H

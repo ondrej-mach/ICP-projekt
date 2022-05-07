@@ -27,19 +27,35 @@ class SeqDiagramScene : public QGraphicsScene
 
 public:
     SeqDiagramScene(Tool &tool, QObject *parent = nullptr);
-    //~SeqDiagramScene();
+    ~SeqDiagramScene();
 
-
+    /** @brief Reloads data from model, puts them onto scene.
+     *  @return Void.
+     */
     void reloadData(QString name);
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+
+    /** @brief Gets sequence diagram name.
+     *  @param scene The diagram to be named.
+     *  @return Returns name of the sequence diagram.
+     */
     QString getName(SeqDiagramScene *scene);
 
+    /** @brief Marks item.
+     *  @param lli The item to be marked.
+     *  @return Void.
+     */
+    void markItem(LifeLineItem *lli);
+
+public slots:
+    void openEditDialog();
 
 signals:
     void modelChanged();
 
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
 private:
     Tool &tool;
@@ -51,11 +67,13 @@ private:
 
     double gridToX(int n);
     double gridToY(int n);
-    int XtoGrid(double x);
-    int YtoGrid(double y);
+
     QMap<QString, LifeLineItem *> entities;
     QVector<InteractionItem *> actions;
     QString diagramName;
+
+    LifeLineItem *markedItem;
+    QMenu *entityEditMenu; // edit menu for entities
 };
 
 #endif // SEQDIAGRAMSCENE_H

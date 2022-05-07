@@ -20,12 +20,18 @@ public:
     enum { Type = UserType + 18 };
     int type() const override { return Type; }
 
-    QRectF boundingRect() const override;
-     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
-    QVector<double> getCoords(InteractionItem *item);
     QString from, to;
-    QPainterPath shape() const override;
     int index;
+
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
+     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+
+    /** @brief Gets position of this entity.
+     *  @param item Entity whose position we want.
+     *  @return Returns position of this entity.
+     */
+    QVector<double> getCoords(InteractionItem *item);
 
 private:
     double y, xStart, xEnd;
