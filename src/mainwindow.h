@@ -52,6 +52,7 @@ private slots:
     void selectToolReturnMessage();
     void selectToolDestroyMessage();
 
+    void newFile();
     void openFile();
     void saveFile();
     void saveFileAs();

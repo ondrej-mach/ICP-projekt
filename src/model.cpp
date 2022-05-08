@@ -19,7 +19,7 @@ Model::Model() {
     csHead = -1;
     csTop = -1;
     currentState.tabIndex = 0;
-    currentState = baseState;
+    baseState = currentState;
 }
 
 Model::ClassDiagram::ClassDiagram(pt::ptree &tree) {

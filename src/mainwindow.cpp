@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     seqDiagramView->setScene(seqDiagramScene);
 
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
+    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newFile);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openFile);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::saveFileAs);
@@ -109,6 +110,12 @@ void MainWindow::reloadData()
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::newFile() {
+    model = Model();
+    filename = "";
+    reloadData();
 }
 
 void MainWindow::openFile() {
