@@ -76,5 +76,5 @@ void LifeLineItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
 
 QVector<double> LifeLineItem::getCoords(LifeLineItem *item)
 {
-    return QVector{item->x, item->yStart, item->yEnd};
+    return QVector<double>{item->x, item->yStart, item->yEnd};
 }

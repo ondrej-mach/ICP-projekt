@@ -106,6 +106,6 @@ void InteractionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
 QVector<double> InteractionItem::getCoords(InteractionItem *item)
 {
-    return QVector{item->y, item->xStart, item->xEnd};
+    return QVector<double>{item->y, item->xStart, item->xEnd};
 }
 
