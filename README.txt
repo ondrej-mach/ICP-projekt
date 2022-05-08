@@ -16,7 +16,7 @@ Ve složce testFiles jsou přiloženy soubory pro demonstraci.
 Tyto soubory jsou ve formátu XML s vlastními prvky.
 V jednom souboru je vždy uložen právě jeden class diagram a 0..N sekenčních diagramů.
 
-V záložce `Edit` jsou dostupné operace `Undo` a `Redo`.
+Pro třídní i sekvenční diagramy jsou v záložce `Edit` jsou dostupné operace `Undo` a `Redo`.
 Pro rychlejší použití je vhodné používat běžné zkratky `Ctrl+Z` a `Ctrl+Shift+Z`.
 
 Uprostřed hlavního okna se nachází kreslící plocha.
@@ -52,12 +52,14 @@ Program totiž umí načíst kompletní reprezentaci ze souboru, ale ne všechny
 Do editoru se lze dostat kliknutím na tlačítko `New sequence`, které se nachází na konci všech tabů.
 
 Po otevření je vytvořen prázdný sekvenční diagram. Do něj je poté možné nástrojem `New entity` přidat novou entitu.
-Ta je umístěna na předem definované místo, nelze s ní hýbat. Kliknutím pravým tlačítkem ji lze přejmenovat, smazat ji lze nástrojem `Delete`.
+Ta je umístěna na předem definované místo, za všechny ostatní entity a nelze s ní hýbat. Kliknutím pravým tlačítkem ji lze přejmenovat, smazat ji lze nástrojem `Delete`.
 Pokud v třídním diagramu neexistuje objekt se stejným názvem, je entita vyznačena červeně.
+Při přejmenování stejnojmenné třídy v třídním diagramu jsou stejnojmenné entity ve všech sekvenčních diagramech automaticky přejmenovány na odpovídající název.
 
-Po přidání alespoň dvou entit je možné natahovat mezi jejich osami zprávy.
-Ty jsou typů vytvářející(`Create`) synchronní(`Sync`), asynchronní(`Async`), návratová(`Return`) a mazací(`Destroy`).
-Nad zprávu se umístí příslušný popis, který nelze editovat, je však možné jej správně načíst a vykreslit z xml souboru.
+Po přidání alespoň dvou entit je možné natahovat mezi jejich osami, které se samy prodlužují s celkovým počtem interakcí, zprávy.
+Nově vytvořené zprávy se umístí pod všechny ostatní a jsou typů vytvářející(`Create`),
+synchronní(`Sync`), asynchronní(`Async`), návratové(`Return`) a mazací(`Destroy`).
+Nad zprávu se umístí příslušný popis, který v momentální implementaci nelze editovat, je však možné jej správně načíst a vykreslit z xml souboru.
 Zprávy create a destroy nelze natáhnout do jedné entity vícekrát, ostatní zprávy nejsou nijak omezeny.
 Mazání zpráv je možné provést nástrojem (`Delete`), po jehož zvolení stačí na zprávu kliknout levým tlačítkem myši.
 
