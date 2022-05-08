@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connectTools();
     tool = TOOL_MOUSE;
 
+    setWindowTitle("ICP projekt");
+
     // load data into all elements from model
     reloadData();
 }
