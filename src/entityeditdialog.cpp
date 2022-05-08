@@ -1,4 +1,4 @@
-/** @file classeditdialog.cpp
+/** @file entityeditdialog.cpp
  *
  *  @author Ondřej Mach (xmacho12)
  *  @author Rostislav Lán (xlanro00)
